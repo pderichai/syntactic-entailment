@@ -21,7 +21,7 @@
       "tokens": {
         "type": "embedding",
         "projection_dim": 200,
-        "pretrained_file": "Glove/glove.6B.300d.txt",
+        "pretrained_file": "glove/glove.6B.300d.txt",
         "embedding_dim": 300,
         "trainable": false
       }
