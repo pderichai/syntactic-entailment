@@ -12,6 +12,8 @@ from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
+from allennlp.predictors.predictor import Predictor
+
 
 @Model.register("syntactic_entailment")
 class SyntacticEntailment(Model):
@@ -90,6 +92,8 @@ class SyntacticEntailment(Model):
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
+        self._predictor = Predictor.from_path("models/elmo-constituency-parser-2018.03.14.tar.gz")
+
         initializer(self)
 
     def forward(self,  # type: ignore
@@ -123,6 +127,15 @@ class SyntacticEntailment(Model):
         loss : torch.FloatTensor, optional
             A scalar loss to be optimised.
         """
+        print()
+        print('metadata', metadata)
+        print('premise', metadata[0]['premise_tokens'])
+        print('hypothesis', metadata[0]['hypothesis_tokens'])
+        print(len(premise))
+        print(len(hypothesis))
+        print('premise len', len(metadata))
+        print('hypothesis len', len(metadata))
+        exit(1)
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
         premise_mask = get_text_field_mask(premise).float()
