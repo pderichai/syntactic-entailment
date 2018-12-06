@@ -127,15 +127,15 @@ class SyntacticEntailment(Model):
         loss : torch.FloatTensor, optional
             A scalar loss to be optimised.
         """
+
         print()
-        print('metadata', metadata)
-        print('premise', metadata[0]['premise_tokens'])
-        print('hypothesis', metadata[0]['hypothesis_tokens'])
-        print(len(premise))
-        print(len(hypothesis))
-        print('premise len', len(metadata))
-        print('hypothesis len', len(metadata))
-        exit(1)
+        p_str = ' '.join(metadata[0]['premise_tokens'][:-1])
+        h_str = ' '.join(metadata[0]['hypothesis_tokens'][:-1])
+        print('premise', p_str)
+        print('hypothesis', h_str)
+        p_parse_hs = torch.tensor(self._predictor.predict(sentence=p_str)['encoder_final_state']).cuda()
+        h_parse_hs = torch.tensor(self._predictor.predict(sentence=h_str)['encoder_final_state']).cuda()
+
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
         premise_mask = get_text_field_mask(premise).float()
