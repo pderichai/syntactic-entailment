@@ -139,9 +139,6 @@ class SyntacticEntailment(Model):
         h_jsons = [{'sentence' : h_strs[idx]} for idx in range(len(metadata))]
         p_parses_hs = torch.tensor([output['encoder_final_state'] for output in self._predictor.predict_batch_json(p_jsons)])
         h_parses_hs = torch.tensor([output['encoder_final_state'] for output in self._predictor.predict_batch_json(h_jsons)])
-        print(p_parses_hs.requires_grad)
-        print('p_parses_hs shape', p_parses_hs.shape)
-        print('h_parses_hs shape', h_parses_hs.shape)
 
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
