@@ -22,28 +22,6 @@ from allennlp.common.checks import ConfigurationError
 from allennlp.models.constituency_parser import SpanConstituencyParser
 from allennlp.models.constituency_parser import SpanInformation
 
-class SpanInformation(NamedTuple):
-    """
-    A helper namedtuple for handling decoding information.
-
-    Parameters
-    ----------
-    start : ``int``
-        The start index of the span.
-    end : ``int``
-        The exclusive end index of the span.
-    no_label_prob : ``float``
-        The probability of this span being assigned the ``NO-LABEL`` label.
-    label_prob : ``float``
-        The probability of the most likely label.
-    """
-    start: int
-    end: int
-    label_prob: float
-    no_label_prob: float
-    label_index: int
-
-
 @Model.register("syntactic_entailment_constituency_parser")
 class SyntacticEntailmentSpanConstituencyParser(SpanConstituencyParser):
     """
@@ -217,39 +195,39 @@ class SyntacticEntailmentSpanConstituencyParser(SpanConstituencyParser):
         encoded_text = self.encoder(embedded_text_input, mask)
         encoder_final_state = get_final_encoder_states(encoded_text, mask)
 
-        span_representations = self.span_extractor(encoded_text, spans, mask, span_mask)
+        # span_representations = self.span_extractor(encoded_text, spans, mask, span_mask)
 
-        if self.feedforward_layer is not None:
-            span_representations = self.feedforward_layer(span_representations)
+        # if self.feedforward_layer is not None:
+        #     span_representations = self.feedforward_layer(span_representations)
 
-        logits = self.tag_projection_layer(span_representations)
-        class_probabilities = masked_softmax(logits, span_mask.unsqueeze(-1))
+        # logits = self.tag_projection_layer(span_representations)
+        # class_probabilities = masked_softmax(logits, span_mask.unsqueeze(-1))
 
         output_dict = {
-                "class_probabilities": class_probabilities,
-                "spans": spans,
-                "tokens": [meta["tokens"] for meta in metadata],
-                "pos_tags": [meta.get("pos_tags") for meta in metadata],
-                "num_spans": num_spans,
+                #"class_probabilities": class_probabilities,
+                #"spans": spans,
+                #"tokens": [meta["tokens"] for meta in metadata],
+                #"pos_tags": [meta.get("pos_tags") for meta in metadata],
+                #"num_spans": num_spans,
                 "encoder_final_state": encoder_final_state
         }
-        if span_labels is not None:
-            loss = sequence_cross_entropy_with_logits(logits, span_labels, span_mask)
-            self.tag_accuracy(class_probabilities, span_labels, span_mask)
-            output_dict["loss"] = loss
+        # if span_labels is not None:
+        #     loss = sequence_cross_entropy_with_logits(logits, span_labels, span_mask)
+        #     self.tag_accuracy(class_probabilities, span_labels, span_mask)
+        #     output_dict["loss"] = loss
 
-        # The evalb score is expensive to compute, so we only compute
-        # it for the validation and test sets.
-        batch_gold_trees = [meta.get("gold_tree") for meta in metadata]
-        if all(batch_gold_trees) and self._evalb_score is not None and not self.training:
-            gold_pos_tags: List[List[str]] = [list(zip(*tree.pos()))[1]
-                                              for tree in batch_gold_trees]
-            predicted_trees = self.construct_trees(class_probabilities.cpu().data,
-                                                   spans.cpu().data,
-                                                   num_spans.data,
-                                                   output_dict["tokens"],
-                                                   gold_pos_tags)
-            self._evalb_score(predicted_trees, batch_gold_trees)
+        # # The evalb score is expensive to compute, so we only compute
+        # # it for the validation and test sets.
+        # batch_gold_trees = [meta.get("gold_tree") for meta in metadata]
+        # if all(batch_gold_trees) and self._evalb_score is not None and not self.training:
+        #     gold_pos_tags: List[List[str]] = [list(zip(*tree.pos()))[1]
+        #                                       for tree in batch_gold_trees]
+        #     predicted_trees = self.construct_trees(class_probabilities.cpu().data,
+        #                                            spans.cpu().data,
+        #                                            num_spans.data,
+        #                                            output_dict["tokens"],
+        #                                            gold_pos_tags)
+        #     self._evalb_score(predicted_trees, batch_gold_trees)
 
         return output_dict
 
@@ -264,19 +242,19 @@ class SyntacticEntailmentSpanConstituencyParser(SpanConstituencyParser):
         In order to make this less confusing, we remove all the padded spans and
         distributions from ``spans`` and ``class_probabilities`` respectively.
         """
-        all_predictions = output_dict['class_probabilities'].cpu().data
-        all_spans = output_dict["spans"].cpu().data
+        # all_predictions = output_dict['class_probabilities'].cpu().data
+        # all_spans = output_dict["spans"].cpu().data
 
-        all_sentences = output_dict["tokens"]
-        all_pos_tags = output_dict["pos_tags"] if all(output_dict["pos_tags"]) else None
-        num_spans = output_dict["num_spans"].data
-        trees = self.construct_trees(all_predictions, all_spans, num_spans, all_sentences, all_pos_tags)
+        # all_sentences = output_dict["tokens"]
+        # all_pos_tags = output_dict["pos_tags"] if all(output_dict["pos_tags"]) else None
+        # num_spans = output_dict["num_spans"].data
+        # trees = self.construct_trees(all_predictions, all_spans, num_spans, all_sentences, all_pos_tags)
 
-        batch_size = all_predictions.size(0)
-        output_dict["spans"] = [all_spans[i, :num_spans[i]] for i in range(batch_size)]
-        output_dict["class_probabilities"] = [all_predictions[i, :num_spans[i], :] for i in range(batch_size)]
+        # batch_size = all_predictions.size(0)
+        # output_dict["spans"] = [all_spans[i, :num_spans[i]] for i in range(batch_size)]
+        # output_dict["class_probabilities"] = [all_predictions[i, :num_spans[i], :] for i in range(batch_size)]
 
-        output_dict["trees"] = trees
+        # output_dict["trees"] = trees
         return output_dict
 
     def construct_trees(self,

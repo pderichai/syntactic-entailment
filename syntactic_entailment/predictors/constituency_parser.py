@@ -95,19 +95,19 @@ class SyntacticEntailmentConstituencyParserPredictor(ConstituencyParserPredictor
         outputs = self._model.forward_on_instance(instance)
 
         # format the NLTK tree as a string on a single line.
-        tree = outputs.pop("trees")
-        outputs["hierplane_tree"] = self._build_hierplane_tree(tree, 0, is_root=True)
-        outputs["trees"] = tree.pformat(margin=1000000)
+        # tree = outputs.pop("trees")
+        # outputs["hierplane_tree"] = self._build_hierplane_tree(tree, 0, is_root=True)
+        # outputs["trees"] = tree.pformat(margin=1000000)
         return sanitize(outputs)
 
     @overrides
     def predict_batch_instance(self, instances: List[Instance]) -> List[JsonDict]:
         outputs = self._model.forward_on_instances(instances)
-        for output in outputs:
-            # format the NLTK tree as a string on a single line.
-            tree = output.pop("trees")
-            output["hierplane_tree"] = self._build_hierplane_tree(tree, 0, is_root=True)
-            output["trees"] = tree.pformat(margin=1000000)
+        # for output in outputs:
+        #     # format the NLTK tree as a string on a single line.
+        #     tree = output.pop("trees")
+        #     output["hierplane_tree"] = self._build_hierplane_tree(tree, 0, is_root=True)
+        #     output["trees"] = tree.pformat(margin=1000000)
         return sanitize(outputs)
 
 

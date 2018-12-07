@@ -14,6 +14,7 @@ from allennlp.training.metrics import CategoricalAccuracy
 
 from allennlp.predictors.predictor import Predictor
 from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
+#from syntactic_entailment.syntactic_attention import SyntacticMatrixAttention
 
 
 @Model.register("syntactic_entailment")
@@ -78,6 +79,7 @@ class SyntacticEntailment(Model):
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
         self._matrix_attention = LegacyMatrixAttention(similarity_function)
+        #self._matrix_attention = SyntacticMatrixAttention(similarity_function)
         self._compare_feedforward = TimeDistributed(compare_feedforward)
         self._aggregate_feedforward = aggregate_feedforward
         self._premise_encoder = premise_encoder
@@ -95,6 +97,7 @@ class SyntacticEntailment(Model):
 
         self._predictor = Predictor.from_path("models/elmo-constituency-parser/model.tgz",
                                               predictor_name="syntactic-entailment-constituency-parser")
+        self._predictor._model.cuda()
 
         initializer(self)
 
@@ -130,16 +133,15 @@ class SyntacticEntailment(Model):
             A scalar loss to be optimised.
         """
 
-        print()
         p_strs = [(' '.join(metadata[idx]['premise_tokens'][:-1])) for idx in range(len(metadata))]
+        p_jsons = [{'sentence' : p_strs[idx]} for idx in range(len(metadata))]
         h_strs = [(' '.join(metadata[idx]['hypothesis_tokens'][:-1])) for idx in range(len(metadata))]
-        print(len(p_strs), 'premise strings.', 'premise:', p_strs[0])
-        print(len(h_strs), 'hypothesis strings.', 'hypothesis:', h_strs[0])
-        p_parses_hs = torch.tensor([self._predictor.predict(sentence=p_str)['encoder_final_state'] for p_str in p_strs])
-        h_parses_hs = torch.tensor([self._predictor.predict(sentence=h_str)['encoder_final_state'] for h_str in h_strs])
+        h_jsons = [{'sentence' : h_strs[idx]} for idx in range(len(metadata))]
+        p_parses_hs = torch.tensor([output['encoder_final_state'] for output in self._predictor.predict_batch_json(p_jsons)])
+        h_parses_hs = torch.tensor([output['encoder_final_state'] for output in self._predictor.predict_batch_json(h_jsons)])
+        print(p_parses_hs.requires_grad)
         print('p_parses_hs shape', p_parses_hs.shape)
         print('h_parses_hs shape', h_parses_hs.shape)
-        exit(1)
 
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
@@ -178,6 +180,12 @@ class SyntacticEntailment(Model):
         compared_hypothesis = compared_hypothesis * hypothesis_mask.unsqueeze(-1)
         # Shape: (batch_size, compare_dim)
         compared_hypothesis = compared_hypothesis.sum(dim=1)
+
+        p_parses_hs = compared_premise.new_tensor(p_parses_hs)
+        h_parses_hs = compared_hypothesis.new_tensor(h_parses_hs)
+
+        compared_premise = torch.cat([compared_premise, p_parses_hs], dim=-1)
+        compared_hypothesis = torch.cat([compared_hypothesis, h_parses_hs], dim=-1)
 
         aggregate_input = torch.cat([compared_premise, compared_hypothesis], dim=-1)
         label_logits = self._aggregate_feedforward(aggregate_input)
