@@ -13,6 +13,7 @@ from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
 from allennlp.predictors.predictor import Predictor
+from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
 
 
 @Model.register("syntactic_entailment")
@@ -92,7 +93,8 @@ class SyntacticEntailment(Model):
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
-        self._predictor = Predictor.from_path("models/elmo-constituency-parser-2018.03.14.tar.gz")
+        self._predictor = Predictor.from_path("models/elmo-constituency-parser/model.tgz",
+                                              predictor_name="syntactic-entailment-constituency-parser")
 
         initializer(self)
 
@@ -129,12 +131,15 @@ class SyntacticEntailment(Model):
         """
 
         print()
-        p_str = ' '.join(metadata[0]['premise_tokens'][:-1])
-        h_str = ' '.join(metadata[0]['hypothesis_tokens'][:-1])
-        print('premise', p_str)
-        print('hypothesis', h_str)
-        p_parse_hs = torch.tensor(self._predictor.predict(sentence=p_str)['encoder_final_state']).cuda()
-        h_parse_hs = torch.tensor(self._predictor.predict(sentence=h_str)['encoder_final_state']).cuda()
+        p_strs = [(' '.join(metadata[idx]['premise_tokens'][:-1])) for idx in range(len(metadata))]
+        h_strs = [(' '.join(metadata[idx]['hypothesis_tokens'][:-1])) for idx in range(len(metadata))]
+        print(len(p_strs), 'premise strings.', 'premise:', p_strs[0])
+        print(len(h_strs), 'hypothesis strings.', 'hypothesis:', h_strs[0])
+        p_parses_hs = torch.tensor([self._predictor.predict(sentence=p_str)['encoder_final_state'] for p_str in p_strs])
+        h_parses_hs = torch.tensor([self._predictor.predict(sentence=h_str)['encoder_final_state'] for h_str in h_strs])
+        print('p_parses_hs shape', p_parses_hs.shape)
+        print('h_parses_hs shape', h_parses_hs.shape)
+        exit(1)
 
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
