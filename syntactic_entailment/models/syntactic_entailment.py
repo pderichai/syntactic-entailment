@@ -14,7 +14,6 @@ from allennlp.training.metrics import CategoricalAccuracy
 
 from allennlp.predictors.predictor import Predictor
 from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
-#from syntactic_entailment.syntactic_attention import SyntacticMatrixAttention
 
 
 @Model.register("syntactic_entailment")
@@ -79,7 +78,6 @@ class SyntacticEntailment(Model):
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
         self._matrix_attention = LegacyMatrixAttention(similarity_function)
-        #self._matrix_attention = SyntacticMatrixAttention(similarity_function)
         self._compare_feedforward = TimeDistributed(compare_feedforward)
         self._aggregate_feedforward = aggregate_feedforward
         self._premise_encoder = premise_encoder
