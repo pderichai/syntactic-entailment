@@ -11,6 +11,7 @@ while getopts ":e" opt; do
 done
 
 shift $(( OPTIND-1 ))
+
 DATASET="$1"
 TEST_PATH="$2"
 SERIALIZATION_DIR="./models/se-$DATASET$ELMO"

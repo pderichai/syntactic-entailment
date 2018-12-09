@@ -11,11 +11,11 @@ while getopts ":e" opt; do
 done
 
 shift $(( OPTIND-1 ))
-DATASET="$1"
 
+DATASET="$1"
 SERIALIZATION_DIR="./models/da-$DATASET$ELMO"
 CONFIG="da-$DATASET$ELMO.jsonnet"
-echo "Training $CONFIG. Saving model to $SERIALIZATION_DIR."
 
 rm -rf "$SERIALIZATION_DIR"
+echo "Training $CONFIG. Saving model to $SERIALIZATION_DIR."
 allennlp train "$CONFIG" --serialization-dir "$SERIALIZATION_DIR"

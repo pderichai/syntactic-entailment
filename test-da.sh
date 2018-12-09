@@ -17,5 +17,4 @@ TEST_PATH="$2"
 SERIALIZATION_DIR="./models/da-$DATASET$ELMO"
 
 echo "Evaluating model at $SERIALIZATION_DIR with $TEST_PATH."
-
 allennlp evaluate "$SERIALIZATION_DIR"/model.tar.gz $TEST_PATH
