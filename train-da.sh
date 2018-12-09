@@ -1,4 +1,3 @@
-DATASET="$1"
 ELMO=""
 while getopts ":e" opt; do
     case $opt in
@@ -11,9 +10,12 @@ while getopts ":e" opt; do
     esac
 done
 
-SERIALIZATION_DIR="./models/se-$DATASET$ELMO"
-CONFIG="se-$DATASET$ELMO.jsonnet"
+shift $(( OPTIND-1 ))
+DATASET="$1"
+
+SERIALIZATION_DIR="./models/da-$DATASET$ELMO"
+CONFIG="da-$DATASET$ELMO.jsonnet"
 echo "Training $CONFIG. Saving model to $SERIALIZATION_DIR."
 
 rm -rf "$SERIALIZATION_DIR"
-allennlp train "$CONFIG" --serialization-dir "$SERIALIZATION_DIR" --include-package syntactic_entailment
+allennlp train "$CONFIG" --serialization-dir "$SERIALIZATION_DIR"
