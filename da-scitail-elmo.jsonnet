@@ -76,7 +76,7 @@
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "adam"
+      "type": "adagrad"
     }
   }
 }
