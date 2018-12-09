@@ -16,6 +16,6 @@ DATASET="$1"
 SERIALIZATION_DIR="./models/da-$DATASET$ELMO"
 CONFIG="da-$DATASET$ELMO.jsonnet"
 
-rm -rf "$SERIALIZATION_DIR"
+#rm -rf "$SERIALIZATION_DIR"
 echo "Training $CONFIG. Saving model to $SERIALIZATION_DIR."
 allennlp train "$CONFIG" --serialization-dir "$SERIALIZATION_DIR"
