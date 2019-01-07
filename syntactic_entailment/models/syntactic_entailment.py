@@ -95,6 +95,7 @@ class SyntacticEntailment(Model):
 
         self._predictor = Predictor.from_path("models/elmo-constituency-parser/model.tgz",
                                               predictor_name="syntactic-entailment-constituency-parser")
+        self._predictor._model.cuda()
 
         initializer(self)
 
