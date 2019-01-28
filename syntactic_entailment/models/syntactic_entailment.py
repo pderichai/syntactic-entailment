@@ -2,17 +2,18 @@ from typing import Dict, Optional, List, Any
 
 import torch
 
+from allennlp.predictors.predictor import Predictor
 from allennlp.common.checks import check_dimensions_match
 from allennlp.data import Vocabulary
 from allennlp.models.model import Model
 from allennlp.modules import FeedForward
 from allennlp.modules import Seq2SeqEncoder, SimilarityFunction, TimeDistributed, TextFieldEmbedder
-from allennlp.modules.matrix_attention.legacy_matrix_attention import LegacyMatrixAttention
+#from allennlp.modules.matrix_attention.legacy_matrix_attention import LegacyMatrixAttention
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
-from allennlp.predictors.predictor import Predictor
+from syntactic_entailment.modules.matrix_attention.syntactic_matrix_attention import SyntacticMatrixAttention
 from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
 
 
@@ -77,7 +78,7 @@ class SyntacticEntailment(Model):
 
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
-        self._matrix_attention = LegacyMatrixAttention(similarity_function)
+        self._matrix_attention = SyntacticMatrixAttention(similarity_function)
         self._compare_feedforward = TimeDistributed(compare_feedforward)
         self._aggregate_feedforward = aggregate_feedforward
         self._premise_encoder = premise_encoder
@@ -131,12 +132,17 @@ class SyntacticEntailment(Model):
             A scalar loss to be optimised.
         """
 
-        p_strs = [(' '.join(metadata[idx]['premise_tokens'][:-1])) for idx in range(len(metadata))]
+        #p_strs = [(' '.join(metadata[idx]['premise_tokens'][:-1])) for idx in range(len(metadata))]
+        p_strs = [(' '.join(metadata[idx]['premise_tokens'])) for idx in range(len(metadata))]
+        print('longest sentence:', max([len(x.split()) for x in p_strs]))
         p_jsons = [{'sentence' : p_strs[idx]} for idx in range(len(metadata))]
-        h_strs = [(' '.join(metadata[idx]['hypothesis_tokens'][:-1])) for idx in range(len(metadata))]
+        #h_strs = [(' '.join(metadata[idx]['hypothesis_tokens'][:-1])) for idx in range(len(metadata))]
+        h_strs = [(' '.join(metadata[idx]['hypothesis_tokens'])) for idx in range(len(metadata))]
         h_jsons = [{'sentence' : h_strs[idx]} for idx in range(len(metadata))]
-        p_parses_hs = torch.tensor([output['encoder_final_state'] for output in self._predictor.predict_batch_json(p_jsons)])
-        h_parses_hs = torch.tensor([output['encoder_final_state'] for output in self._predictor.predict_batch_json(h_jsons)])
+        #p_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(p_jsons)])
+        #h_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(h_jsons)])
+        p_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(p_jsons)]).cuda()
+        h_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(h_jsons)]).cuda()
 
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
@@ -150,8 +156,12 @@ class SyntacticEntailment(Model):
 
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
+        #print('projected_premise:', projected_premise.shape)
+        #print('projected_hypothesis:', projected_hypothesis.shape)
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._matrix_attention(projected_premise, projected_hypothesis)
+        similarity_matrix = self._matrix_attention(projected_premise, projected_hypothesis,
+                                                   p_encoded_parse, h_encoded_parse)
+        #print('similarity_matrix:', similarity_matrix.shape)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
@@ -176,11 +186,11 @@ class SyntacticEntailment(Model):
         # Shape: (batch_size, compare_dim)
         compared_hypothesis = compared_hypothesis.sum(dim=1)
 
-        p_parses_hs = compared_premise.new_tensor(p_parses_hs)
-        h_parses_hs = compared_hypothesis.new_tensor(h_parses_hs)
+        #p_parses_hs = compared_premise.new_tensor(p_parses_hs)
+        #h_parses_hs = compared_hypothesis.new_tensor(h_parses_hs)
 
-        compared_premise = torch.cat([compared_premise, p_parses_hs], dim=-1)
-        compared_hypothesis = torch.cat([compared_hypothesis, h_parses_hs], dim=-1)
+        #compared_premise = torch.cat([compared_premise, p_parses_hs], dim=-1)
+        #compared_hypothesis = torch.cat([compared_hypothesis, h_parses_hs], dim=-1)
 
         aggregate_input = torch.cat([compared_premise, compared_hypothesis], dim=-1)
         label_logits = self._aggregate_feedforward(aggregate_input)

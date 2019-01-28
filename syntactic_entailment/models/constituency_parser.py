@@ -155,10 +155,14 @@ class SyntacticEntailmentSpanConstituencyParser(SpanConstituencyParser):
         num_spans = get_lengths_from_binary_sequence_mask(span_mask)
 
         encoded_text = self.encoder(embedded_text_input, mask)
-        encoder_final_state = get_final_encoder_states(encoded_text, mask)
+        #encoder_final_state = get_final_encoder_states(encoded_text, mask)
+
+        #output_dict = {
+        #        "encoder_final_state": encoder_final_state
+        #}
 
         output_dict = {
-                "encoder_final_state": encoder_final_state
+                "encoded_text": encoded_text
         }
 
         return output_dict
