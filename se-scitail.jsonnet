@@ -1,6 +1,6 @@
 {
   "dataset_reader": {
-    "type": "snli",
+    "type": "se_snli",
     "token_indexers": {
       "tokens": {
         "type": "single_id",
@@ -8,7 +8,11 @@
       }
     },
     "tokenizer": {
-      "end_tokens": ["@@NULL@@"]
+      "end_tokens": ["@@NULL@@"],
+      "word_splitter": {
+        "type": "spacy",
+        "pos_tags": true
+      }
     }
   },
   "train_data_path":

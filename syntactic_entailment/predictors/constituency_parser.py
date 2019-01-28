@@ -36,9 +36,11 @@ class SyntacticEntailmentConstituencyParserPredictor(ConstituencyParserPredictor
         """
         Expects JSON that looks like ``{"sentence": "..."}``.
         """
-        spacy_tokens = self._tokenizer.split_words(json_dict["sentence"])
-        sentence_text = [token.text for token in spacy_tokens]
-        pos_tags = [token.tag_ for token in spacy_tokens]
+        #spacy_tokens = self._tokenizer.split_words(json_dict["sentence"])
+        #spacy_tokens = json_dict["sentence"]
+        sentence_text = json_dict["sentence"]
+        #pos_tags = [token.tag_ for token in spacy_tokens]
+        pos_tags = json_dict["tags"]
         return self._dataset_reader.text_to_instance(sentence_text, pos_tags)
 
     @overrides

@@ -133,12 +133,19 @@ class SyntacticEntailment(Model):
         """
 
         #p_strs = [(' '.join(metadata[idx]['premise_tokens'][:-1])) for idx in range(len(metadata))]
-        p_strs = [(' '.join(metadata[idx]['premise_tokens'])) for idx in range(len(metadata))]
-        print('longest sentence:', max([len(x.split()) for x in p_strs]))
-        p_jsons = [{'sentence' : p_strs[idx]} for idx in range(len(metadata))]
+        #p_strs = [(' '.join(metadata[idx]['premise_tokens'])) for idx in range(len(metadata))]
+        p_tokens = [metadata[idx]['premise_tokens'] for idx in range(len(metadata))]
+        p_tags = [metadata[idx]['premise_tags'] for idx in range(len(metadata))]
+        #longest_sentence = max([len(x.split()) for x in p_tokens])
+        #print('longest sentence:', longest_sentence)
+        #for x in p_strs:
+        #    if len(x.split()) == longest_sentence:
+        #        print(x)
+        p_jsons = [{'sentence' : p_tokens[idx], 'tags' : p_tags[idx]} for idx in range(len(metadata))]
         #h_strs = [(' '.join(metadata[idx]['hypothesis_tokens'][:-1])) for idx in range(len(metadata))]
-        h_strs = [(' '.join(metadata[idx]['hypothesis_tokens'])) for idx in range(len(metadata))]
-        h_jsons = [{'sentence' : h_strs[idx]} for idx in range(len(metadata))]
+        h_tokens = [metadata[idx]['hypothesis_tokens'] for idx in range(len(metadata))]
+        h_tags = [metadata[idx]['hypothesis_tags'] for idx in range(len(metadata))]
+        h_jsons = [{'sentence' : h_tokens[idx], 'tags' : h_tags[idx]} for idx in range(len(metadata))]
         #p_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(p_jsons)])
         #h_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(h_jsons)])
         p_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(p_jsons)]).cuda()
