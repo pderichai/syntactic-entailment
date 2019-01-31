@@ -14,7 +14,7 @@ shift $(( OPTIND-1 ))
 
 DATASET="$1"
 TEST_PATH="$2"
-SERIALIZATION_DIR="../models/se-$DATASET$ELMO"
+SERIALIZATION_DIR="./models/se-$DATASET$ELMO"
 
 echo "Evaluating model at $SERIALIZATION_DIR with $TEST_PATH."
 allennlp evaluate "$SERIALIZATION_DIR"/model.tar.gz $TEST_PATH --include-package syntactic_entailment

@@ -86,18 +86,25 @@ class SyntacticEntailment(Model):
 
         self._num_labels = vocab.get_vocab_size(namespace="labels")
 
-        check_dimensions_match(text_field_embedder.get_output_dim(), attend_feedforward.get_input_dim(),
-                               "text field embedding dim", "attend feedforward input dim")
-        check_dimensions_match(aggregate_feedforward.get_output_dim(), self._num_labels,
-                               "final output dimension", "number of labels")
+        check_dimensions_match(text_field_embedder.get_output_dim(),
+                               attend_feedforward.get_input_dim(),
+                               "text field embedding dim",
+                               "attend feedforward input dim")
+        check_dimensions_match(aggregate_feedforward.get_output_dim(),
+                               self._num_labels,
+                               "final output dimension",
+                               "number of labels")
 
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
-        self._predictor = Predictor.from_path("models/elmo-constituency-parser/model.tgz",
-                                              predictor_name="syntactic-entailment-constituency-parser")
-        #if (torch.cuda.is_available()):
-        self._predictor._model.cuda()
+        self._predictor = Predictor.from_path(
+                "models/elmo-constituency-parser/model.tgz",
+                predictor_name="syntactic-entailment-constituency-parser")
+
+        self._device = torch.device("cuda:0" if torch.cuda.is_available()
+                                             else "cpu")
+        self._predictor._model = self._predictor._model.to(self._device)
 
         initializer(self)
 
@@ -133,28 +140,20 @@ class SyntacticEntailment(Model):
             A scalar loss to be optimised.
         """
 
-        #p_strs = [(' '.join(metadata[idx]['premise_tokens'][:-1])) for idx in range(len(metadata))]
-        #p_strs = [(' '.join(metadata[idx]['premise_tokens'])) for idx in range(len(metadata))]
         p_tokens = [metadata[idx]['premise_tokens'] for idx in range(len(metadata))]
         p_tags = [metadata[idx]['premise_tags'] for idx in range(len(metadata))]
-        #longest_sentence = max([len(x.split()) for x in p_tokens])
-        #print('longest sentence:', longest_sentence)
-        #for x in p_strs:
-        #    if len(x.split()) == longest_sentence:
-        #        print(x)
         p_jsons = [{'sentence' : p_tokens[idx], 'tags' : p_tags[idx]} for idx in range(len(metadata))]
-        #h_strs = [(' '.join(metadata[idx]['hypothesis_tokens'][:-1])) for idx in range(len(metadata))]
         h_tokens = [metadata[idx]['hypothesis_tokens'] for idx in range(len(metadata))]
         h_tags = [metadata[idx]['hypothesis_tags'] for idx in range(len(metadata))]
         h_jsons = [{'sentence' : h_tokens[idx], 'tags' : h_tags[idx]} for idx in range(len(metadata))]
-        #p_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(p_jsons)])
-        #h_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(h_jsons)])
-        p_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(p_jsons)]).cuda()
-        h_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(h_jsons)]).cuda()
-
-        #if (torch.cuda.is_available()):
-        #    p_encoded_parse.cuda()
-        #    h_encoded_parse.cuda()
+        p_encoded_parse = torch.tensor(
+                [output['encoded_text']
+                        for output in self._predictor.predict_batch_json(p_jsons)]
+                ).to(self._device)
+        h_encoded_parse = torch.tensor(
+                [output['encoded_text']
+                        for output in self._predictor.predict_batch_json(h_jsons)]
+                ).to(self._device)
 
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
@@ -168,12 +167,11 @@ class SyntacticEntailment(Model):
 
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
-        #print('projected_premise:', projected_premise.shape)
-        #print('projected_hypothesis:', projected_hypothesis.shape)
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._matrix_attention(projected_premise, projected_hypothesis,
-                                                   p_encoded_parse, h_encoded_parse)
-        #print('similarity_matrix:', similarity_matrix.shape)
+        similarity_matrix = self._matrix_attention(projected_premise,
+                                                   projected_hypothesis,
+                                                   p_encoded_parse,
+                                                   h_encoded_parse)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
@@ -197,12 +195,6 @@ class SyntacticEntailment(Model):
         compared_hypothesis = compared_hypothesis * hypothesis_mask.unsqueeze(-1)
         # Shape: (batch_size, compare_dim)
         compared_hypothesis = compared_hypothesis.sum(dim=1)
-
-        #p_parses_hs = compared_premise.new_tensor(p_parses_hs)
-        #h_parses_hs = compared_hypothesis.new_tensor(h_parses_hs)
-
-        #compared_premise = torch.cat([compared_premise, p_parses_hs], dim=-1)
-        #compared_hypothesis = torch.cat([compared_hypothesis, h_parses_hs], dim=-1)
 
         aggregate_input = torch.cat([compared_premise, compared_hypothesis], dim=-1)
         label_logits = self._aggregate_feedforward(aggregate_input)
