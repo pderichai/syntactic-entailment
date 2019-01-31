@@ -11,7 +11,11 @@
       }
     },
     "tokenizer": {
-      "end_tokens": ["@@NULL@@"]
+      //"end_tokens": ["@@NULL@@"],
+      "word_splitter": {
+        "type": "spacy",
+        "pos_tags": true
+      }
     }
   },
   "train_data_path":
