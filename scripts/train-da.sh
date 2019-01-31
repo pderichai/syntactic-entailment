@@ -13,8 +13,8 @@ done
 shift $(( OPTIND-1 ))
 
 DATASET="$1"
-SERIALIZATION_DIR="../models/da-$DATASET$ELMO"
-CONFIG="../config/da-$DATASET$ELMO.jsonnet"
+SERIALIZATION_DIR="./models/da-$DATASET$ELMO"
+CONFIG="config/da-$DATASET$ELMO.jsonnet"
 
 #rm -rf "$SERIALIZATION_DIR"
 echo "Training $CONFIG. Saving model to $SERIALIZATION_DIR."
