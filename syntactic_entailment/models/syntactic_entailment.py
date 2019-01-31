@@ -96,7 +96,8 @@ class SyntacticEntailment(Model):
 
         self._predictor = Predictor.from_path("models/elmo-constituency-parser/model.tgz",
                                               predictor_name="syntactic-entailment-constituency-parser")
-        self._predictor._model.cuda()
+        if (torch.cuda.is_available()):
+            self._predictor._model.cuda()
 
         initializer(self)
 
@@ -148,8 +149,12 @@ class SyntacticEntailment(Model):
         h_jsons = [{'sentence' : h_tokens[idx], 'tags' : h_tags[idx]} for idx in range(len(metadata))]
         #p_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(p_jsons)])
         #h_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(h_jsons)])
-        p_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(p_jsons)]).cuda()
-        h_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(h_jsons)]).cuda()
+        p_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(p_jsons)])
+        h_encoded_parse = torch.tensor([output['encoded_text'] for output in self._predictor.predict_batch_json(h_jsons)])
+
+        if (torch.cuda.is_available()):
+            p_encoded_parse.cuda()
+            h_encoded_parse.cuda()
 
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
