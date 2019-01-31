@@ -1,6 +1,6 @@
 {
   "dataset_reader": {
-    "type": "snli",
+    "type": "se_snli",
     "token_indexers": {
       "tokens": {
         "type": "single_id",
@@ -56,7 +56,7 @@
       "dropout": 0.2
     },
     "aggregate_feedforward": {
-      "input_dim": 1400,
+      "input_dim": 400,
       "num_layers": 2,
       "hidden_dims": [200, 2],
       "activations": ["relu", "linear"],
