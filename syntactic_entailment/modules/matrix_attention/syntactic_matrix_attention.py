@@ -23,8 +23,8 @@ class SyntacticMatrixAttention(MatrixAttention):
     @overrides
     def forward(self, matrix_1: torch.Tensor, matrix_2: torch.Tensor,
                 syntax_1: torch.Tensor, syntax_2: torch.Tensor) -> torch.Tensor:
-        print('syntax_1', syntax_1.is_cuda, syntax_1.shape)
-        print('matrix_1', matrix_1.is_cuda, matrix_1.shape)
+        #print('syntax_1', syntax_1.is_cuda, syntax_1.shape)
+        #print('matrix_1', matrix_1.is_cuda, matrix_1.shape)
         matrix_1 = torch.cat((matrix_1, syntax_1), 2)
         matrix_2 = torch.cat((matrix_2, syntax_2), 2)
         #print('catted matrix_1', matrix_1.shape)
