@@ -1,0 +1,11 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Parikh et~al.(2016)Parikh, T{\"a}ckstr{\"o}m, Das, and
+  Uszkoreit}]{parikh2016decomposable}
+Ankur~P Parikh, Oscar T{\"a}ckstr{\"o}m, Dipanjan Das, and Jakob Uszkoreit.
+  2016.
+\newblock A decomposable attention model for natural language inference.
+\newblock \emph{arXiv preprint arXiv:1606.01933}.
+
+\end{thebibliography}
