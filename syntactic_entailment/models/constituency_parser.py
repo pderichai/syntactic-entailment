@@ -164,6 +164,7 @@ class SyntacticEntailmentSpanConstituencyParser(SpanConstituencyParser):
         class_probabilities = masked_softmax(logits, span_mask.unsqueeze(-1))
 
         output_dict = {
+                "encoded_text": encoded_text,
                 "class_probabilities": class_probabilities,
                 "spans": spans,
                 "tokens": [meta["tokens"] for meta in metadata],
