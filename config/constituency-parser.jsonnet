@@ -5,11 +5,11 @@
         "type":"ptb_trees",
         "use_pos_tags": true
     },
-    "train_data_path": "ptb/train.02-21",
-    "validation_data_path": "ptb/dev.24",
-    "test_data_path": "ptb/test.23",
+    "train_data_path": "ptb/02-21.10way.clean",
+    "validation_data_path": "ptb/22.auto.clean",
+    "test_data_path": "ptb/23.auto.clean",
     "model": {
-      "type": "syntactic_entailment_constituency_parser",
+      "type": "constituency_parser",
       "text_field_embedder": {
         "token_embedders": {
           "tokens": {

@@ -98,7 +98,7 @@ class SyntacticEntailment(Model):
         self._loss = torch.nn.CrossEntropyLoss()
 
         self._predictor = Predictor.from_path(
-                "models/elmo-constituency-parser/model.tgz",
+                "models/se-constituency_parser-nelson-data/model.tar.gz",
                 predictor_name="syntactic-entailment-constituency-parser")
 
         self._device = torch.device("cuda:0" if torch.cuda.is_available()
