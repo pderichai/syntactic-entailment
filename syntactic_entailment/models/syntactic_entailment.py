@@ -69,6 +69,8 @@ class SyntacticEntailment(Model):
                  similarity_function: SimilarityFunction,
                  compare_feedforward: FeedForward,
                  aggregate_feedforward: FeedForward,
+                 parser_model_path: str,
+                 predictor_name: str,
                  premise_encoder: Optional[Seq2SeqEncoder] = None,
                  hypothesis_encoder: Optional[Seq2SeqEncoder] = None,
                  initializer: InitializerApplicator = InitializerApplicator(),
@@ -97,9 +99,8 @@ class SyntacticEntailment(Model):
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
-        self._predictor = Predictor.from_path(
-                "models/se-constituency_parser-nelson-data/model.tar.gz",
-                predictor_name="syntactic-entailment-constituency-parser")
+        self._predictor = Predictor.from_path(parser_model_path,
+                predictor_name=predictor_name)
 
         self._device = torch.device("cuda:0" if torch.cuda.is_available()
                                              else "cpu")
