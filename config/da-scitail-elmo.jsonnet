@@ -11,7 +11,11 @@
       }
     },
     "tokenizer": {
-      "end_tokens": ["@@NULL@@"]
+      // "end_tokens": ["@@NULL@@"]
+      "word_splitter" : {
+        "type" : "spacy",
+        "pos_tags" : true
+      }
     }
   },
   "train_data_path":
@@ -75,6 +79,7 @@
     "cuda_device": 0,
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
+    "num_serialized_models_to_keep" : 1,
     "optimizer": {
       "type": "adam"
     }
