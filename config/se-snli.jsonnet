@@ -1,6 +1,6 @@
 {
   "dataset_reader": {
-    "type": "snli",
+    "type": "se_snli",
     "token_indexers": {
       "tokens": {
         "type": "single_id",
@@ -8,7 +8,7 @@
       }
     },
     "tokenizer": {
-      "end_tokens": ["@@NULL@@"]
+      //"end_tokens": ["@@NULL@@"]
     }
   },
   "train_data_path":
@@ -51,7 +51,9 @@
     "initializer": [
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
       [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
-    ]
+    ],
+    "parser_model_path": "models/se-constituency-parser-v4-2/model.tar.gz",
+    "predictor_name": "syntactic-entailment-constituency-parser"
   },
   "iterator": {
     "type": "bucket",
