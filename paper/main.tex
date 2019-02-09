@@ -24,7 +24,7 @@
 \graphicspath{{figures/}}
 \usepackage{booktabs}
 
-\aclfinalcopy % Uncomment this line for the final submission
+%\aclfinalcopy % Uncomment this line for the final submission
 
 %\setlength\titlebox{5cm}
 % You can expand the titlebox if you need extra space
@@ -36,46 +36,53 @@
 \newcommand\confname{EMNLP 2018}
 \newcommand\conforg{SIGDAT}
 
-\title{Instructions for \confname{} Proceedings}
+\title{Title}
 
-\author{First Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\\And
-  Second Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\}
+\author{
+  Deric Pang$^\heartsuit$ \quad
+  Author 2 \quad
+  Author 3 \quad
+  Author 4 \\
+  $^\heartsuit$Paul G. Allen of Computer Science \& Engineering,
+    University of Washington,
+    Seattle, WA, USA \\
+  $^\diamondsuit$Allen Institute for Artificial Intelligence, Seattle, WA,
+    USA \\
+  {\tt \{dericp, author2, author3, author4\}@cs.washington.edu} \\
+}
 
 \date{}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-  Abstract.
+  We show that syntactic information is important when performing natural
+  language inference (NLI). We describe new modeling techniques for NLI that
+  improve upon previous baselines by adding minimal amounts of syntactic
+  information.
 \end{abstract}
 
 \section{Introduction}
 
 Natural language inference (NLI) is the task of characterizing entailment and
-contradiction relationships between texts.  We seek to improve models which
-perform NLI by adding syntactic features into existing models. In particular,
-we will primarily investigate the well-known decomposable attention (DA) neural
-network \citep{Parikh2016-em} which obtained state of the art results on the
-SNLI \citep{Bowman2015-is} dataset at its time of publication while using
-drastically fewer parameters than previous NLI models.
-
-We intend to extend the DA model and evaluate new models on SNLI, MultiNLI
-\citep{Williams2017-uh}, the SNLI and MultiNLI hard splits
-\citep{Gururangan2018-lj}, and smaller, domain specific datasets like Scitail
-\citep{Khot2018-th}.
-
+contradiction relationships between texts.
 In general, most NLI tasks are formulated as characterizing the relationship
 between a pair of sequences---a premise and a hypothesis. An NLI model should
 predict whether the hyothesis is entailed by the premise, contradicts the
 premise, or is neutral to the premise.
+
+We seek to improve models which
+perform NLI by adding syntactic features into existing models. In particular,
+we investigate the well-known decomposable attention (DA) neural network
+\citep{Parikh2016-em} which obtained state of the art results on the
+SNLI \citep{Bowman2015-is} dataset at its time of publication while using
+drastically fewer parameters than previous NLI models.
+
+We extend the DA model and evaluate new models on SNLI, MultiNLI
+\citep{Williams2017-uh}, the SNLI and MultiNLI hard splits
+\citep{Gururangan2018-lj}, and smaller, domain specific datasets like Scitail
+\citep{Khot2018-th}.
+
 
 \section{Previous Work}
 
