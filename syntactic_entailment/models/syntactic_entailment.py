@@ -8,11 +8,12 @@ from allennlp.data import Vocabulary
 from allennlp.models.model import Model
 from allennlp.modules import FeedForward
 from allennlp.modules import Seq2SeqEncoder, SimilarityFunction, TimeDistributed, TextFieldEmbedder
+from allennlp.modules.matrix_attention.legacy_matrix_attention import LegacyMatrixAttention
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
-from syntactic_entailment.modules.matrix_attention.syntactic_matrix_attention import SyntacticMatrixAttention
+#from syntactic_entailment.modules.matrix_attention.syntactic_matrix_attention import SyntacticMatrixAttention
 from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
 
 
@@ -79,7 +80,7 @@ class SyntacticEntailment(Model):
 
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
-        self._matrix_attention = SyntacticMatrixAttention(similarity_function)
+        self._matrix_attention = LegacyMatrixAttention(similarity_function)
         self._compare_feedforward = TimeDistributed(compare_feedforward)
         self._aggregate_feedforward = aggregate_feedforward
         self._premise_encoder = premise_encoder
@@ -169,9 +170,11 @@ class SyntacticEntailment(Model):
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
         # Shape: (batch_size, premise_length, hypothesis_length)
         similarity_matrix = self._matrix_attention(projected_premise,
-                                                   projected_hypothesis,
-                                                   p_encoded_parse,
-                                                   h_encoded_parse)
+                                                   projected_hypothesis)
+        #similarity_matrix = self._matrix_attention(projected_premise,
+        #                                           projected_hypothesis,
+        #                                           p_encoded_parse,
+        #                                           h_encoded_parse)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
