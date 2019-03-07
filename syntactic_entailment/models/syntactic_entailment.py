@@ -8,11 +8,11 @@ from allennlp.data import Vocabulary
 from allennlp.models.model import Model
 from allennlp.modules import FeedForward
 from allennlp.modules import Seq2SeqEncoder, SimilarityFunction, TimeDistributed, TextFieldEmbedder
+from allennlp.modules.matrix_attention.legacy_matrix_attention import LegacyMatrixAttention
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
-from syntactic_entailment.modules.matrix_attention.syntactic_matrix_attention import SyntacticMatrixAttention
 from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
 
 
@@ -79,7 +79,7 @@ class SyntacticEntailment(Model):
 
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
-        self._matrix_attention = SyntacticMatrixAttention(similarity_function)
+        self._matrix_attention = LegacyMatrixAttention(similarity_function)
         self._compare_feedforward = TimeDistributed(compare_feedforward)
         self._aggregate_feedforward = aggregate_feedforward
         self._premise_encoder = premise_encoder
@@ -87,10 +87,11 @@ class SyntacticEntailment(Model):
 
         self._num_labels = vocab.get_vocab_size(namespace="labels")
 
-        check_dimensions_match(text_field_embedder.get_output_dim(),
-                               attend_feedforward.get_input_dim(),
-                               "text field embedding dim",
-                               "attend feedforward input dim")
+        # this check doesn't work anymore since we attend w/ syntax
+        #check_dimensions_match(text_field_embedder.get_output_dim(),
+        #                       attend_feedforward.get_input_dim(),
+        #                       "text field embedding dim",
+        #                       "attend feedforward input dim")
         check_dimensions_match(aggregate_feedforward.get_output_dim(),
                                self._num_labels,
                                "final output dimension",
@@ -165,13 +166,17 @@ class SyntacticEntailment(Model):
         if self._hypothesis_encoder:
             embedded_hypothesis = self._hypothesis_encoder(embedded_hypothesis, hypothesis_mask)
 
-        projected_premise = self._attend_feedforward(embedded_premise)
-        projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
+        # concat syntax
+        syntax_premise = torch.cat((embedded_premise, p_encoded_parse), 2)
+        projected_premise = self._attend_feedforward(syntax_premise)
+
+        # concat syntax
+        syntax_hypothesis = torch.cat((embedded_hypothesis, h_encoded_parse), 2)
+        projected_hypothesis = self._attend_feedforward(syntax_hypothesis)
+
         # Shape: (batch_size, premise_length, hypothesis_length)
         similarity_matrix = self._matrix_attention(projected_premise,
-                                                   projected_hypothesis,
-                                                   p_encoded_parse,
-                                                   h_encoded_parse)
+                                                   projected_hypothesis)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
