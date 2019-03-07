@@ -31,7 +31,7 @@
       }
     },
     "attend_feedforward": {
-      "input_dim": 700,
+      "input_dim": 400,
       "num_layers": 2,
       "hidden_dims": 200,
       "activations": "relu",
@@ -56,7 +56,7 @@
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
       [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
     ],
-    "parser_model_path": "models/se-constituency-parser/model.tar.gz",
+    "parser_model_path": "models/se-constituency-parser-2/model.tar.gz",
     "predictor_name": "syntactic-entailment-constituency-parser"
   },
   "iterator": {

@@ -24,7 +24,7 @@
     "text_field_embedder": {
       "tokens": {
         "type": "embedding",
-        "projection_dim": 200,
+        "projection_dim": 500,
         "pretrained_file": "glove/glove.6B.300d.txt",
         "embedding_dim": 300,
         "trainable": false
@@ -39,14 +39,14 @@
     },
     "similarity_function": {"type": "dot_product"},
     "compare_feedforward": {
-      "input_dim": 400,
+      "input_dim": 1000,
       "num_layers": 2,
-      "hidden_dims": 200,
+      "hidden_dims": 500,
       "activations": "relu",
       "dropout": 0.2
     },
     "aggregate_feedforward": {
-      "input_dim": 400,
+      "input_dim": 1000,
       "num_layers": 2,
       "hidden_dims": [200, 2],
       "activations": ["relu", "linear"],
@@ -56,7 +56,7 @@
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
       [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
     ],
-    "parser_model_path": "models/se-constituency-parser/model.tar.gz",
+    "parser_model_path": "models/se-constituency-parser-2/model.tar.gz",
     "predictor_name": "syntactic-entailment-constituency-parser"
   },
   "iterator": {
