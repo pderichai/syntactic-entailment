@@ -18,26 +18,26 @@
       }
     }
   },
-  "train_data_path":
-  "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path":
-  "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
     "type": "decomposable_attention",
     "text_field_embedder": {
-      "tokens": {
-        "type": "embedding",
-        "projection_dim": 200,
-        "pretrained_file": "glove/glove.6B.300d.txt",
-        "embedding_dim": 300,
-        "trainable": false
-      },
-      "elmo": {
-        "type": "elmo_token_embedder",
-        "options_file": "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_options.json",
-        "weight_file": "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5",
-        "do_layer_norm": false,
-        "dropout": 0.5
+      "token_embedders": {
+        "tokens": {
+          "type": "embedding",
+          "projection_dim": 200,
+          "pretrained_file": "glove/glove.6B.300d.txt",
+          "embedding_dim": 300,
+          "trainable": false
+        },
+        "elmo": {
+          "type": "elmo_token_embedder",
+          "options_file": "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_options.json",
+          "weight_file": "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5",
+          "do_layer_norm": false,
+          "dropout": 0.5
+        }
       }
     },
     "attend_feedforward": {
