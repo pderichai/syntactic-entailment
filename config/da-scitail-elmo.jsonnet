@@ -81,7 +81,7 @@
     "validation_metric": "+accuracy",
     "num_serialized_models_to_keep" : 1,
     "optimizer": {
-      "type": "adam"
+      "type": "adagrad"
     }
   }
 }

@@ -66,7 +66,7 @@
   "iterator": {
     "type": "bucket",
     "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
-    "batch_size": 32
+    "batch_size": 64
   },
 
   "trainer": {
@@ -76,7 +76,7 @@
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "adam"
+      "type": "adagrad"
     }
   }
 }
