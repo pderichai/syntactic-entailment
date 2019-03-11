@@ -15,19 +15,19 @@
       }
     }
   },
-  "train_data_path":
-  "snli_1.0/snli_1.0_train.jsonl",
-  "validation_data_path":
-  "snli_1.0/snli_1.0_dev.jsonl",
+  "train_data_path": "snli_1.0/snli_1.0_train.jsonl",
+  "validation_data_path": "snli_1.0/snli_1.0_dev.jsonl",
   "model": {
     "type": "syntactic_entailment",
     "text_field_embedder": {
-      "tokens": {
-        "type": "embedding",
-        "projection_dim": 200,
-        "pretrained_file": "glove/glove.6B.300d.txt",
-        "embedding_dim": 300,
-        "trainable": false
+      "token_embedders": {
+        "tokens": {
+          "type": "embedding",
+          "projection_dim": 200,
+          "pretrained_file": "glove/glove.6B.300d.txt",
+          "embedding_dim": 300,
+          "trainable": false
+        }
       }
     },
     "attend_feedforward": {
@@ -72,7 +72,7 @@
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "adam"
+      "type": "adagrad"
     }
   }
 }
