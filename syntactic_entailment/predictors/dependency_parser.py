@@ -10,7 +10,7 @@ from allennlp.predictors.biaffine_dependency_parser import BiaffineDependencyPar
 from allennlp.data.tokenizers.word_splitter import SpacyWordSplitter
 
 @Predictor.register('syntactic-entailment-dependency-parser')
-class SyntacticeEntailmentDependencyParserPredictor(BiaffineDependencyParserPredictor):
+class SyntacticEntailmentDependencyParserPredictor(BiaffineDependencyParserPredictor):
     """
     Predictor for the :class:`~allennlp.models.BiaffineDependencyParser` model.
     """

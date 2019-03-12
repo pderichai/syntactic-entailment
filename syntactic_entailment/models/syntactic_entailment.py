@@ -14,6 +14,7 @@ from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
 from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
+from syntactic_entailment.predictors.dependency_parser import SyntacticEntailmentDependencyParserPredictor
 
 
 @Model.register("syntactic_entailment")
