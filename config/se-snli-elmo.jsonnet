@@ -62,7 +62,7 @@
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
       [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
     ],
-    "parser_model_path": "models/se-constituency-parser-v4-2/model.tar.gz",
+    "parser_model_path": "models/se-constituency-parser/model.tar.gz",
     "predictor_name": "syntactic-entailment-constituency-parser"
   },
   "iterator": {

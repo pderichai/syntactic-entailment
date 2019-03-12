@@ -8,7 +8,11 @@
       }
     },
     "tokenizer": {
-      //"end_tokens": ["@@NULL@@"]
+      //"end_tokens": ["@@NULL@@"],
+      "word_splitter": {
+        "type": "spacy",
+        "pos_tags": true
+      }
     }
   },
   "train_data_path":
@@ -27,7 +31,7 @@
       }
     },
     "attend_feedforward": {
-      "input_dim": 200,
+      "input_dim": 400,
       "num_layers": 2,
       "hidden_dims": 200,
       "activations": "relu",
@@ -42,7 +46,7 @@
       "dropout": 0.2
     },
     "aggregate_feedforward": {
-      "input_dim": 1400,
+      "input_dim": 400,
       "num_layers": 2,
       "hidden_dims": [200, 3],
       "activations": ["relu", "linear"],
@@ -52,7 +56,7 @@
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
       [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
     ],
-    "parser_model_path": "models/se-constituency-parser-v4-2/model.tar.gz",
+    "parser_model_path": "models/se-constituency-parser/model.tar.gz",
     "predictor_name": "syntactic-entailment-constituency-parser"
   },
   "iterator": {

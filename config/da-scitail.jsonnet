@@ -1,3 +1,5 @@
+// Configuration for a textual entailment model based on:
+// Parikh, Ankur P. et al. “A Decomposable Attention Model for Natural Language Inference.” EMNLP (2016).
 {
   "dataset_reader": {
     "type": "snli",
@@ -11,19 +13,19 @@
       "end_tokens": ["@@NULL@@"]
     }
   },
-  "train_data_path":
-  "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path":
-  "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
     "type": "decomposable_attention",
     "text_field_embedder": {
-      "tokens": {
-        "type": "embedding",
-        "projection_dim": 200,
-        "pretrained_file": "glove/glove.6B.300d.txt",
-        "embedding_dim": 300,
-        "trainable": false
+      "token_embedders": {
+        "tokens": {
+            "type": "embedding",
+            "projection_dim": 200,
+            "pretrained_file": "glove/glove.6B.300d.txt",
+            "embedding_dim": 300,
+            "trainable": false
+        }
       }
     },
     "attend_feedforward": {
@@ -50,7 +52,7 @@
     },
     "initializer": [
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
-      [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
+      [".*token_embedder_tokens\\._projection.*weight", {"type": "xavier_normal"}]
     ]
   },
   "iterator": {
@@ -58,15 +60,14 @@
     "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
     "batch_size": 64
   },
-
   "trainer": {
     "num_epochs": 140,
     "patience": 20,
-    "cuda_device": -1,
+    "cuda_device": 0,
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "adam"
+      "type": "adagrad"
     }
   }
 }
