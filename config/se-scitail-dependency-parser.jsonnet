@@ -33,7 +33,7 @@
       }
     },
     "attend_feedforward": {
-      "input_dim": 200,
+      "input_dim": 1000,
       "num_layers": 2,
       "hidden_dims": 200,
       "activations": "relu",
