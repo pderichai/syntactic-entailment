@@ -163,13 +163,13 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
 
         mask = get_text_field_mask(words)
         embedded_text_input = self._input_dropout(embedded_text_input)
-        encoded_text = self.encoder(embedded_text_input, mask)
+        encoded_text_orig = self.encoder(embedded_text_input, mask)
 
-        batch_size, _, encoding_dim = encoded_text.size()
+        batch_size, _, encoding_dim = encoded_text_orig.size()
 
         head_sentinel = self._head_sentinel.expand(batch_size, 1, encoding_dim)
         # Concatenate the head sentinel onto the sentence representation.
-        encoded_text = torch.cat([head_sentinel, encoded_text], 1)
+        encoded_text = torch.cat([head_sentinel, encoded_text_orig], 1)
         mask = torch.cat([mask.new_ones(batch_size, 1), mask], 1)
         if head_indices is not None:
             head_indices = torch.cat([head_indices.new_zeros(batch_size, 1), head_indices], 1)
@@ -232,7 +232,7 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
             loss = arc_nll + tag_nll
 
         output_dict = {
-                "encoded_text" : encoded_text,
+                "encoded_text" : encoded_text_orig,
                 "heads": predicted_heads,
                 "head_tags": predicted_head_tags,
                 "arc_loss": arc_nll,
