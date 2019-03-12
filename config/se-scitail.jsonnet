@@ -15,23 +15,23 @@
       }
     }
   },
-  "train_data_path":
-  "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path":
-  "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
     "type": "syntactic_entailment",
     "text_field_embedder": {
-      "tokens": {
-        "type": "embedding",
-        "projection_dim": 500,
-        "pretrained_file": "glove/glove.6B.300d.txt",
-        "embedding_dim": 300,
-        "trainable": false
+      "token_embedders": {
+        "tokens": {
+          "type": "embedding",
+          "projection_dim": 200,
+          "pretrained_file": "glove/glove.6B.300d.txt",
+          "embedding_dim": 300,
+          "trainable": false
+        }
       }
     },
     "attend_feedforward": {
-      "input_dim": 700,
+      "input_dim": 400,
       "num_layers": 2,
       "hidden_dims": 200,
       "activations": "relu",
@@ -39,14 +39,14 @@
     },
     "similarity_function": {"type": "dot_product"},
     "compare_feedforward": {
-      "input_dim": 1000,
+      "input_dim": 400,
       "num_layers": 2,
-      "hidden_dims": 500,
+      "hidden_dims": 200,
       "activations": "relu",
       "dropout": 0.2
     },
     "aggregate_feedforward": {
-      "input_dim": 1000,
+      "input_dim": 400,
       "num_layers": 2,
       "hidden_dims": [200, 2],
       "activations": ["relu", "linear"],
@@ -72,7 +72,7 @@
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "adam"
+      "type": "adagrad"
     }
   }
 }
