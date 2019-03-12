@@ -32,21 +32,21 @@
       "encoder": {
         "type": "lstm",
         "input_size": 150,
-        "hidden_size": 250,
+        "hidden_size": 100,
         "num_layers": 2,
         "bidirectional": true,
         "dropout": 0.2
       },
       "feedforward": {
-        "input_dim": 500,
+        "input_dim": 200,
         "num_layers": 1,
-        "hidden_dims": 250,
+        "hidden_dims": 100,
         "activations": "relu",
         "dropout": 0.1
       },
       "span_extractor": {
         "type": "bidirectional_endpoint",
-        "input_dim": 500
+        "input_dim": 200
       }
     },
     "iterator": {
