@@ -16,11 +16,11 @@
     }
   },
   "train_data_path":
-  //"SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "SciTailV1.1/snli_format/scitail_1.0_train_small.txt",
+  "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+  //"SciTailV1.1/snli_format/scitail_1.0_train_small.txt",
   "validation_data_path":
-  //"SciTailV1.1/snli_format/scitail_1.0_dev.txt",
-  "SciTailV1.1/snli_format/scitail_1.0_dev_small.txt",
+  "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  //"SciTailV1.1/snli_format/scitail_1.0_dev_small.txt",
   "model": {
     "type": "syntactic_entailment",
     "text_field_embedder": {
@@ -70,7 +70,7 @@
   "trainer": {
     "num_epochs": 140,
     "patience": 20,
-    "cuda_device": -1,
+    "cuda_device": 0,
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
