@@ -14,6 +14,7 @@ from allennlp.training.metrics import CategoricalAccuracy
 
 from syntactic_entailment.modules.matrix_attention.syntactic_matrix_attention import SyntacticMatrixAttention
 from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
+from syntactic_entailment.predictors.dependency_parser import SyntacticEntailmentDependencyParserPredictor
 
 
 @Model.register("syntactic_entailment")
