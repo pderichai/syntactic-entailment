@@ -1,10 +1,11 @@
-## ctags
-tags
+# serialization directory
+models
 
 ## symlinks
 SciTailV1.1
 glove
 snli_1.0
+ptb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
