@@ -17,50 +17,40 @@
   },
   "train_data_path":
   "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  //"SciTailV1.1/snli_format/scitail_1.0_train_small.txt",
   "validation_data_path":
   "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
-  //"SciTailV1.1/snli_format/scitail_1.0_dev_small.txt",
   "model": {
-    "type": "syntactic_entailment",
+    "type": "syntactic_entailment_v3",
     "text_field_embedder": {
       "tokens": {
         "type": "embedding",
-        //"projection_dim": 200,
+        "projection_dim": 200,
         "pretrained_file": "glove/glove.6B.300d.txt",
         "embedding_dim": 300,
         "trainable": false
       }
     },
-    "premise_encoder": {
-        "type": "lstm",
-        "bidirectional": true,
-        "input_size": 300,
-        "hidden_size": 400,
-        "num_layers": 2,
-        "dropout": 0.5
-    },
     "attend_feedforward": {
-      "input_dim": 1600,
+      "input_dim": 200,
       "num_layers": 2,
-      "hidden_dims": 800,
+      "hidden_dims": 200,
       "activations": "relu",
-      "dropout": 0.5
+      "dropout": 0.2
     },
     "similarity_function": {"type": "dot_product"},
     "compare_feedforward": {
-      "input_dim": 1600,
+      "input_dim": 400,
       "num_layers": 2,
-      "hidden_dims": 800,
+      "hidden_dims": 200,
       "activations": "relu",
-      "dropout": 0.5
+      "dropout": 0.2
     },
     "aggregate_feedforward": {
-      "input_dim": 1600,
-      "num_layers": 3,
-      "hidden_dims": [800, 400, 2],
-      "activations": ["relu", "relu", "linear"],
-      "dropout": [0.5, 0.5, 0.0]
+      "input_dim": 400,
+      "num_layers": 2,
+      "hidden_dims": [200, 2],
+      "activations": ["relu", "linear"],
+      "dropout": [0.2, 0.0]
     },
     "initializer": [
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
@@ -77,12 +67,12 @@
 
   "trainer": {
     "num_epochs": 140,
-    "patience": 35,
+    "patience": 20,
     "cuda_device": 0,
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "adagrad"
+      "type": "adam"
     }
   }
 }
