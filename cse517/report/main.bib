@@ -1,0 +1,215 @@
+@ARTICLE{Parikh2016-em,
+  title         = "A Decomposable Attention Model for Natural Language
+                   Inference",
+  author        = "Parikh, Ankur P and T{\"a}ckstr{\"o}m, Oscar and Das,
+                   Dipanjan and Uszkoreit, Jakob",
+  abstract      = "We propose a simple neural architecture for natural language
+                   inference. Our approach uses attention to decompose the
+                   problem into subproblems that can be solved separately, thus
+                   making it trivially parallelizable. On the Stanford Natural
+                   Language Inference (SNLI) dataset, we obtain
+                   state-of-the-art results with almost an order of magnitude
+                   fewer parameters than previous work and without relying on
+                   any word-order information. Adding intra-sentence attention
+                   that takes a minimum amount of order into account yields
+                   further improvements.",
+  month         =  jun,
+  year          =  2016,
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CL",
+  eprint        = "1606.01933"
+}
+
+@ARTICLE{Bowman2015-is,
+  title         = "A large annotated corpus for learning natural language
+                   inference",
+  author        = "Bowman, Samuel R and Angeli, Gabor and Potts, Christopher
+                   and Manning, Christopher D",
+  abstract      = "Understanding entailment and contradiction is fundamental to
+                   understanding natural language, and inference about
+                   entailment and contradiction is a valuable testing ground
+                   for the development of semantic representations. However,
+                   machine learning research in this area has been dramatically
+                   limited by the lack of large-scale resources. To address
+                   this, we introduce the Stanford Natural Language Inference
+                   corpus, a new, freely available collection of labeled
+                   sentence pairs, written by humans doing a novel grounded
+                   task based on image captioning. At 570K pairs, it is two
+                   orders of magnitude larger than all other resources of its
+                   type. This increase in scale allows lexicalized classifiers
+                   to outperform some sophisticated existing entailment models,
+                   and it allows a neural network-based model to perform
+                   competitively on natural language inference benchmarks for
+                   the first time.",
+  month         =  aug,
+  year          =  2015,
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CL",
+  eprint        = "1508.05326"
+}
+
+@ARTICLE{Williams2017-uh,
+  title         = "A {Broad-Coverage} Challenge Corpus for Sentence
+                   Understanding through Inference",
+  author        = "Williams, Adina and Nangia, Nikita and Bowman, Samuel R",
+  abstract      = "This paper introduces the Multi-Genre Natural Language
+                   Inference (MultiNLI) corpus, a dataset designed for use in
+                   the development and evaluation of machine learning models
+                   for sentence understanding. In addition to being one of the
+                   largest corpora available for the task of NLI, at 433k
+                   examples, this corpus improves upon available resources in
+                   its coverage: it offers data from ten distinct genres of
+                   written and spoken English--making it possible to evaluate
+                   systems on nearly the full complexity of the language--and
+                   it offers an explicit setting for the evaluation of
+                   cross-genre domain adaptation.",
+  month         =  apr,
+  year          =  2017,
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CL",
+  eprint        = "1704.05426"
+}
+
+@ARTICLE{Gururangan2018-lj,
+  title         = "Annotation Artifacts in Natural Language Inference Data",
+  author        = "Gururangan, Suchin and Swayamdipta, Swabha and Levy, Omer
+                   and Schwartz, Roy and Bowman, Samuel R and Smith, Noah A",
+  abstract      = "Large-scale datasets for natural language inference are
+                   created by presenting crowd workers with a sentence
+                   (premise), and asking them to generate three new sentences
+                   (hypotheses) that it entails, contradicts, or is logically
+                   neutral with respect to. We show that, in a significant
+                   portion of such data, this protocol leaves clues that make
+                   it possible to identify the label by looking only at the
+                   hypothesis, without observing the premise. Specifically, we
+                   show that a simple text categorization model can correctly
+                   classify the hypothesis alone in about 67\% of SNLI (Bowman
+                   et. al, 2015) and 53\% of MultiNLI (Williams et. al, 2017).
+                   Our analysis reveals that specific linguistic phenomena such
+                   as negation and vagueness are highly correlated with certain
+                   inference classes. Our findings suggest that the success of
+                   natural language inference models to date has been
+                   overestimated, and that the task remains a hard open
+                   problem.",
+  month         =  mar,
+  year          =  2018,
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CL",
+  eprint        = "1803.02324"
+}
+
+@INPROCEEDINGS{Khot2018-th,
+  title     = "{SciTail}: A textual entailment dataset from science question
+               answering",
+  booktitle = "Proceedings of {AAAI}",
+  author    = "Khot, Tushar and Sabharwal, Ashish and Clark, Peter",
+  year      =  2018
+}
+
+@ARTICLE{Stern2017-co,
+  title         = "A Minimal {Span-Based} Neural Constituency Parser",
+  author        = "Stern, Mitchell and Andreas, Jacob and Klein, Dan",
+  abstract      = "In this work, we present a minimal neural model for
+                   constituency parsing based on independent scoring of labels
+                   and spans. We show that this model is not only compatible
+                   with classical dynamic programming techniques, but also
+                   admits a novel greedy top-down inference algorithm based on
+                   recursive partitioning of the input. We demonstrate
+                   empirically that both prediction schemes are competitive
+                   with recent work, and when combined with basic extensions to
+                   the scoring model are capable of achieving state-of-the-art
+                   single-model performance on the Penn Treebank (91.79 F1) and
+                   strong performance on the French Treebank (82.23 F1).",
+  month         =  may,
+  year          =  2017,
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CL",
+  eprint        = "1705.03919"
+}
+
+@ARTICLE{Dozat2016-gs,
+  title         = "Deep Biaffine Attention for Neural Dependency Parsing",
+  author        = "Dozat, Timothy and Manning, Christopher D",
+  abstract      = "This paper builds off recent work from Kiperwasser \&
+                   Goldberg (2016) using neural attention in a simple
+                   graph-based dependency parser. We use a larger but more
+                   thoroughly regularized parser than other recent BiLSTM-based
+                   approaches, with biaffine classifiers to predict arcs and
+                   labels. Our parser gets state of the art or near state of
+                   the art performance on standard treebanks for six different
+                   languages, achieving 95.7\% UAS and 94.1\% LAS on the most
+                   popular English PTB dataset. This makes it the
+                   highest-performing graph-based parser on this
+                   benchmark---outperforming Kiperwasser Goldberg (2016) by
+                   1.8\% and 2.2\%---and comparable to the highest performing
+                   transition-based parser (Kuncoro et al., 2016), which
+                   achieves 95.8\% UAS and 94.6\% LAS. We also show which
+                   hyperparameter choices had a significant effect on parsing
+                   accuracy, allowing us to achieve large gains over other
+                   graph-based approaches.",
+  month         =  nov,
+  year          =  2016,
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CL",
+  eprint        = "1611.01734"
+}
+
+@ARTICLE{Peters2018-fz,
+  title    = "Deep contextualized word representations",
+  author   = "Peters, Matthew E and Neumann, Mark and Iyyer, Mohit and Gardner,
+              Matt and Clark, Christopher and Lee, Kenton and Zettlemoyer, Luke",
+  abstract = "We introduce a new type of deep contextualized word
+              representation that models both (1) complex characteristics of
+              word use (e.g., syntax and semantics), and (2) how these uses
+              vary across linguistic contexts (i.e., to model polysemy). Our
+              word vectors are learned functions of the internal states of a
+              deep bidirectional language model (biLM), which is pre-trained on
+              a large text corpus. We show that these representations can be
+              easily added to existing models and significantly improve the
+              state of the art across six challenging NLP problems, including
+              question answering, textual entailment and sentiment analysis. We
+              also present an analysis showing that exposing the deep internals
+              of the pre-trained network is crucial, allowing downstream models
+              to mix different types of semi-supervision signals.",
+  journal  = "arXiv:1802.05365 [cs]",
+  month    =  feb,
+  year     =  2018
+}
+
+@ARTICLE{Devlin2018-qc,
+  title         = "{BERT}: Pre-training of Deep Bidirectional Transformers for
+                   Language Understanding",
+  author        = "Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and
+                   Toutanova, Kristina",
+  abstract      = "We introduce a new language representation model called
+                   BERT, which stands for Bidirectional Encoder Representations
+                   from Transformers. Unlike recent language representation
+                   models, BERT is designed to pre-train deep bidirectional
+                   representations by jointly conditioning on both left and
+                   right context in all layers. As a result, the pre-trained
+                   BERT representations can be fine-tuned with just one
+                   additional output layer to create state-of-the-art models
+                   for a wide range of tasks, such as question answering and
+                   language inference, without substantial task-specific
+                   architecture modifications. BERT is conceptually simple and
+                   empirically powerful. It obtains new state-of-the-art
+                   results on eleven natural language processing tasks,
+                   including pushing the GLUE benchmark to 80.4\% (7.6\%
+                   absolute improvement), MultiNLI accuracy to 86.7 (5.6\%
+                   absolute improvement) and the SQuAD v1.1 question answering
+                   Test F1 to 93.2 (1.5\% absolute improvement), outperforming
+                   human performance by 2.0\%.",
+  month         =  oct,
+  year          =  2018,
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CL",
+  eprint        = "1810.04805"
+}
+
+@unpublished{Pang2018-syntail,
+    title= {Syntail: Syntactically-Informed Natural Language Inference},
+    author = {Pang, Deric and Liu, Lynsey and Johnston, Aaron},
+    year = {2018},
+    note= {CSE 599 G1 Deep Learning},
+    URL= {https://docs.google.com/presentation/d/1FjLbETb7Y5byfGvN3OOHWQAmR6qNnYaANWFANiMy1O4/edit?usp=sharing}
+}
