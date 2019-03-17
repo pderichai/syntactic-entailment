@@ -22,12 +22,14 @@
   "model": {
     "type": "syntactic_entailment_v3",
     "text_field_embedder": {
-      "tokens": {
-        "type": "embedding",
-        "projection_dim": 200,
-        "pretrained_file": "glove/glove.6B.300d.txt",
-        "embedding_dim": 300,
-        "trainable": false
+      "token_embedders": {
+        "tokens": {
+          "type": "embedding",
+          "projection_dim": 200,
+          "pretrained_file": "glove/glove.6B.300d.txt",
+          "embedding_dim": 300,
+          "trainable": false
+        }
       }
     },
     "attend_feedforward": {
