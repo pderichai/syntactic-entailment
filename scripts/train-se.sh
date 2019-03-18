@@ -1,8 +1,12 @@
 ELMO=""
-while getopts ":e" opt; do
+DEP_PARSER=""
+while getopts ":ed" opt; do
     case $opt in
         e)
             ELMO="-elmo"
+            ;;
+        d)
+            DEP_PARSER="-dependency-parser"
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -13,8 +17,8 @@ done
 shift $(( OPTIND-1 ))
 
 DATASET="$1"
-SERIALIZATION_DIR="./models/se-$DATASET$ELMO"
-CONFIG="config/se-$DATASET$ELMO.jsonnet"
+SERIALIZATION_DIR="./models/se-$DATASET$ELMO$DEP_PARSER"
+CONFIG="config/se-$DATASET$ELMO$DEP_PARSER.jsonnet"
 
 #rm -rf "$SERIALIZATION_DIR"
 echo "Training $CONFIG. Saving model to $SERIALIZATION_DIR."
