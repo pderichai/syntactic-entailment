@@ -30,7 +30,10 @@
 
 \newcommand\BibTeX{B{\sc ib}\TeX}
 
-\title{CSE 517: Project Proposal}
+\newcommand{\dpcomment}[1]{\textcolor{green}{[#1 --deric]}}
+\newcommand{\jbcomment}[1]{\textcolor{orange}{[#1 --josh]}}
+
+\title{Syntactically Informed Natural Language Inference}
 
 \author{
   Deric Pang \quad
@@ -45,28 +48,33 @@
 
 \begin{document}
 \maketitle
+\begin{abstract}
+  Abstract.
+\end{abstract}
 
 \section{Introduction}
 
 Natural language inference (NLI) is the task of characterizing entailment and
-contradiction relationships between texts.  We seek to improve models which
+contradiction relationships between texts. We seek to improve models which
 perform NLI by adding syntactic features into existing models. In particular,
 we will primarily investigate the well-known decomposable attention (DA) neural
 network \citep{Parikh2016-em} which obtained state of the art results on the
 SNLI \citep{Bowman2015-is} dataset at its time of publication while using
 drastically fewer parameters than previous NLI models.
 
-We intend to extend the DA model and evaluate new models on SNLI, MultiNLI
-\citep{Williams2017-uh}, the SNLI and MultiNLI hard splits
-\citep{Gururangan2018-lj}, and smaller, domain specific datasets like Scitail
-\citep{Khot2018-th}.
-
 In general, most NLI tasks are formulated as characterizing the relationship
 between a pair of sequences---a premise and a hypothesis. An NLI model should
 predict whether the hyothesis is entailed by the premise, contradicts the
 premise, or is neutral to the premise.
 
-\section{Previous Work}
+We extend the DA model by encorporating syntactic features.
+\dpcomment{Include brief summary of constributions here.}
+We primarily
+evaluate on the domain specific Scitail \citep{Khot2018-th} for both its
+smaller size and lack of annotation artifacts when compared to SNLI
+\citep{Gururangan2018-lj}.
+
+\section{Syntactic Entailment}
 
 Our project will build on previous work done by \citet{Pang2018-syntail}.
 
