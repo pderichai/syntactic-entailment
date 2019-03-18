@@ -16,7 +16,7 @@ from allennlp.training.metrics import CategoricalAccuracy
 from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
 
 
-@Model.register("syntactic_entailment")
+@Model.register("syntactic-entailment-v5")
 class SyntacticEntailment(Model):
     """
     This ``Model`` implements the Decomposable Attention model described in `"A Decomposable
