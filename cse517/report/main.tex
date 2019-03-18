@@ -105,6 +105,17 @@ information decreases test accuracy by 6.7\% with ELMo.
 \label{table:v1-accuracies}
 \end{table}
 
+\section{Models}
+
+The syntactic entailment model is derived from the decomposable attention model for natural language inference described in \href{https://arxiv.org/pdf/1606.01933.pdf}{this paper}. In the initial iteration, syntax was not incorporated into the neural network until the very last feed-forward layer. This means that during the attention steps between the premise and the hypothesis, the syntax was not taken into account. We speculated that by introducing syntax to the network prior to calculating attention we would see better results due to the syntax of the two statements influencing the attention computations.
+
+In the ``V3" model, we performed the same initial step of embedding the premise and hypothesis and expanding their dimensions (through a fully-connected layer) prior to attention. However, instead of calculating our similarity matrix using solely the embedded hypothesis and premise vectors as input, we also provide the . The grouping of these vectors was then used when calculating attention whose influence was then propagated down to the comparison and summary layers further down the network. 
+
+With the “V5” model we shifted the incorporation of syntax into the model even earlier. After getting the word embeddings for the premise and hypothesis, we actually pass them to an additional feed-forward layer to expand their dimensions for future inputs. For the “V5” model we actually introduced the syntax side-by-side with the embedded words through this feed-forward layer. The resulting tensors which incorporated the syntax were then passed all the way through the rest of the network. 
+
+An addition to these variations on the decomposable attention model were variations using different versions of the syntax parser. We ret-rained the constituency parser on the Penn Treebank dataset and incorporated that into the model as well as replaced the constituency parser with a dependency parser. 
+
+
 \section{Proposed Methods}
 \label{methods}
 
