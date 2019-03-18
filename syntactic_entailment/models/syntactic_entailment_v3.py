@@ -15,7 +15,7 @@ from allennlp.training.metrics import CategoricalAccuracy
 from syntactic_entailment.modules.matrix_attention.syntactic_matrix_attention import SyntacticMatrixAttention
 
 
-@Model.register("syntactic_entailment_v3")
+@Model.register("syntactic-entailment-v3")
 class SyntacticEntailment(Model):
     """
     This ``Model`` implements the Decomposable Attention model described in `"A Decomposable
