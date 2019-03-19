@@ -49,34 +49,34 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  Abstract.
+This project explores methods for improving performance on the task of natural language inference by incorporating syntactic information. Specifically we modify the decomposable attention neural network \citep{Parikh2016-em} by incorporating encoded syntax parses of the input statements at different layers of the network. We supplement these experiments by using different syntax parsers including pre-trained constituency and dependency parsers as well as a constituency parser trained separately for this task. 
 \end{abstract}
 
 \section{Introduction}
 
 Natural language inference (NLI) is the task of characterizing entailment and
-contradiction relationships between texts. We seek to improve models which
-perform NLI by adding syntactic features into existing models. In particular,
-we will primarily investigate the well-known decomposable attention (DA) neural
-network \citep{Parikh2016-em} which obtained state of the art results on the
-SNLI \citep{Bowman2015-is} dataset at its time of publication while using
-drastically fewer parameters than previous NLI models.
+contradiction relationships between texts. We improve NLI models by adding syntactic
+features into existing models.
+We will primarily investigate the well-known decomposable attention (DA) neural
+network \citep{Parikh2016-em}
 
 In general, most NLI tasks are formulated as characterizing the relationship
 between a pair of sequences---a premise and a hypothesis. An NLI model should
 predict whether the hyothesis is entailed by the premise, contradicts the
 premise, or is neutral to the premise.
 
-We extend the DA model by encorporating syntactic features.
-\dpcomment{Include brief summary of constributions here.}
+We extend the decomposable attention (DA) model by \citet{Parikh2016-em}
+incorporating syntactic features.
+\dpcomment{Include brief summary of contributions here.}
+The DA model obtained state-of-the-art results on the
+SNLI \citep{Bowman2015-is} dataset at its time of publication while using
+drastically fewer parameters than previous NLI models.
 We primarily
 evaluate on the domain specific Scitail \citep{Khot2018-th} for both its
 smaller size and lack of annotation artifacts when compared to SNLI
 \citep{Gururangan2018-lj}.
 
 \section{Syntactic Entailment}
-
-Our project will build on previous work done by \citet{Pang2018-syntail}.
 
 In previous work, we created the syntail-v1 model whose architecture is shown
 in figure~\ref{figure:v1}.  We have obtained mixed results as shown in
@@ -107,14 +107,15 @@ information decreases test accuracy by 6.7\% with ELMo.
 
 \section{Models}
 
-The syntactic entailment model is derived from the decomposable attention model for natural language inference described in \href{https://arxiv.org/pdf/1606.01933.pdf}{this paper}. In the initial iteration, syntax was not incorporated into the neural network until the very last feed-forward layer. This means that during the attention steps between the premise and the hypothesis, the syntax was not taken into account. We speculated that by introducing syntax to the network prior to calculating attention we would see better results due to the syntax of the two statements influencing the attention computations.
+The syntactic entailment model is derived from the decomposable attention model for natural language inference described by \citet{Parikh2016-em}. In the initial iteration of the network, syntax is not incorporated until the very last feed-forward layer. This means that syntax is not considered when calculating attention between the premise and the hypothesis. We speculated that by introducing syntax to the network prior to calculating attention we would see better results as the syntax would help influence the attention calculations and reveal the most important phrases of each input statement.
 
-In the ``V3" model, we performed the same initial step of embedding the premise and hypothesis and expanding their dimensions (through a fully-connected layer) prior to attention. However, instead of calculating our similarity matrix using solely the embedded hypothesis and premise vectors as input, we also provide the . The grouping of these vectors was then used when calculating attention whose influence was then propagated down to the comparison and summary layers further down the network. 
+In the ``V3" model, we perform the same initial step of embedding the premise and hypothesis and expanding their dimensions (through a fully-connected layer) prior to attention. However, instead of calculating our similarity matrix using solely the embedded hypothesis and premise vectors as input, we also provide the encoded syntax parses of both inputs. The concatenation of these four vectors is used to derive the similarity matrix which is then utilized in the attention computations between the premise and hypothesis.
 
-With the “V5” model we shifted the incorporation of syntax into the model even earlier. After getting the word embeddings for the premise and hypothesis, we actually pass them to an additional feed-forward layer to expand their dimensions for future inputs. For the “V5” model we actually introduced the syntax side-by-side with the embedded words through this feed-forward layer. The resulting tensors which incorporated the syntax were then passed all the way through the rest of the network. 
+With the ``V5" model we tried to incorporate the computed syntax of the inputs even earlier. Instead of concatenating the encoded syntax parses with the embedded inputs and using that as input for the computation of the similarity matrix, we concatenated the syntax parses with their respective inputs and passed that through the first fully-connected layer. The two resulting vectors representing the embedded inputs with syntactic information are then used to compute the similarity matrix.
 
-An addition to these variations on the decomposable attention model were variations using different versions of the syntax parser. We ret-rained the constituency parser on the Penn Treebank dataset and incorporated that into the model as well as replaced the constituency parser with a dependency parser. 
+Our ``V7" model took an additional step of learning weights for the encoded syntax parses by passing the vectors through an additional fully-connected layer before introducing them into the rest of the network. This model was built on top of the ``V3" model such that the weighted syntax parses are concatenated with the embedded premise and hypothesis statements when deriving the similarity matrix.
 
+Supplemental variations were done on top of these restructures of the network. One of the variations that we introduced was a retrained constituency parser. By retraining the constituency parser on the Penn Treebank dataset \citep{marcus1993building} we could change the dimensions of the encoded syntax vectors to better fit with our models. Additionally, we experimented with training our models using the dependency parser model derived by \citet{dozat2016deep} to see if the different types of encoded parses influenced the performance of the network.
 
 \section{Proposed Methods}
 \label{methods}
