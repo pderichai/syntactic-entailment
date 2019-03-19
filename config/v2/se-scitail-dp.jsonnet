@@ -48,7 +48,7 @@
       "dropout": 0.2
     },
     "aggregate_feedforward": {
-      "input_dim": 400,
+      "input_dim": 2000,
       "num_layers": 2,
       "hidden_dims": [200, 2],
       "activations": ["relu", "linear"],
