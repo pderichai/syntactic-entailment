@@ -165,7 +165,7 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
         embedded_text_input = self._input_dropout(embedded_text_input)
         encoded_text_orig = self.encoder(embedded_text_input, mask)
 
-        encoded_final_state = get_final_encoder_states(encoded_text_orig, mask)
+        encoder_final_state = get_final_encoder_states(encoded_text_orig, mask)
 
         batch_size, _, encoding_dim = encoded_text_orig.size()
 
@@ -234,7 +234,7 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
             loss = arc_nll + tag_nll
 
         output_dict = {
-                "encoded_text" : encoded_final_state,
+                "encoder_final_state": encoder_final_state,
                 "heads": predicted_heads,
                 "head_tags": predicted_head_tags,
                 "arc_loss": arc_nll,
