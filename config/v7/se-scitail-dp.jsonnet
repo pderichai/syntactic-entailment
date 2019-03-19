@@ -42,7 +42,7 @@
     "project_syntax": {
       "input_dim": 800,
       "num_layers": 2,
-      "hidden_dims": 200,
+      "hidden_dims": [400, 200],
       "activations": "relu",
       "dropout": 0.2
     },
@@ -76,7 +76,7 @@
 
   "trainer": {
     "num_epochs": 140,
-    "patience": 20,
+    "patience": 35,
     "cuda_device": 0,
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
