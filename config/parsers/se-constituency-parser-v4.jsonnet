@@ -9,7 +9,7 @@
     "validation_data_path": "ptb/22.auto.clean",
     "test_data_path": "ptb/23.auto.clean",
     "model": {
-      "type": "syntactic_entailment_constituency_parser",
+      "type": "syntactic-entailment-constituency-parser-v4",
       "text_field_embedder": {
         "token_embedders": {
           "tokens": {
@@ -32,7 +32,7 @@
       "encoder": {
         "type": "lstm",
         "input_size": 150,
-        "hidden_size": 100,
+        "hidden_size": 250,
         "num_layers": 2,
         "bidirectional": true,
         "dropout": 0.2

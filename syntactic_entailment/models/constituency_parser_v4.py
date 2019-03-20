@@ -22,7 +22,7 @@ from allennlp.common.checks import ConfigurationError
 from allennlp.models.constituency_parser import SpanConstituencyParser
 from allennlp.models.constituency_parser import SpanInformation
 
-@Model.register("syntactic_entailment_constituency_parser")
+@Model.register("syntactic-entailment-constituency-parser-v4")
 class SyntacticEntailmentSpanConstituencyParser(SpanConstituencyParser):
     """
     This ``SpanConstituencyParser`` simply encodes a sequence of text
