@@ -38,15 +38,15 @@
         "dropout": 0.2
       },
       "feedforward": {
-        "input_dim": 200,
+        "input_dim": 500,
         "num_layers": 1,
-        "hidden_dims": 100,
+        "hidden_dims": 250,
         "activations": "relu",
         "dropout": 0.1
       },
       "span_extractor": {
         "type": "bidirectional_endpoint",
-        "input_dim": 200
+        "input_dim": 500
       }
     },
     "iterator": {
