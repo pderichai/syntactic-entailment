@@ -5,6 +5,7 @@ out
 SciTailV1.1
 glove
 snli_1.0
+multinli_1.0
 ptb
 
 # Byte-compiled / optimized / DLL files
