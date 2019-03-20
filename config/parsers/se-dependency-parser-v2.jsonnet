@@ -14,7 +14,7 @@
         ]
     },
     "model": {
-        "type": "syntactic_entailment_dependency_parser_v2",
+        "type": "syntactic-entailment-dependency-parser-v2",
         "arc_representation_dim": 500,
         "dropout": 0.3,
         "encoder": {
