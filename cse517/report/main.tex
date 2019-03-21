@@ -120,18 +120,18 @@ for $\bm{P}_j$.
 \paragraph{Compare.} Compare each $(p_i, \bm{H}_i)$ and $(h_j, \bm{P_}j)$ pairs
 with another feed-forward neural network $G$:
 \begin{align}
-    \bm{v}_{1,i} &:= G([p_i, \bm{H}_i])\quad \forall i \in [1,\ldots, \ell_p]\,, \notag \\
-    \bm{v}_{2,j} &:= G([h_j, \bm{P}_j])\quad \forall j \in [1,\ldots, \ell_h]\,.
+    \bm{v}^p_i &:= G([p_i, \bm{H}_i])\quad \forall i \in [1,\ldots, \ell_p]\,, \notag \\
+    \bm{v}^h_j &:= G([h_j, \bm{P}_j])\quad \forall j \in [1,\ldots, \ell_h]\,.
 \end{align}
 
 \paragraph{Aggregate.} Aggregate each set of comparison vectors:
 \begin{align}
-\bm{v}_{1} = \sum_{i=1}^{\ell_p} \bm{v}_{1,i} \qquad\,, \qquad
-\bm{v}_{2} = \sum_{j=1}^{\ell_h}  \bm{v}_{2,j}\,.
+\bm{v}^p = \sum_{i=1}^{\ell_p} \bm{v}^p_i \qquad\,, \qquad
+\bm{v}^h = \sum_{j=1}^{\ell_h}  \bm{v}^h_j\,.
 \end{align}
 and make a prediction with a final feed-forward layer $H$:
-\begin{align}
-    \hat{\bm{y}} = H([\bm{v}_1, \bm{v}_2]).
+\begin{align}\label{eq:predict}
+    \hat{\bm{y}} = H([\bm{v}^p, \bm{v}^h]).
 \end{align}
 
 \section{Our Model}
@@ -159,18 +159,33 @@ from these parsers.
 The minimal span-based neural constituency parser and the deep biaffine attention
 model for dependency parsing both encode the input sequence with an LSTM. Using
 this LSTM, we obtain
-syntactic features $\bm{s}_i$ for each index $i$ of the input. $\bm{s}_i$ is either
+syntactic features $\bm{s}^p = \langle s^p_1, \dots, s^p_{\ell_p} \rangle$ and
+$\bm{s}^h = \langle s^h_1, \dots, s^h_{\ell_h} \rangle$ from the premise and hypothesis,
+respectively. An $s_i$ is either
 the final hidden state $\bm{r}_i$ of the LSTM at index $i$ or a projected
 representation of $\bm{r}_i$.
 
-In the initial 
-iteration of the network, syntax is not incorporated until the very last feed-forward 
-layer. This means that syntax is not considered when calculating attention between 
-the premise and the hypothesis. We speculated that by introducing syntax to the 
-network prior to calculating attention we would see better results as the syntax 
-would help influence the attention calculations and reveal the most important phrases 
-of each input statement.
+\subsection{Syntail Architectures}
 
+We will now describe the different model architectures we experimented with.
+In general, as the version number increases the complexity of the model will increase.
+
+\paragraph{v1: Naive late fusion of syntactic features.}
+The simplest way to incorporate $\bm{s}$ is to concatenate its final representation to
+$\bm{v}^p$ and $\bm{v}^h$ as shown in figure~\ref{fig:v1}.
+The prediction step in equation~\ref{eq:predict} then becomes:
+\begin{align}
+    \hat{\bm{y}} = H([\bm{v}^p, s^p_{\ell_p}, \bm{v}^h, s^h_{\ell_h}]).
+\end{align}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figures/v1.png}
+    \caption{Syntail v1 architecture.}
+\label{fig:v1}
+\end{figure}
+
+\paragraph{v2: Using syntactic features to attend.}
 In the ``V3" model, we perform the same initial step of embedding the premise and 
 hypothesis and expanding their dimensions (through a fully-connected layer) prior to 
 attention. However, instead of calculating our similarity matrix using solely the 
@@ -199,7 +214,7 @@ of the variations that we introduced was a retrained constituency parser. By
 retraining the constituency parser on the Penn Treebank dataset \citep{marcus1993building} 
 we could change the dimensions of the encoded syntax vectors to better fit with our models. 
 Additionally, we experimented with training our models using the dependency parser model 
-derived by \citet{dozat2016deep} to see if the different types of encoded parses influenced 
+derived by \citet{Dozat2016-gs} to see if the different types of encoded parses influenced 
 the performance of the network.
 
 \section{Experiments}
