@@ -21,6 +21,7 @@
 \usepackage{bm}
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{multirow}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 
@@ -93,7 +94,7 @@ while maintaining the core DA architecture.
 \section{Decomposable Attention Model}
 
 The DA model is a simple and easily parallelizable approach to NLI.
-We summarize it in this section so we can build upon it later.
+We summarize it here so we can build upon it later.
 The model
 decomposes into attend, compare, and aggregate steps.
 
@@ -104,8 +105,8 @@ is a $d$ dimensional word embedding vector.
 
 \paragraph{Attend.} Compute unnormalized attention weights $e_{ij}$ with
 a feed-forward neural network $F$:
-\begin{align}
-    e_{ij} := F(\bm{p})^\mathsf{T} F(\bm{h}).
+\begin{align}\label{eq:attend}
+    e_{ij} := F(p_i)^\mathsf{T} F(h_j).
 \end{align}
 Compute the aligned subphrases $\bm{H}i$ and $\bm{P}_j$:
 \begin{align}
@@ -168,15 +169,11 @@ representation of $\bm{r}_i$.
 \subsection{Syntail Architectures}
 
 We will now describe the different model architectures we experimented with.
-In general, as the version number increases the complexity of the model will increase.
+In general, as the version number increases, the complexity of the model increases.
 
 \paragraph{v1: Naive late fusion of syntactic features.}
 The simplest way to incorporate $\bm{s}$ is to concatenate its final representation to
 $\bm{v}^p$ and $\bm{v}^h$ as shown in figure~\ref{fig:v1}.
-The prediction step in equation~\ref{eq:predict} then becomes:
-\begin{align}
-    \hat{\bm{y}} = H([\bm{v}^p, s^p_{\ell_p}, \bm{v}^h, s^h_{\ell_h}]).
-\end{align}
 
 \begin{figure}[h]
     \centering
@@ -185,47 +182,137 @@ The prediction step in equation~\ref{eq:predict} then becomes:
 \label{fig:v1}
 \end{figure}
 
+The prediction step in equation~\ref{eq:predict} then becomes:
+\begin{align}
+    \hat{\bm{y}} = H([\bm{v}^p, s^p_{\ell_p}, \bm{v}^h, s^h_{\ell_h}])
+\end{align}
+where we concatenate the final hidden representation of the premise and hypothesis
+when passed through the neural syntax parser with the aggregrated comparision vectors.
+Everything else is identical to the DA model.
+
 \paragraph{v2: Using syntactic features to attend.}
-In the ``V3" model, we perform the same initial step of embedding the premise and 
-hypothesis and expanding their dimensions (through a fully-connected layer) prior to 
-attention. However, instead of calculating our similarity matrix using solely the 
-embedded hypothesis and premise vectors as input, we also provide the encoded syntax 
-parses of both inputs. The concatenation of these four vectors is used to derive the 
-similarity matrix which is then utilized in the attention computations between the 
-premise and hypothesis. \jbcomment{Insert V3.jpg here?}
+We wanted to experiment with incorporating syntactic features earlier in the model.
+Instead of learning weights on the syntactic features, it is possible to
+concatenate them to the projected input representations as show in figure~\ref{fig:v2}.
 
-With the ``V5" model we tried to incorporate the computed syntax of the inputs even 
-earlier. Instead of concatenating the encoded syntax parses with the embedded inputs 
-and using that as input for the computation of the similarity matrix, we concatenated 
-the syntax parses with their respective inputs and passed that through the first 
-fully-connected layer. The two resulting vectors representing the embedded inputs 
-with syntactic information are then used to compute the similarity matrix. \jbcomment{Insert V5.jpg here?}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figures/v2.png}
+    \caption{Syntail v2 architecture.}
+\label{fig:v2}
+\end{figure}
 
-Our ``V7" model took an additional step of learning weights for the encoded syntax 
-parses by passing the vectors through an additional fully-connected layer before 
-introducing them into the rest of the network. This model was built on top of the 
-``V3" model such that the weighted syntax parses are concatenated with the embedded 
-premise and hypothesis statements when deriving the similarity matrix. \jbcomment{Insert V7.jpg here?}
+Computing the
+unnormalized attention weights in equation~\ref{eq:attend} then becomes:
+\begin{align}
+    e_{ij} := [F(p_i), s^p_i]^\mathsf{T} [F(h_j), s^h_i]
+\end{align}
+where instead of calculating the alignment using only the 
+projected hypothesis and premise vectors, we now also use final hidden states of
+the premise and hypothesis when passed through the neural syntax parser.
+This seems rather naive since this model will not
+learn any weights on the syntactic features, but in practice this model
+performs very well. Everything else is identical to the DA model.
 
-\jbcomment{If we're only using data from the dependency parser we should probably 
-remove the section following this comment}
-Supplemental variations were done on top of these restructures of the network. One 
-of the variations that we introduced was a retrained constituency parser. By 
-retraining the constituency parser on the Penn Treebank dataset \citep{marcus1993building} 
-we could change the dimensions of the encoded syntax vectors to better fit with our models. 
-Additionally, we experimented with training our models using the dependency parser model 
-derived by \citet{Dozat2016-gs} to see if the different types of encoded parses influenced 
-the performance of the network.
+\paragraph{v3: Using syntactic features to project the premise and hypothesis.}
+We decided to try incorporating the syntactic features even earlier in the model.
+Instead of concatenating the final hidden states of the parsed premise and hypothesis
+with the projected inputs, we concatenate the final hidden states of the parsed
+premise and hypothesis with in the inputs immediately before projecting them. This
+architecture is shown in figure~\ref{fig:v3}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figures/v3.png}
+    \caption{Syntail v3 architecture.}
+\label{fig:v3}
+\end{figure}
+
+Computing the unnormalized attention weights in equation~\ref{eq:attend} then becomes:
+\begin{align}
+    e_{ij} := F([p_i, s^p_i])^\mathsf{T} F([h_j, s^h_j]).
+\end{align}
+Everything else is identical to the DA model.
+
+\paragraph{v4: Projecting the syntactic features before computing attention.}
+After noticing a drop in performance from v2 to v3, we hypothesized that it was
+due to not allowing our model to transform the syntactic features enough before
+calculating attention.
+We decided to learn weights to project the final hidden states of the parsed
+premise and hypothesis by passing them through an additional fully-connected layer before 
+concatenating them to the inputs. This architecture is shown in figure~\ref{fig:v4}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figures/v4.png}
+    \caption{Syntail v4 architecture.}
+\label{fig:v4}
+\end{figure}
+
+Computing the unnormalized attention weights in equation~\ref{eq:attend} then becomes:
+\begin{align}
+    e_{ij} := F([p_i, J(s^p_i)])^\mathsf{T} F([h_j, J(s^h_j)])
+\end{align}
+where $J$ is a feed-forward neural network.
+Everything else is identical to the DA model.
+
+% \jbcomment{If we're only using data from the dependency parser we should probably 
+% remove the section following this comment}
+% Supplemental variations were done on top of these restructures of the network. One 
+% of the variations that we introduced was a retrained constituency parser. By 
+% retraining the constituency parser on the Penn Treebank dataset \citep{marcus1993building} 
+% we could change the dimensions of the encoded syntax vectors to better fit with our models. 
+% Additionally, we experimented with training our models using the dependency parser model 
+% derived by \citet{Dozat2016-gs} to see if the different types of encoded parses influenced 
+% the performance of the network.
+
+\subsection{Implementation Details}
+\dpcomment{Add some hyper-parameter stuff here.}
 
 \section{Experiments}
 
-% \begin{figure}[h]
-%   \includegraphics[width=0.45\textwidth]{v1}
-%   \caption{A simple method of incorporating syntax into the decomposable
-%     attention model.}
-% \label{figure:v1}
-% \end{figure}
+We compare our model's performance to the decomposable attention model
+\citep{Parikh2016-em} and the ESIM model \citep{Chen2016-wl}.
 
+\begin{table}[h]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{cccccc} 
+\toprule
+Model          & Embeddings      & Dev. Acc. & Test Acc.  \\ 
+\midrule
+Majority Class & n/a             & 63.3      & 60.3       \\
+N-Gram         & n/a             & 65.0      & 70.6       \\
+ESIM           & GloVe 840B 300d & 70.5      & 70.6       \\
+DA             & GloVe 6B 300d   & 70.4      & 72.6       \\
+DA             & ELMo            & 79.1      & 75.5       \\
+\midrule
+Syntail v2     & GloVe 6B 300d   & 79.3      & ?          \\
+Syntail v3     & GloVe 6B 300d   & 82.3      & 77.4       \\
+Syntail v5     & GloVe 6B 300d   & ?         & ?          \\
+Syntail v7     & GloVe 6B 300d   & 81.3      & 77.0       \\
+\bottomrule
+\end{tabular}}
+\label{table:experiments}
+\caption{\dpcomment{think of a good caption, fix the version numbers}}
+\end{table}
+
+\subsection{Datasets}
+For practical reasons, we only ran experiments on the SciTail dataset. SciTail (27k pairs) is
+significantly smaller than SNLI (570k pairs) \citep{Bowman2015-is} or MultiNLI (433k pairs)
+\citep{Williams2017-uh} which made it feasible to try many different architectures given
+our limited resources.
+
+Additionally, \citet{Gururangan2018-lj} showed that SNLI and MultiNLI
+have significant annotation artifacts whereas SciTail is the first entailment set to be
+completely derived from sentences that exist ``in the wild.''
+
+\subsection{Baselines}
+
+We list baseline performance reported by \citet{Khot2018-th} of a majority class predictor,
+n-gram model, and ESIM \citep{Chen2016-wl} in table~\ref{table:experiments}. We reimplemented
+and retrained the DA model and obtained similar test accuracies as reported by \citep{Chen2016-wl}.
+Adding ELMo to the DA model improved test accuracy performance by approximately 3\%.
 
 \section{Related Work}
 
