@@ -248,3 +248,98 @@
   primaryClass  = "cs.CL",
   eprint        = "1609.06038"
 }
+
+@INPROCEEDINGS{Pennington2014-uo,
+  title     = "Glove: Global vectors for word representation",
+  booktitle = "Proceedings of the 2014 conference on empirical methods in
+               natural language processing ({EMNLP})",
+  author    = "Pennington, Jeffrey and Socher, Richard and Manning, Christopher",
+  abstract  = "… The skip-gram and continuous bag-of- words (CBOW) models of
+               Mikolov et al … 3 The GloVe Model The statistics of word
+               occurrences in a corpus is the primary source of information
+               available to all unsupervised methods for learning word
+               represen- tations, and although many …",
+  publisher = "aclweb.org",
+  pages     = "1532--1543",
+  year      =  2014
+}
+
+@ARTICLE{Swayamdipta2017-ct,
+  title         = "{Frame-Semantic} Parsing with {Softmax-Margin} Segmental
+                   {RNNs} and a Syntactic Scaffold",
+  author        = "Swayamdipta, Swabha and Thomson, Sam and Dyer, Chris and
+                   Smith, Noah A",
+  abstract      = "We present a new, efficient frame-semantic parser that
+                   labels semantic arguments to FrameNet predicates. Built
+                   using an extension to the segmental RNN that emphasizes
+                   recall, our basic system achieves competitive performance
+                   without any calls to a syntactic parser. We then introduce a
+                   method that uses phrase-syntactic annotations from the Penn
+                   Treebank during training only, through a multitask
+                   objective; no parsing is required at training or test time.
+                   This ``syntactic scaffold'' offers a cheaper alternative to
+                   traditional syntactic pipelining, and achieves
+                   state-of-the-art performance.",
+  month         =  jun,
+  year          =  2017,
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CL",
+  eprint        = "1706.09528"
+}
+
+@ARTICLE{Strubell2018-qw,
+  title         = "{Linguistically-Informed} {Self-Attention} for Semantic Role
+                   Labeling",
+  author        = "Strubell, Emma and Verga, Patrick and Andor, Daniel and
+                   Weiss, David and McCallum, Andrew",
+  abstract      = "Current state-of-the-art semantic role labeling (SRL) uses a
+                   deep neural network with no explicit linguistic features.
+                   However, prior work has shown that gold syntax trees can
+                   dramatically improve SRL decoding, suggesting the
+                   possibility of increased accuracy from explicit modeling of
+                   syntax. In this work, we present linguistically-informed
+                   self-attention (LISA): a neural network model that combines
+                   multi-head self-attention with multi-task learning across
+                   dependency parsing, part-of-speech tagging, predicate
+                   detection and SRL. Unlike previous models which require
+                   significant pre-processing to prepare linguistic features,
+                   LISA can incorporate syntax using merely raw tokens as
+                   input, encoding the sequence only once to simultaneously
+                   perform parsing, predicate detection and role labeling for
+                   all predicates. Syntax is incorporated by training one
+                   attention head to attend to syntactic parents for each
+                   token. Moreover, if a high-quality syntactic parse is
+                   already available, it can be beneficially injected at test
+                   time without re-training our SRL model. In experiments on
+                   CoNLL-2005 SRL, LISA achieves new state-of-the-art
+                   performance for a model using predicted predicates and
+                   standard word embeddings, attaining 2.5 F1 absolute higher
+                   than the previous state-of-the-art on newswire and more than
+                   3.5 F1 on out-of-domain data, nearly 10\% reduction in
+                   error. On ConLL-2012 English SRL we also show an improvement
+                   of more than 2.5 F1. LISA also out-performs the
+                   state-of-the-art with contextually-encoded (ELMo) word
+                   representations, by nearly 1.0 F1 on news and more than 2.0
+                   F1 on out-of-domain text.",
+  month         =  apr,
+  year          =  2018,
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CL",
+  eprint        = "1804.08199"
+}
+
+@article{kingma2014adam,
+  title={Adam: A method for stochastic optimization},
+  author={Kingma, Diederik P and Ba, Jimmy},
+  journal={arXiv preprint arXiv:1412.6980},
+  year={2014}
+}
+@article{duchi2011adaptive,
+  title={Adaptive subgradient methods for online learning and stochastic optimization},
+  author={Duchi, John and Hazan, Elad and Singer, Yoram},
+  journal={Journal of Machine Learning Research},
+  volume={12},
+  number={Jul},
+  pages={2121--2159},
+  year={2011}
+}
