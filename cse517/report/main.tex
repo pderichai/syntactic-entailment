@@ -71,7 +71,7 @@ between a pair of sequences---a premise and a hypothesis. An NLI model should
 predict whether the hypothesis is entailed by the premise, contradicts the
 premise, or is neutral to the premise.
 
-We extend the decomposable attention (DA) model by \citet{Parikh2016-em}
+We extend the decomposable attention (DA) model from  \citet{Parikh2016-em} by
 incorporating syntactic features.
 The DA model obtained state-of-the-art results on the
 SNLI \citep{Bowman2015-is} dataset at its time of publication while using
@@ -418,7 +418,7 @@ a more reliable attention function.
     \centering
     \includegraphics[width=\linewidth]{figures/da-h2p-attention.png}
     \caption{Hypothesis to premise attention weights of the DA model when processing
-             the input from tabel~\ref{table:example}.}
+             the input from table~\ref{table:example}.}
     \label{fig:da-attention-weights}
 \end{figure}
 
@@ -426,7 +426,7 @@ a more reliable attention function.
     \centering
     \includegraphics[width=\linewidth]{figures/syntail-h2p-attention.png}
     \caption{Hypothesis to premise attention weights of syntail v1 when processing
-             the input from tabel~\ref{table:example}.}
+             the input from table~\ref{table:example}.}
     \label{fig:sytail-attention-weights}
 \end{figure}
 
@@ -444,7 +444,7 @@ for a model using predicted predicates and standard word embeddings on
 CoNLL-2005 SRL by performing multi-task training on additional syntactic tasks.
 \citet{Swayamdipta2017-ct} use hard-coded constituency and dependency parse features
 and a syntactic scaffold to
-extend softmax margin segmental RNN (segRNN) model.
+extend the softmax margin segmental RNN (segRNN) model.
 
 \section{Conclusion}
 
