@@ -18,7 +18,7 @@
   "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
-    "type": "syntactic-entailment-v5",
+    "type": "syntactic-entailment-v3",
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {

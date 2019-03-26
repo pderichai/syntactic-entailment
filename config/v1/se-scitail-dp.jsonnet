@@ -20,7 +20,7 @@
   "validation_data_path":
   "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
-    "type": "syntactic-entailment-v2",
+    "type": "syntactic-entailment-v1",
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
