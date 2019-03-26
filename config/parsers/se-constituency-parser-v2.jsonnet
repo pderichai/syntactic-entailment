@@ -9,7 +9,7 @@
     "validation_data_path": "ptb/22.auto.clean",
     "test_data_path": "ptb/23.auto.clean",
     "model": {
-      "type": "syntactic-entailment-constituency-parser-v2",
+      "type": "syntactic-entailment-constituency-parser-v4",
       "text_field_embedder": {
         "token_embedders": {
           "tokens": {
@@ -38,15 +38,15 @@
         "dropout": 0.2
       },
       "feedforward": {
-        "input_dim": 500,
+        "input_dim": 200,
         "num_layers": 1,
-        "hidden_dims": 250,
+        "hidden_dims": 100,
         "activations": "relu",
         "dropout": 0.1
       },
       "span_extractor": {
         "type": "bidirectional_endpoint",
-        "input_dim": 500
+        "input_dim": 200
       }
     },
     "iterator": {
