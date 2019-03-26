@@ -18,7 +18,7 @@
   "train_data_path": "snli_1.0/snli_1.0_train.jsonl",
   "validation_data_path": "snli_1.0/snli_1.0_dev.jsonl",
   "model": {
-    "type": "syntactic-entailment-v5",
+    "type": "syntactic-entailment-v3",
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
