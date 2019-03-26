@@ -15,7 +15,7 @@ from allennlp.modules.matrix_attention.bilinear_matrix_attention import Bilinear
 from allennlp.modules import FeedForward
 from allennlp.models.model import Model
 from allennlp.nn import InitializerApplicator, RegularizerApplicator, Activation
-from allennlp.nn.util import get_text_field_mask, get_range_vector, get_final_encoder_states
+from allennlp.nn.util import get_text_field_mask, get_range_vector
 from allennlp.nn.util import get_device_of, masked_log_softmax, get_lengths_from_binary_sequence_mask
 from allennlp.nn.chu_liu_edmonds import decode_mst
 from allennlp.training.metrics import AttachmentScores
@@ -165,8 +165,6 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
         embedded_text_input = self._input_dropout(embedded_text_input)
         encoded_text_orig = self.encoder(embedded_text_input, mask)
 
-        encoder_final_state = get_final_encoder_states(encoded_text_orig, mask)
-
         batch_size, _, encoding_dim = encoded_text_orig.size()
 
         head_sentinel = self._head_sentinel.expand(batch_size, 1, encoding_dim)
@@ -234,7 +232,7 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
             loss = arc_nll + tag_nll
 
         output_dict = {
-                "encoder_final_state": encoder_final_state,
+                "encoded_text" : encoded_text_orig,
                 "heads": predicted_heads,
                 "head_tags": predicted_head_tags,
                 "arc_loss": arc_nll,

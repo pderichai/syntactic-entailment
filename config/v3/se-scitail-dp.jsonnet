@@ -15,12 +15,10 @@
       }
     }
   },
-  "train_data_path":
-  "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path":
-  "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
-    "type": "syntactic-entailment-v3",
+    "type": "syntactic-entailment-v5",
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
@@ -33,7 +31,7 @@
       }
     },
     "attend_feedforward": {
-      "input_dim": 200,
+      "input_dim": 1000,
       "num_layers": 2,
       "hidden_dims": 200,
       "activations": "relu",
@@ -58,7 +56,7 @@
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
       [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
     ],
-    "parser_model_path": "pretrained-models/se-dependency-parser-v6.tar.gz",
+    "parser_model_path": "pretrained-models/se-dependency-parser-v2.tar.gz",
     "predictor_name": "syntactic-entailment-dependency-parser"
   },
   "iterator": {

@@ -154,7 +154,6 @@ class SyntacticEntailmentSpanConstituencyParser(SpanConstituencyParser):
         num_spans = get_lengths_from_binary_sequence_mask(span_mask)
 
         encoded_text = self.encoder(embedded_text_input, mask)
-        encoder_final_state = get_final_encoder_states(encoded_text, mask)
 
         span_representations = self.span_extractor(encoded_text, spans, mask, span_mask)
 
@@ -165,8 +164,7 @@ class SyntacticEntailmentSpanConstituencyParser(SpanConstituencyParser):
         class_probabilities = masked_softmax(logits, span_mask.unsqueeze(-1))
 
         output_dict = {
-                "encoder_final_state": encoder_final_state,
-                #"encoded_text": encoded_text,
+                "encoded_text": encoded_text,
                 "class_probabilities": class_probabilities,
                 "spans": spans,
                 "tokens": [meta["tokens"] for meta in metadata],
