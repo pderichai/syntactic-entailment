@@ -15,10 +15,12 @@
       }
     }
   },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path":
+  "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+  "validation_data_path":
+  "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
-    "type": "syntactic-entailment-v5",
+    "type": "syntactic-entailment-v8",
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
@@ -31,9 +33,16 @@
       }
     },
     "attend_feedforward": {
-      "input_dim": 1000,
+      "input_dim": 200,
       "num_layers": 2,
       "hidden_dims": 200,
+      "activations": "relu",
+      "dropout": 0.2
+    },
+    "project_syntax": {
+      "input_dim": 800,
+      "num_layers": 2,
+      "hidden_dims": [400, 200],
       "activations": "relu",
       "dropout": 0.2
     },
@@ -46,7 +55,7 @@
       "dropout": 0.2
     },
     "aggregate_feedforward": {
-      "input_dim": 400,
+      "input_dim": 800,
       "num_layers": 2,
       "hidden_dims": [200, 2],
       "activations": ["relu", "linear"],
@@ -56,7 +65,7 @@
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
       [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
     ],
-    "parser_model_path": "pretrained-models/se-dependency-parser-v6.tar.gz",
+    "parser_model_path": "pretrained-models/se-dependency-parser-v2.tar.gz",
     "predictor_name": "syntactic-entailment-dependency-parser"
   },
   "iterator": {
@@ -67,7 +76,7 @@
 
   "trainer": {
     "num_epochs": 140,
-    "patience": 20,
+    "patience": 35,
     "cuda_device": 0,
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",

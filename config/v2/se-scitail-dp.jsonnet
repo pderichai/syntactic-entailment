@@ -20,7 +20,7 @@
   "validation_data_path":
   "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
-    "type": "syntactic-entailment-v2",
+    "type": "syntactic-entailment-v3",
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
@@ -48,7 +48,7 @@
       "dropout": 0.2
     },
     "aggregate_feedforward": {
-      "input_dim": 2000,
+      "input_dim": 400,
       "num_layers": 2,
       "hidden_dims": [200, 2],
       "activations": ["relu", "linear"],
