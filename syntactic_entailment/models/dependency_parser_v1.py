@@ -235,6 +235,7 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
 
         output_dict = {
                 "encoder_final_state": encoder_final_state,
+                "encoded_text": encoded_text_orig,
                 "heads": predicted_heads,
                 "head_tags": predicted_head_tags,
                 "arc_loss": arc_nll,

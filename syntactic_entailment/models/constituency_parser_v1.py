@@ -166,7 +166,7 @@ class SyntacticEntailmentSpanConstituencyParser(SpanConstituencyParser):
 
         output_dict = {
                 "encoder_final_state": encoder_final_state,
-                #"encoded_text": encoded_text,
+                "encoded_text": encoded_text,
                 "class_probabilities": class_probabilities,
                 "spans": spans,
                 "tokens": [meta["tokens"] for meta in metadata],
