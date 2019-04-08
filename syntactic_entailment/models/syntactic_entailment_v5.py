@@ -65,6 +65,7 @@ class SyntacticEntailment(Model):
                  text_field_embedder: TextFieldEmbedder,
                  attend_feedforward: FeedForward,
                  project_syntax: FeedForward,
+                 encode_syntax: FeedForward,
                  similarity_function: SimilarityFunction,
                  compare_feedforward: FeedForward,
                  aggregate_feedforward: FeedForward,
@@ -78,7 +79,7 @@ class SyntacticEntailment(Model):
 
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
-        self._project_syntax = project_syntax
+        self._project_syntax = TimeDistributed(project_syntax)
         self._attention = LegacyMatrixAttention(similarity_function)
         self._compare_feedforward = TimeDistributed(compare_feedforward)
         self._aggregate_feedforward = aggregate_feedforward
@@ -146,15 +147,14 @@ class SyntacticEntailment(Model):
         h_tokens = [metadata[idx]['hypothesis_tokens'] for idx in range(len(metadata))]
         h_tags = [metadata[idx]['hypothesis_tags'] for idx in range(len(metadata))]
         h_jsons = [{'sentence' : h_tokens[idx], 'tags' : h_tags[idx]} for idx in range(len(metadata))]
-
         p_encoded_parse = torch.tensor(
-            [output['encoder_final_state']
-             for output in self._predictor.predict_batch_json(p_jsons)]
-            ).to(self._device)
+                [output['encoded_text']
+                        for output in self._predictor.predict_batch_json(p_jsons)]
+                ).to(self._device)
         h_encoded_parse = torch.tensor(
-            [output['encoder_final_state']
-             for output in self._predictor.predict_batch_json(h_jsons)]
-            ).to(self._device)
+                [output['encoded_text']
+                        for output in self._predictor.predict_batch_json(h_jsons)]
+                ).to(self._device)
 
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
@@ -168,9 +168,13 @@ class SyntacticEntailment(Model):
 
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
+        projected_p_encoded_parse = self._project_syntax(p_encoded_parse)
+        projected_h_encoded_parse = self._project_syntax(h_encoded_parse)
+        encoded_p_and_syntax = torch.cat((projected_premise, projected_p_encoded_parse), 2)
+        encoded_h_and_syntax = torch.cat((projected_hypothesis, projected_h_encoded_parse), 2)
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._attention(projected_premise,
-                                            projected_hypothesis)
+        similarity_matrix = self._attention(encoded_p_and_syntax,
+                                            encoded_h_and_syntax)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
@@ -194,12 +198,6 @@ class SyntacticEntailment(Model):
         compared_hypothesis = compared_hypothesis * hypothesis_mask.unsqueeze(-1)
         # Shape: (batch_size, compare_dim)
         compared_hypothesis = compared_hypothesis.sum(dim=1)
-
-        projected_p_encoded_parse = self._project_syntax(p_encoded_parse)
-        projected_h_encoded_parse = self._project_syntax(h_encoded_parse)
-
-        compared_premise = torch.cat([compared_premise, projected_p_encoded_parse], dim=-1)
-        compared_hypothesis = torch.cat([compared_hypothesis, projected_h_encoded_parse], dim=-1)
 
         aggregate_input = torch.cat([compared_premise, compared_hypothesis], dim=-1)
         label_logits = self._aggregate_feedforward(aggregate_input)
