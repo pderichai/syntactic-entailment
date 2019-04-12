@@ -14,7 +14,7 @@ from allennlp.data.tokenizers import Tokenizer, WordTokenizer
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
-@DatasetReader.register("se-snli-v6")
+@DatasetReader.register("se-snli-v2")
 class SyntacticEntailmentSnliReader(DatasetReader):
     """
     Reads a file from the Stanford Natural Language Inference (SNLI) dataset.  This data is
