@@ -1,6 +1,6 @@
 {
   "dataset_reader": {
-    "type": "se_snli",
+    "type": "se-snli-v2",
     "token_indexers": {
       "tokens": {
         "type": "single_id",
@@ -85,7 +85,7 @@
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "adam"
+      "type": "dense_sparse_adam"
     }
   }
 }

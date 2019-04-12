@@ -107,7 +107,7 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
     def forward(self,  # type: ignore
                 words: Dict[str, torch.LongTensor],
                 pos_tags: torch.LongTensor,
-                metadata: List[Dict[str, Any]],
+                metadata: List[Dict[str, Any]] = None,
                 head_tags: torch.LongTensor = None,
                 head_indices: torch.LongTensor = None) -> Dict[str, torch.Tensor]:
         # pylint: disable=arguments-differ

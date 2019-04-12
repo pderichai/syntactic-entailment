@@ -13,7 +13,8 @@ from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
-import allennlp.models.archival as archival
+from allennlp.data.fields import SequenceLabelField
+from allennlp.models.archival import load_archive
 from .dependency_parser_v1 import SyntacticEntailmentDependencyParser
 
 
@@ -79,6 +80,11 @@ class SyntacticEntailment(Model):
                  regularizer: Optional[RegularizerApplicator] = None) -> None:
         super(SyntacticEntailment, self).__init__(vocab, regularizer)
 
+        # setting the vocab of the parser from its pretrained files
+        vocab.set_from_file(filename='pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt')
+        vocab.set_from_file(filename='pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt',
+                            namespace='pos')
+
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
         self._project_syntax = TimeDistributed(project_syntax)
@@ -103,19 +109,18 @@ class SyntacticEntailment(Model):
         self._loss = torch.nn.CrossEntropyLoss()
 
         self._device = torch.device("cuda:0" if torch.cuda.is_available()
-                                             else "cpu")
+                                    else "cpu")
 
-        self._parser = archival.load_archive(parser_model_path,
-                                            cuda_device=0)
-        self._parser_encoder = self._parser.extract_module('encoder',
-                                                           freeze=True)
-                                                           #freeze=False)
+        self._parser = load_archive(parser_model_path,
+                                    cuda_device=0).model
 
         initializer(self)
 
     def forward(self,  # type: ignore
                 premise: Dict[str, torch.LongTensor],
+                premise_tags,
                 hypothesis: Dict[str, torch.LongTensor],
+                hypothesis_tags,
                 label: torch.IntTensor = None,
                 metadata: List[Dict[str, Any]] = None) -> Dict[str, torch.Tensor]:
         # pylint: disable=arguments-differ
@@ -155,8 +160,9 @@ class SyntacticEntailment(Model):
         if self._hypothesis_encoder:
             embedded_hypothesis = self._hypothesis_encoder(embedded_hypothesis, hypothesis_mask)
 
-        p_encoded_parse = self._parser_encoder(embedded_premise, premise_mask)
-        h_encoded_parse = self._parser_encoder(embedded_hypothesis, hypothesis_mask)
+        # running the parser
+        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
 
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
