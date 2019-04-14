@@ -1,10 +1,13 @@
 {
   "dataset_reader": {
-    "type": "se_snli",
+    "type": "se-snli-v2",
     "token_indexers": {
-      "tokens": {
+      "se-tokens": {
         "type": "single_id",
         "lowercase_tokens": true
+      },
+      "tokens": {
+        "type": "single_id"
       }
     },
     "tokenizer": {
@@ -21,14 +24,15 @@
     "type": "syntactic-entailment-v6",
     "text_field_embedder": {
       "token_embedders": {
-        "tokens": {
+        "se-tokens": {
           "type": "embedding",
           "projection_dim": 200,
           "pretrained_file": "glove/glove.6B.300d.txt",
           "embedding_dim": 300,
           "trainable": false
         }
-      }
+      },
+      "allow_unmatched_keys": true
     },
     "attend_feedforward": {
       "input_dim": 200,
@@ -68,9 +72,11 @@
     },
     "initializer": [
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
-      [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
+      [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}],
+      [".*_parser.*", "prevent"]
     ],
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
+    "freeze_parser": false
   },
   "iterator": {
     "type": "bucket",
@@ -85,7 +91,7 @@
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "adam"
+      "type": "dense_sparse_adam"
     }
   }
 }
