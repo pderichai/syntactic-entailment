@@ -18,7 +18,7 @@ from allennlp.models.archival import load_archive
 from .dependency_parser_v1 import SyntacticEntailmentDependencyParser
 
 
-@Model.register("syntactic-entailment-v6")
+@Model.register("syntactic-entailment-v5-tune")
 class SyntacticEntailment(Model):
     """
     This ``Model`` implements the Decomposable Attention model described in `"A Decomposable
