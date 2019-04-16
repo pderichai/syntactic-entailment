@@ -82,12 +82,12 @@ class SyntacticEntailment(Model):
         super(SyntacticEntailment, self).__init__(vocab, regularizer)
 
         # setting the vocab of the parser from its pretrained files
-        vocab.set_from_file(
-                filename='pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt',
-                namespace='tokens')
-        vocab.set_from_file(
-                filename='pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt',
-                namespace='pos')
+        #vocab.set_from_file(
+        #        filename='pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt',
+        #        namespace='tokens')
+        #vocab.set_from_file(
+        #        filename='pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt',
+        #        namespace='pos')
 
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
@@ -118,10 +118,12 @@ class SyntacticEntailment(Model):
         self._parser = load_archive(parser_model_path,
                                     cuda_device=0).model
 
-        if freeze_parser:
-            for child in self._parser.children():
-                for param in child.parameters():
-                    param.requires_grad = False
+        for child in self._parser.children():
+            for param in child.parameters():
+                param.requires_grad = False
+        if not freeze_parser:
+            for param in self._parser.encoder.parameters():
+                param.requires_grad = True
 
         initializer(self)
 
