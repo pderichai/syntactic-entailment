@@ -76,14 +76,13 @@
       [".*_parser.*", "prevent"]
     ],
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
-    "freeze_parser": false
+    "freeze_parser": true
   },
   "iterator": {
     "type": "bucket",
     "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
     "batch_size": 64
   },
-
   "trainer": {
     "num_epochs": 140,
     "patience": 35,
@@ -91,7 +90,12 @@
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "dense_sparse_adam"
+      "type": "adam"
     }
+  },
+  "vocabulary": {
+    "type": "se-vocabulary",
+    "se_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
+    "pos_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt"
   }
 }
