@@ -69,7 +69,6 @@ class SyntacticEntailment(Model):
                  text_field_embedder: TextFieldEmbedder,
                  attend_feedforward: FeedForward,
                  project_syntax: FeedForward,
-                 encode_syntax: FeedForward,
                  similarity_function: SimilarityFunction,
                  compare_feedforward: FeedForward,
                  aggregate_feedforward: FeedForward,
@@ -80,14 +79,6 @@ class SyntacticEntailment(Model):
                  initializer: InitializerApplicator = InitializerApplicator(),
                  regularizer: Optional[RegularizerApplicator] = None) -> None:
         super(SyntacticEntailment, self).__init__(vocab, regularizer)
-
-        # setting the vocab of the parser from its pretrained files
-        #vocab.set_from_file(
-        #        filename='pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt',
-        #        namespace='tokens')
-        #vocab.set_from_file(
-        #        filename='pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt',
-        #        namespace='pos')
 
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
