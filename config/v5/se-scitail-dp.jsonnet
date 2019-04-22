@@ -16,7 +16,7 @@
     }
   },
   "train_data_path":
-  "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+  "SciTailV1.1/snli_format/scitail_1.0_train.txt.small",
   "validation_data_path":
   "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
@@ -78,7 +78,8 @@
   "iterator": {
     "type": "bucket",
     "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
-    "batch_size": 64
+    "batch_size": 64,
+    "padding_noise": 0
   },
 
   "trainer": {

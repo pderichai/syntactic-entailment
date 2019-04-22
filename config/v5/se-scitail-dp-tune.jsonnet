@@ -3,12 +3,13 @@
     "type": "se-snli-v2",
     "token_indexers": {
       "se-tokens": {
+        "namespace": "se-tokens",
         "type": "single_id",
         "lowercase_tokens": true
       },
       "tokens": {
         "type": "single_id"
-      }
+      } // default implementation
     },
     "tokenizer": {
       //"end_tokens": ["@@NULL@@"],
@@ -18,7 +19,7 @@
       }
     }
   },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt.small",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
     "type": "syntactic-entailment-v5-tune",
@@ -29,7 +30,7 @@
           "projection_dim": 200,
           "pretrained_file": "glove/glove.6B.300d.txt",
           "embedding_dim": 300,
-          "trainable": false
+          "trainable": false,
         }
       },
       "allow_unmatched_keys": true
@@ -72,16 +73,18 @@
     },
     "initializer": [
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
-      [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}],
+      [".*token_embedder_se-tokens._projection.*weight", {"type": "xavier_normal"}],
       [".*_parser.*", "prevent"]
     ],
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
+    //"predictor_name": "syntactic-entailment-dependency-parser",
     "freeze_parser": true
   },
   "iterator": {
     "type": "bucket",
     "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
-    "batch_size": 64
+    "batch_size": 64,
+    "padding_noise": 0
   },
   "trainer": {
     "num_epochs": 140,
@@ -95,7 +98,7 @@
   },
   "vocabulary": {
     "type": "se-vocabulary",
-    "se_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
+    "parser_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
     "pos_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt"
   }
 }

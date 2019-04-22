@@ -156,6 +156,10 @@ class SyntacticEntailment(Model):
                         for output in self._predictor.predict_batch_json(h_jsons)]
                 ).to(self._device)
 
+        #print()
+        #print('p_encoded_parse:', p_encoded_parse[0][0])
+        #exit(1)
+
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
         premise_mask = get_text_field_mask(premise).float()

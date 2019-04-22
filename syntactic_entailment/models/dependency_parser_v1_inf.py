@@ -154,7 +154,23 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
         mask : ``torch.LongTensor``
             A mask denoting the padded elements in the batch.
         """
+
+        #pos_tags_str = ''
+        #for idx in pos_tags[0]:
+        #    pos_tags_str += ' ' + self.vocab.get_token_from_index(idx.item(), namespace='pos')
+        #print()
+        #print('pos tags:', pos_tags_str)
+        #exit(1)
+
+        #print()
+        #sentence = ''
+        #for idx in words['tokens'][0]:
+        #    sentence += ' ' + self.vocab.get_token_from_index(idx.item(), namespace='tokens')
+        #print('sentence:', sentence)
+        #exit(1)
+
         embedded_text_input = self.text_field_embedder(words)
+        #pre_pos_embedded_text_input = embedded_text_input
         if pos_tags is not None and self._pos_tag_embedding is not None:
             embedded_pos_tags = self._pos_tag_embedding(pos_tags)
             embedded_text_input = torch.cat([embedded_text_input, embedded_pos_tags], -1)
@@ -162,7 +178,6 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
             raise ConfigurationError("Model uses a POS embedding, but no POS tags were passed.")
 
         mask = get_text_field_mask(words)
-        embedded_text_input = self._input_dropout(embedded_text_input)
         encoded_text_orig = self.encoder(embedded_text_input, mask)
 
         encoder_final_state = get_final_encoder_states(encoded_text_orig, mask)
@@ -170,6 +185,10 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
         output_dict = {
             "encoder_final_state": encoder_final_state,
             "encoded_text": encoded_text_orig,
+            #"embedded_input": embedded_text_input,
+            #"embedded_pos_tags": embedded_pos_tags,
+            #"pre_pos_embedded_text_input": pre_pos_embedded_text_input,
+            #"input_mask": mask
         }
 
         return output_dict

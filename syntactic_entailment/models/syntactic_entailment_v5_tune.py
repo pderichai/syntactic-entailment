@@ -74,6 +74,7 @@ class SyntacticEntailment(Model):
                  compare_feedforward: FeedForward,
                  aggregate_feedforward: FeedForward,
                  parser_model_path: str,
+                 #predictor_name: str,
                  freeze_parser: bool,
                  premise_encoder: Optional[Seq2SeqEncoder] = None,
                  hypothesis_encoder: Optional[Seq2SeqEncoder] = None,
@@ -117,6 +118,7 @@ class SyntacticEntailment(Model):
 
         self._parser = load_archive(parser_model_path,
                                     cuda_device=0).model
+        self._parser._head_sentinel.requires_grad = False
 
         for child in self._parser.children():
             for param in child.parameters():
@@ -124,6 +126,20 @@ class SyntacticEntailment(Model):
         if not freeze_parser:
             for param in self._parser.encoder.parameters():
                 param.requires_grad = True
+
+        #self._predictor = Predictor.from_path(parser_model_path,
+        #        predictor_name=predictor_name)
+        #self._predictor._model = self._predictor._model.to(self._device)
+
+        #self._parser = self._predictor._model
+        #self._parser._head_sentinel.requires_grad = False
+
+        #for child in self._parser.children():
+        #    for param in child.parameters():
+        #        param.requires_grad = False
+        #if not freeze_parser:
+        #    for param in self._parser.encoder.parameters():
+        #        param.requires_grad = True
 
         initializer(self)
 
@@ -171,9 +187,94 @@ class SyntacticEntailment(Model):
         if self._hypothesis_encoder:
             embedded_hypothesis = self._hypothesis_encoder(embedded_hypothesis, hypothesis_mask)
 
-        # running the parser
+        #print()
+        #print('running the model')
         p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
         h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+        #input_p_encoded_parse = self._parser(premise, premise_tags)['embedded_input']
+        #input_h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['embedded_input']
+        #pos_p_encoded_parse = self._parser(premise, premise_tags)['embedded_pos_tags']
+        #pos_h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['embedded_pos_tags']
+        #pre_pos_p_encoded_parse = self._parser(premise, premise_tags)['pre_pos_embedded_text_input']
+        #pre_pos_h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['pre_pos_embedded_text_input']
+        #p_mask = self._parser(premise, premise_tags)['input_mask']
+        #h_mask = self._parser(hypothesis, hypothesis_tags)['input_mask']
+
+        # running the predictor
+        #print()
+        #print('running the predictor')
+        #p_tokens = [metadata[idx]['premise_tokens'] for idx in range(len(metadata))]
+        #p_tags = [metadata[idx]['premise_tags'] for idx in range(len(metadata))]
+        #p_jsons = [{'sentence' : p_tokens[idx], 'tags' : p_tags[idx]} for idx in range(len(metadata))]
+        #h_tokens = [metadata[idx]['hypothesis_tokens'] for idx in range(len(metadata))]
+        #h_tags = [metadata[idx]['hypothesis_tags'] for idx in range(len(metadata))]
+        #h_jsons = [{'sentence' : h_tokens[idx], 'tags' : h_tags[idx]} for idx in range(len(metadata))]
+        #p_encoded_parse = torch.tensor(
+        #        [output['encoded_text']
+        #                for output in self._predictor.predict_batch_json(p_jsons)]
+        #        ).to(self._device)
+        #h_encoded_parse = torch.tensor(
+        #        [output['encoded_text']
+        #                for output in self._predictor.predict_batch_json(h_jsons)]
+        #        ).to(self._device)
+        #pred_p_encoded_parse = torch.tensor(
+        #        [output['encoded_text']
+        #                for output in self._predictor.predict_batch_json(p_jsons)]
+        #        ).to(self._device)
+        #pred_h_encoded_parse = torch.tensor(
+        #        [output['encoded_text']
+        #                for output in self._predictor.predict_batch_json(h_jsons)]
+        #        ).to(self._device)
+        #input_pred_p_encoded_parse = torch.tensor(
+        #        [output['embedded_input']
+        #                for output in self._predictor.predict_batch_json(p_jsons)]
+        #        ).to(self._device)
+        #input_pred_h_encoded_parse = torch.tensor(
+        #        [output['embedded_input']
+        #                for output in self._predictor.predict_batch_json(h_jsons)]
+        #        ).to(self._device)
+        #pos_pred_p_encoded_parse = torch.tensor(
+        #        [output['embedded_pos_tags']
+        #                for output in self._predictor.predict_batch_json(p_jsons)]
+        #        ).to(self._device)
+        #pos_pred_h_encoded_parse = torch.tensor(
+        #        [output['embedded_pos_tags']
+        #                for output in self._predictor.predict_batch_json(h_jsons)]
+        #        ).to(self._device)
+        #pre_pos_pred_p_encoded_parse = torch.tensor(
+        #        [output['pre_pos_embedded_text_input']
+        #                for output in self._predictor.predict_batch_json(p_jsons)]
+        #        ).to(self._device)
+        #pre_pos_pred_h_encoded_parse = torch.tensor(
+        #        [output['pre_pos_embedded_text_input']
+        #                for output in self._predictor.predict_batch_json(h_jsons)]
+        #        ).to(self._device)
+        #pred_p_mask = torch.tensor(
+        #        [output['input_mask']
+        #                for output in self._predictor.predict_batch_json(p_jsons)]
+        #        ).to(self._device)
+        #pred_h_mask = torch.tensor(
+        #        [output['input_mask']
+        #                for output in self._predictor.predict_batch_json(h_jsons)]
+        #        ).to(self._device)
+
+        #print()
+        #print('p_encoded_parse:', p_encoded_parse[0][0])
+        #exit(1)
+        #print('embedded text diff:', input_p_encoded_parse[0][0] - input_pred_p_encoded_parse[0][0])
+        #print('pos embedded text diff:', pos_p_encoded_parse[0][0] - pos_pred_p_encoded_parse[0][0])
+        #print('pre pos embedded input diff', pre_pos_p_encoded_parse[0][0] - pre_pos_pred_p_encoded_parse[0][0])
+        #print('encoded_text diff:', p_encoded_parse[0][0] - pred_p_encoded_parse[0][0])
+
+        #assert torch.all(torch.eq(pos_p_encoded_parse, pos_pred_p_encoded_parse))
+        #assert torch.all(torch.eq(pos_h_encoded_parse, pos_pred_h_encoded_parse))
+        #assert torch.all(torch.eq(input_p_encoded_parse, input_pred_p_encoded_parse))
+        #assert torch.all(torch.eq(input_h_encoded_parse, input_pred_h_encoded_parse))
+        #assert torch.all(torch.eq(p_mask, pred_p_mask))
+        #assert torch.all(torch.eq(h_mask, pred_h_mask))
+        #assert torch.all(torch.eq(p_encoded_parse, pred_p_encoded_parse))
+        #assert torch.all(torch.eq(h_encoded_parse, pred_h_encoded_parse))
+        #exit(1)
 
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)

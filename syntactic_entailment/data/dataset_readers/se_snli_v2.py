@@ -72,20 +72,22 @@ class SyntacticEntailmentSnliReader(DatasetReader):
         hypothesis_tokens = self._tokenizer.tokenize(hypothesis)
         hypothesis_tags = [x.tag_ for x in hypothesis_tokens]
 
+        #fields['premise'] = TextField(premise_tokens, {'se-tokens': self._token_indexers['se-tokens']})
+        #fields['hypothesis'] = TextField(hypothesis_tokens, {'se-tokens': self._token_indexers['se-tokens']})
         fields['premise'] = TextField(premise_tokens, self._token_indexers)
         fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
         fields['premise_tags'] = SequenceLabelField(premise_tags,
                                                     fields['premise'],
-                                                    label_namespace="pos")
+                                                    label_namespace='pos')
         fields['hypothesis_tags'] = SequenceLabelField(hypothesis_tags,
                                                        fields['hypothesis'],
-                                                       label_namespace="pos")
+                                                       label_namespace='pos')
         if label:
             fields['label'] = LabelField(label)
 
-        metadata = {"premise_tokens": [x.text for x in premise_tokens],
-                    "hypothesis_tokens": [x.text for x in hypothesis_tokens],
-                    "premise_tags": [x.tag_ for x in premise_tokens],
-                    "hypothesis_tags": [x.tag_ for x in hypothesis_tokens]}
-        fields["metadata"] = MetadataField(metadata)
+        metadata = {'premise_tokens': [x.text for x in premise_tokens],
+                    'hypothesis_tokens': [x.text for x in hypothesis_tokens],
+                    'premise_tags': [x.tag_ for x in premise_tokens],
+                    'hypothesis_tags': [x.tag_ for x in hypothesis_tokens]}
+        fields['metadata'] = MetadataField(metadata)
         return Instance(fields)
