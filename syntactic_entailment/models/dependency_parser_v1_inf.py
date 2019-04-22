@@ -162,14 +162,13 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
             raise ConfigurationError("Model uses a POS embedding, but no POS tags were passed.")
 
         mask = get_text_field_mask(words)
-        embedded_text_input = self._input_dropout(embedded_text_input)
         encoded_text_orig = self.encoder(embedded_text_input, mask)
 
         encoder_final_state = get_final_encoder_states(encoded_text_orig, mask)
 
         output_dict = {
             "encoder_final_state": encoder_final_state,
-            "encoded_text": encoded_text_orig,
+            "encoded_text": encoded_text_orig
         }
 
         return output_dict

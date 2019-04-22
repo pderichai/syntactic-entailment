@@ -16,11 +16,11 @@ NAMESPACE_PADDING_FILE = 'non_padded_namespaces.txt'
 
 
 @Vocabulary.register("se-vocabulary")
-class VocabularyWithPretrainedVAE(Vocabulary):
+class SyntacticEntailmentVocabulary(Vocabulary):
 
     @classmethod
     def from_params(cls, params: Params, instances: Iterable['adi.Instance'] = None):
-        se_vocab = params.pop('se_vocab')
+        parser_vocab = params.pop('parser_vocab')
         pos_vocab = params.pop('pos_vocab')
 
         vocab_type = params.pop("type", None)
@@ -69,7 +69,7 @@ class VocabularyWithPretrainedVAE(Vocabulary):
                                    min_pretrained_embeddings=min_pretrained_embeddings)
 
         # setting the vocab of the parser from its pretrained files
-        vocab.set_from_file(filename=se_vocab, namespace='tokens')
+        vocab.set_from_file(filename=parser_vocab, namespace='tokens')
         vocab.set_from_file(filename=pos_vocab, namespace='pos')
 
         return vocab

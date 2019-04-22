@@ -13,8 +13,12 @@ from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
+from allennlp.data.fields import SequenceLabelField
+from allennlp.models.archival import load_archive
+from .dependency_parser_v1 import SyntacticEntailmentDependencyParser
 
-@Model.register("syntactic-entailment-v5")
+
+@Model.register("syntactic-entailment-v5-tune")
 class SyntacticEntailment(Model):
     """
     This ``Model`` implements the Decomposable Attention model described in `"A Decomposable
@@ -70,12 +74,20 @@ class SyntacticEntailment(Model):
                  compare_feedforward: FeedForward,
                  aggregate_feedforward: FeedForward,
                  parser_model_path: str,
-                 predictor_name: str,
+                 freeze_parser: bool,
                  premise_encoder: Optional[Seq2SeqEncoder] = None,
                  hypothesis_encoder: Optional[Seq2SeqEncoder] = None,
                  initializer: InitializerApplicator = InitializerApplicator(),
                  regularizer: Optional[RegularizerApplicator] = None) -> None:
         super(SyntacticEntailment, self).__init__(vocab, regularizer)
+
+        # setting the vocab of the parser from its pretrained files
+        #vocab.set_from_file(
+        #        filename='pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt',
+        #        namespace='tokens')
+        #vocab.set_from_file(
+        #        filename='pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt',
+        #        namespace='pos')
 
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
@@ -100,18 +112,27 @@ class SyntacticEntailment(Model):
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
-        self._predictor = Predictor.from_path(parser_model_path,
-                predictor_name=predictor_name)
-
         self._device = torch.device("cuda:0" if torch.cuda.is_available()
-                                             else "cpu")
-        self._predictor._model = self._predictor._model.to(self._device)
+                                    else "cpu")
+
+        self._parser = load_archive(parser_model_path,
+                                    cuda_device=0).model
+        self._parser._head_sentinel.requires_grad = False
+
+        for child in self._parser.children():
+            for param in child.parameters():
+                param.requires_grad = False
+        if not freeze_parser:
+            for param in self._parser.encoder.parameters():
+                param.requires_grad = True
 
         initializer(self)
 
     def forward(self,  # type: ignore
                 premise: Dict[str, torch.LongTensor],
+                premise_tags,
                 hypothesis: Dict[str, torch.LongTensor],
+                hypothesis_tags,
                 label: torch.IntTensor = None,
                 metadata: List[Dict[str, Any]] = None) -> Dict[str, torch.Tensor]:
         # pylint: disable=arguments-differ
@@ -141,21 +162,6 @@ class SyntacticEntailment(Model):
             A scalar loss to be optimised.
         """
 
-        p_tokens = [metadata[idx]['premise_tokens'] for idx in range(len(metadata))]
-        p_tags = [metadata[idx]['premise_tags'] for idx in range(len(metadata))]
-        p_jsons = [{'sentence' : p_tokens[idx], 'tags' : p_tags[idx]} for idx in range(len(metadata))]
-        h_tokens = [metadata[idx]['hypothesis_tokens'] for idx in range(len(metadata))]
-        h_tags = [metadata[idx]['hypothesis_tags'] for idx in range(len(metadata))]
-        h_jsons = [{'sentence' : h_tokens[idx], 'tags' : h_tags[idx]} for idx in range(len(metadata))]
-        p_encoded_parse = torch.tensor(
-                [output['encoded_text']
-                        for output in self._predictor.predict_batch_json(p_jsons)]
-                ).to(self._device)
-        h_encoded_parse = torch.tensor(
-                [output['encoded_text']
-                        for output in self._predictor.predict_batch_json(h_jsons)]
-                ).to(self._device)
-
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
         premise_mask = get_text_field_mask(premise).float()
@@ -165,6 +171,10 @@ class SyntacticEntailment(Model):
             embedded_premise = self._premise_encoder(embedded_premise, premise_mask)
         if self._hypothesis_encoder:
             embedded_hypothesis = self._hypothesis_encoder(embedded_hypothesis, hypothesis_mask)
+
+        # running the parser
+        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
 
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
@@ -221,5 +231,5 @@ class SyntacticEntailment(Model):
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
-                'accuracy': self._accuracy.get_metric(reset),
-                }
+            'accuracy': self._accuracy.get_metric(reset),
+        }
