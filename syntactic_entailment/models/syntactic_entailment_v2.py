@@ -8,11 +8,12 @@ from allennlp.data import Vocabulary
 from allennlp.models.model import Model
 from allennlp.modules import FeedForward
 from allennlp.modules import Seq2SeqEncoder, SimilarityFunction, TimeDistributed, TextFieldEmbedder
+from allennlp.modules.matrix_attention.legacy_matrix_attention import LegacyMatrixAttention
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
-from syntactic_entailment.modules.matrix_attention.syntactic_matrix_attention import SyntacticMatrixAttention
+from allennlp.models.archival import load_archive
 
 
 @Model.register("syntactic-entailment-v2")
@@ -69,7 +70,7 @@ class SyntacticEntailment(Model):
                  compare_feedforward: FeedForward,
                  aggregate_feedforward: FeedForward,
                  parser_model_path: str,
-                 predictor_name: str,
+                 freeze_parser: bool,
                  premise_encoder: Optional[Seq2SeqEncoder] = None,
                  hypothesis_encoder: Optional[Seq2SeqEncoder] = None,
                  initializer: InitializerApplicator = InitializerApplicator(),
@@ -78,7 +79,7 @@ class SyntacticEntailment(Model):
 
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
-        self._attention = SyntacticMatrixAttention(similarity_function)
+        self._attention = LegacyMatrixAttention(similarity_function)
         self._compare_feedforward = TimeDistributed(compare_feedforward)
         self._aggregate_feedforward = aggregate_feedforward
         self._premise_encoder = premise_encoder
@@ -98,18 +99,24 @@ class SyntacticEntailment(Model):
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
-        self._predictor = Predictor.from_path(parser_model_path,
-                predictor_name=predictor_name)
+        self._parser = load_archive(parser_model_path,
+                                    cuda_device=0).model
+        self._parser._head_sentinel.requires_grad = False
 
-        self._device = torch.device("cuda:0" if torch.cuda.is_available()
-                                             else "cpu")
-        self._predictor._model = self._predictor._model.to(self._device)
+        for child in self._parser.children():
+            for param in child.parameters():
+                param.requires_grad = False
+        if not freeze_parser:
+            for param in self._parser.encoder.parameters():
+                param.requires_grad = True
 
         initializer(self)
 
     def forward(self,  # type: ignore
                 premise: Dict[str, torch.LongTensor],
+                premise_tags,
                 hypothesis: Dict[str, torch.LongTensor],
+                hypothesis_tags,
                 label: torch.IntTensor = None,
                 metadata: List[Dict[str, Any]] = None) -> Dict[str, torch.Tensor]:
         # pylint: disable=arguments-differ
@@ -139,21 +146,6 @@ class SyntacticEntailment(Model):
             A scalar loss to be optimised.
         """
 
-        p_tokens = [metadata[idx]['premise_tokens'] for idx in range(len(metadata))]
-        p_tags = [metadata[idx]['premise_tags'] for idx in range(len(metadata))]
-        p_jsons = [{'sentence' : p_tokens[idx], 'tags' : p_tags[idx]} for idx in range(len(metadata))]
-        h_tokens = [metadata[idx]['hypothesis_tokens'] for idx in range(len(metadata))]
-        h_tags = [metadata[idx]['hypothesis_tags'] for idx in range(len(metadata))]
-        h_jsons = [{'sentence' : h_tokens[idx], 'tags' : h_tags[idx]} for idx in range(len(metadata))]
-        p_encoded_parse = torch.tensor(
-                [output['encoded_text']
-                        for output in self._predictor.predict_batch_json(p_jsons)]
-                ).to(self._device)
-        h_encoded_parse = torch.tensor(
-                [output['encoded_text']
-                        for output in self._predictor.predict_batch_json(h_jsons)]
-                ).to(self._device)
-
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
         premise_mask = get_text_field_mask(premise).float()
@@ -164,13 +156,18 @@ class SyntacticEntailment(Model):
         if self._hypothesis_encoder:
             embedded_hypothesis = self._hypothesis_encoder(embedded_hypothesis, hypothesis_mask)
 
+        # running the parser
+        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
+
+        encoded_p_and_syntax = torch.cat((projected_premise, p_encoded_parse), 2)
+        encoded_h_and_syntax = torch.cat((projected_hypothesis, h_encoded_parse), 2)
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._attention(projected_premise,
-                                            projected_hypothesis,
-                                            p_encoded_parse,
-                                            h_encoded_parse)
+        similarity_matrix = self._attention(encoded_p_and_syntax,
+                                            encoded_h_and_syntax)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
@@ -217,5 +214,5 @@ class SyntacticEntailment(Model):
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
-                'accuracy': self._accuracy.get_metric(reset),
-                }
+            'accuracy': self._accuracy.get_metric(reset),
+        }

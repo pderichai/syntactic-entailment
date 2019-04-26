@@ -62,7 +62,7 @@
       [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
     ],
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
-    "freeze_parser": true
+    "freeze_parser": false
   },
   "iterator": {
     "type": "bucket",
