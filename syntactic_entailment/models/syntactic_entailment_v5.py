@@ -13,12 +13,10 @@ from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
-from allennlp.data.fields import SequenceLabelField
 from allennlp.models.archival import load_archive
-from .dependency_parser_v1 import SyntacticEntailmentDependencyParser
 
 
-@Model.register("syntactic-entailment-v5-tune")
+@Model.register("syntactic-entailment-v5")
 class SyntacticEntailment(Model):
     """
     This ``Model`` implements the Decomposable Attention model described in `"A Decomposable
@@ -171,6 +169,7 @@ class SyntacticEntailment(Model):
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
         projected_p_encoded_parse = self._project_syntax(p_encoded_parse)
         projected_h_encoded_parse = self._project_syntax(h_encoded_parse)
+
         encoded_p_and_syntax = torch.cat((projected_premise, projected_p_encoded_parse), 2)
         encoded_h_and_syntax = torch.cat((projected_hypothesis, projected_h_encoded_parse), 2)
         # Shape: (batch_size, premise_length, hypothesis_length)
