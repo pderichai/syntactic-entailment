@@ -107,7 +107,6 @@ class SyntacticEntailment(Model):
         self._parser = load_archive(parser_model_path,
                                     cuda_device=0).model
         self._parser._head_sentinel.requires_grad = False
-
         for child in self._parser.children():
             for param in child.parameters():
                 param.requires_grad = False
