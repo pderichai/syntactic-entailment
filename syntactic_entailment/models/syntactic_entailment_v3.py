@@ -13,7 +13,7 @@ from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
-from syntactic_entailment.predictors.constituency_parser import SyntacticEntailmentConstituencyParserPredictor
+from allennlp.models.archival import load_archive
 
 
 @Model.register("syntactic-entailment-v3")
@@ -70,7 +70,7 @@ class SyntacticEntailment(Model):
                  compare_feedforward: FeedForward,
                  aggregate_feedforward: FeedForward,
                  parser_model_path: str,
-                 predictor_name: str,
+                 freeze_parser: bool,
                  premise_encoder: Optional[Seq2SeqEncoder] = None,
                  hypothesis_encoder: Optional[Seq2SeqEncoder] = None,
                  initializer: InitializerApplicator = InitializerApplicator(),
@@ -87,11 +87,6 @@ class SyntacticEntailment(Model):
 
         self._num_labels = vocab.get_vocab_size(namespace="labels")
 
-        # this check doesn't work anymore since we attend w/ syntax
-        #check_dimensions_match(text_field_embedder.get_output_dim(),
-        #                       attend_feedforward.get_input_dim(),
-        #                       "text field embedding dim",
-        #                       "attend feedforward input dim")
         check_dimensions_match(aggregate_feedforward.get_output_dim(),
                                self._num_labels,
                                "final output dimension",
@@ -100,18 +95,26 @@ class SyntacticEntailment(Model):
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
-        self._predictor = Predictor.from_path(parser_model_path,
-                predictor_name=predictor_name)
-
         self._device = torch.device("cuda:0" if torch.cuda.is_available()
-                                             else "cpu")
-        self._predictor._model = self._predictor._model.to(self._device)
+                                    else "cpu")
+
+        self._parser = load_archive(parser_model_path,
+                                    cuda_device=0).model
+        self._parser._head_sentinel.requires_grad = False
+        for child in self._parser.children():
+            for param in child.parameters():
+                param.requires_grad = False
+        if not freeze_parser:
+            for param in self._parser.encoder.parameters():
+                param.requires_grad = True
 
         initializer(self)
 
     def forward(self,  # type: ignore
                 premise: Dict[str, torch.LongTensor],
+                premise_tags,
                 hypothesis: Dict[str, torch.LongTensor],
+                hypothesis_tags,
                 label: torch.IntTensor = None,
                 metadata: List[Dict[str, Any]] = None) -> Dict[str, torch.Tensor]:
         # pylint: disable=arguments-differ
@@ -141,21 +144,6 @@ class SyntacticEntailment(Model):
             A scalar loss to be optimised.
         """
 
-        p_tokens = [metadata[idx]['premise_tokens'] for idx in range(len(metadata))]
-        p_tags = [metadata[idx]['premise_tags'] for idx in range(len(metadata))]
-        p_jsons = [{'sentence' : p_tokens[idx], 'tags' : p_tags[idx]} for idx in range(len(metadata))]
-        h_tokens = [metadata[idx]['hypothesis_tokens'] for idx in range(len(metadata))]
-        h_tags = [metadata[idx]['hypothesis_tags'] for idx in range(len(metadata))]
-        h_jsons = [{'sentence' : h_tokens[idx], 'tags' : h_tags[idx]} for idx in range(len(metadata))]
-        p_encoded_parse = torch.tensor(
-                [output['encoded_text']
-                        for output in self._predictor.predict_batch_json(p_jsons)]
-                ).to(self._device)
-        h_encoded_parse = torch.tensor(
-                [output['encoded_text']
-                        for output in self._predictor.predict_batch_json(h_jsons)]
-                ).to(self._device)
-
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
         premise_mask = get_text_field_mask(premise).float()
@@ -166,13 +154,15 @@ class SyntacticEntailment(Model):
         if self._hypothesis_encoder:
             embedded_hypothesis = self._hypothesis_encoder(embedded_hypothesis, hypothesis_mask)
 
-        # concat syntax
-        syntax_premise = torch.cat((embedded_premise, p_encoded_parse), 2)
-        projected_premise = self._attend_feedforward(syntax_premise)
+        # running the parser
+        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
 
-        # concat syntax
-        syntax_hypothesis = torch.cat((embedded_hypothesis, h_encoded_parse), 2)
-        projected_hypothesis = self._attend_feedforward(syntax_hypothesis)
+        embedded_p_and_syntax = torch.cat((embedded_premise, p_encoded_parse), 2)
+        embedded_h_and_syntax = torch.cat((embedded_hypothesis, h_encoded_parse), 2)
+
+        projected_premise = self._attend_feedforward(embedded_p_and_syntax)
+        projected_hypothesis = self._attend_feedforward(embedded_h_and_syntax)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         similarity_matrix = self._matrix_attention(projected_premise,
@@ -223,5 +213,5 @@ class SyntacticEntailment(Model):
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
-                'accuracy': self._accuracy.get_metric(reset),
-                }
+            'accuracy': self._accuracy.get_metric(reset),
+        }
