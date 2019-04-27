@@ -160,20 +160,11 @@ class SyntacticEntailment(Model):
         if self._hypothesis_encoder:
             embedded_hypothesis = self._hypothesis_encoder(embedded_hypothesis, hypothesis_mask)
 
-        # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
-
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
-        projected_p_encoded_parse = self._project_syntax(p_encoded_parse)
-        projected_h_encoded_parse = self._project_syntax(h_encoded_parse)
-
-        encoded_p_and_syntax = torch.cat((projected_premise, projected_p_encoded_parse), 2)
-        encoded_h_and_syntax = torch.cat((projected_hypothesis, projected_h_encoded_parse), 2)
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._attention(encoded_p_and_syntax,
-                                            encoded_h_and_syntax)
+        similarity_matrix = self._attention(projected_premise,
+                                            projected_hypothesis)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
@@ -197,6 +188,15 @@ class SyntacticEntailment(Model):
         compared_hypothesis = compared_hypothesis * hypothesis_mask.unsqueeze(-1)
         # Shape: (batch_size, compare_dim)
         compared_hypothesis = compared_hypothesis.sum(dim=1)
+
+        # running the parser
+        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+        projected_p_encoded_parse = self._project_syntax(p_encoded_parse)
+        projected_h_encoded_parse = self._project_syntax(h_encoded_parse)
+
+        compared_premise = torch.cat([compared_premise, projected_p_encoded_parse], dim=-1)
+        compared_hypothesis = torch.cat([compared_hypothesis, projected_h_encoded_parse], dim=-1)
 
         aggregate_input = torch.cat([compared_premise, compared_hypothesis], dim=-1)
         label_logits = self._aggregate_feedforward(aggregate_input)
