@@ -80,7 +80,7 @@ class SyntacticEntailment(Model):
 
         self._text_field_embedder = text_field_embedder
         self._attend_feedforward = TimeDistributed(attend_feedforward)
-        self._project_syntax = TimeDistributed(project_syntax)
+        self._project_syntax = project_syntax
         self._attention = LegacyMatrixAttention(similarity_function)
         self._compare_feedforward = TimeDistributed(compare_feedforward)
         self._aggregate_feedforward = aggregate_feedforward
@@ -190,8 +190,8 @@ class SyntacticEntailment(Model):
         compared_hypothesis = compared_hypothesis.sum(dim=1)
 
         # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+        p_encoded_parse = self._parser(premise, premise_tags)['encoder_final_state']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoder_final_state']
         projected_p_encoded_parse = self._project_syntax(p_encoded_parse)
         projected_h_encoded_parse = self._project_syntax(h_encoded_parse)
 
