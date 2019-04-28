@@ -1,10 +1,14 @@
 {
   "dataset_reader": {
-    "type": "se_snli",
+    "type": "se-snli-v2",
     "token_indexers": {
-      "tokens": {
+      "se-tokens": {
+        "namespace": "se-tokens",
         "type": "single_id",
         "lowercase_tokens": true
+      },
+      "tokens": {
+        "type": "single_id"
       }
     },
     "tokenizer": {
@@ -21,14 +25,15 @@
     "type": "syntactic-entailment-v5",
     "text_field_embedder": {
       "token_embedders": {
-        "tokens": {
+        "se-tokens": {
           "type": "embedding",
           "projection_dim": 200,
           "pretrained_file": "glove/glove.6B.300d.txt",
           "embedding_dim": 300,
-          "trainable": false
+          "trainable": false,
         }
-      }
+      },
+      "allow_unmatched_keys": true
     },
     "attend_feedforward": {
       "input_dim": 200,
@@ -44,13 +49,6 @@
       "activations": "relu",
       "dropout": 0.2
     },
-    "encode_syntax": {
-      "input_dim": 400,
-      "num_layers": 2,
-      "hidden_dims": [400, 200],
-      "activations": "relu",
-      "dropout": 0.2
-    },
     "similarity_function": {"type": "dot_product"},
     "compare_feedforward": {
       "input_dim": 400,
@@ -60,7 +58,7 @@
       "dropout": 0.2
     },
     "aggregate_feedforward": {
-      "input_dim": 400,
+      "input_dim": 800,
       "num_layers": 2,
       "hidden_dims": [200, 3],
       "activations": ["relu", "linear"],
@@ -68,17 +66,17 @@
     },
     "initializer": [
       [".*linear_layers.*weight", {"type": "xavier_normal"}],
-      [".*token_embedder_tokens._projection.*weight", {"type": "xavier_normal"}]
+      [".*token_embedder_se-tokens._projection.*weight", {"type": "xavier_normal"}],
+      [".*_parser.*", "prevent"]
     ],
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
-    "predictor_name": "syntactic-entailment-dependency-parser"
+    "freeze_parser": true
   },
   "iterator": {
     "type": "bucket",
     "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
-    "batch_size": 64
+    "batch_size": 64,
   },
-
   "trainer": {
     "num_epochs": 140,
     "patience": 35,
@@ -88,5 +86,10 @@
     "optimizer": {
       "type": "adam"
     }
+  },
+  "vocabulary": {
+    "type": "se-vocabulary",
+    "parser_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
+    "pos_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt"
   }
 }

@@ -1,5 +1,8 @@
-# serialization directory
-out
+# ycm Python autocomplete
+.ycm_extra_conf.py
+
+# serialization directories
+*out
 
 ## symlinks
 SciTailV1.1
