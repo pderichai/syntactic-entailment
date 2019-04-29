@@ -70,6 +70,7 @@ class SyntacticEntailment(Model):
                  compare_feedforward: FeedForward,
                  aggregate_feedforward: FeedForward,
                  parser_model_path: str,
+                 parser_cuda_device: int,
                  freeze_parser: bool,
                  premise_encoder: Optional[Seq2SeqEncoder] = None,
                  hypothesis_encoder: Optional[Seq2SeqEncoder] = None,
@@ -100,7 +101,7 @@ class SyntacticEntailment(Model):
         self._loss = torch.nn.CrossEntropyLoss()
 
         self._parser = load_archive(parser_model_path,
-                                    cuda_device=0).model
+                                    cuda_device=parser_cuda_device).model
         self._parser._head_sentinel.requires_grad = False
         for child in self._parser.children():
             for param in child.parameters():
@@ -108,9 +109,6 @@ class SyntacticEntailment(Model):
         if not freeze_parser:
             for param in self._parser.encoder.parameters():
                 param.requires_grad = True
-
-        self._device = torch.device("cuda:0" if torch.cuda.is_available()
-                                    else "cpu")
 
         initializer(self)
 
@@ -188,8 +186,8 @@ class SyntacticEntailment(Model):
         compared_hypothesis = compared_hypothesis.sum(dim=1)
 
         # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+        p_encoded_parse = self._parser(premise, premise_tags)['encoder_final_state']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoder_final_state']
 
         compared_premise = torch.cat([compared_premise, p_encoded_parse], dim=-1)
         compared_hypothesis = torch.cat([compared_hypothesis, h_encoded_parse], dim=-1)
