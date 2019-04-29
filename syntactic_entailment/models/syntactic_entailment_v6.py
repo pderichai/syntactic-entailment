@@ -143,10 +143,6 @@ class SyntacticEntailment(Model):
         loss : torch.FloatTensor, optional
             A scalar loss to be optimised.
         """
-        # running the parser, currently does nothing
-        p_encoded_parse = self._parser(premise, premise_tags)['encoder_final_state']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoder_final_state']
-
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
         premise_mask = get_text_field_mask(premise).float()
@@ -161,8 +157,14 @@ class SyntacticEntailment(Model):
         encoded_premise = self._encoder(embedded_premise, premise_mask)
         encoded_hypothesis = self._encoder(embedded_hypothesis, hypothesis_mask)
 
+        # running the parser
+        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+
+        encoded_p_and_syntax = torch.cat((encoded_premise, p_encoded_parse), 2)
+        encoded_h_and_syntax = torch.cat((encoded_hypothesis, h_encoded_parse), 2)
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._matrix_attention(encoded_premise, encoded_hypothesis)
+        similarity_matrix = self._matrix_attention(encoded_p_and_syntax, encoded_h_and_syntax)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
