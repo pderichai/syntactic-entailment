@@ -70,6 +70,7 @@ class SyntacticEntailment(Model):
                  compare_feedforward: FeedForward,
                  aggregate_feedforward: FeedForward,
                  parser_model_path: str,
+                 parser_cuda_device: int,
                  freeze_parser: bool,
                  premise_encoder: Optional[Seq2SeqEncoder] = None,
                  hypothesis_encoder: Optional[Seq2SeqEncoder] = None,
@@ -100,9 +101,8 @@ class SyntacticEntailment(Model):
         self._loss = torch.nn.CrossEntropyLoss()
 
         self._parser = load_archive(parser_model_path,
-                                    cuda_device=0).model
+                                    cuda_device=parser_cuda_device).model
         self._parser._head_sentinel.requires_grad = False
-
         for child in self._parser.children():
             for param in child.parameters():
                 param.requires_grad = False
