@@ -186,8 +186,8 @@ class SyntacticEntailment(Model):
         compared_hypothesis = compared_hypothesis.sum(dim=1)
 
         # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+        p_encoded_parse = self._parser(premise, premise_tags)['encoder_final_state']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoder_final_state']
 
         compared_premise = torch.cat([compared_premise, p_encoded_parse], dim=-1)
         compared_hypothesis = torch.cat([compared_hypothesis, h_encoded_parse], dim=-1)
