@@ -39,11 +39,11 @@
                 "linear"
             ],
             "dropout": [
-                0.4083767574607577,
+                0.5051186660866007,
                 0.0
             ],
             "hidden_dims": [
-                200,
+                173,
                 2
             ],
             "input_dim": 800,
@@ -51,15 +51,21 @@
         },
         "attend_feedforward": {
             "activations": "relu",
-            "dropout": 0.7658873789370086,
-            "hidden_dims": 200,
+            "dropout": 0.4456145386329393,
+            "hidden_dims": [
+                261,
+                200
+            ],
             "input_dim": 200,
             "num_layers": 2
         },
         "compare_feedforward": {
             "activations": "relu",
-            "dropout": 0.4032056313291499,
-            "hidden_dims": 200,
+            "dropout": 0.6179839400162741,
+            "hidden_dims": [
+                149,
+                200
+            ],
             "input_dim": 400,
             "num_layers": 2
         },
@@ -86,9 +92,9 @@
         "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
         "project_syntax": {
             "activations": "relu",
-            "dropout": 0.34033173211561335,
+            "dropout": 0.6864361649344031,
             "hidden_dims": [
-                400,
+                456,
                 200
             ],
             "input_dim": 800,
@@ -118,7 +124,7 @@
         "num_epochs": 140,
         "optimizer": {
             "type": "adam",
-            "lr": 0.0001292723579339534
+            "lr": 2.2494479759363437e-05
         },
         "patience": 35,
         "validation_metric": "+accuracy"
