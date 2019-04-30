@@ -61,7 +61,7 @@
       [".*token_embedder_se-tokens._projection.*weight", {"type": "xavier_normal"}],
       [".*_parser.*", "prevent"]
     ],
-    "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
+    "parser_model_path": "pretrained-models/se-dependency-parser-v1-tune.tar.gz",
     "parser_cuda_device": 0,
     "freeze_parser": false
   },
