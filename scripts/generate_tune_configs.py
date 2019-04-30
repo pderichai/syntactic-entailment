@@ -29,24 +29,33 @@ def main(args):
             for key in keys[:-1]:
                 config_json_iter = config_json_iter[key]
 
-            if len(param_range) > 2 or isinstance(param_range[0], str):
-                config_json_iter[keys[-1]] = np.random.choice(param_range)
-            elif isinstance(param_range[0], int):
-                config_json_iter[keys[-1]] = np.random.randint(param_range[0],
-                                                               param_range[1] + 1)
-            elif isinstance(param_range[0], float):
-                # in the case that we're tuning the learning rate
-                if keys[-1] == 'lr':
-                    config_json_iter[keys[-1]] = 10**(np.random.uniform(param_range[0],
-                                                                        param_range[1]))
-                else:
-                    config_json_iter[keys[-1]] = np.random.uniform(param_range[0],
-                                                                   param_range[1])
+            if any(isinstance(el, list) for el in param_range):
+                param_list = []
+                for sub_range in param_range:
+                    param_list.append(get_param_val(sub_range, keys))
+                config_json_iter[keys[-1]] = param_list
+            else:
+                config_json_iter[keys[-1]] = get_param_val(param_range, keys)
+
         new_config_file = open(
             os.path.join(tune_config_dir,
                          config_filename.split('.')[0] + '-' + model_version + '-' + str(i + 1)),
             'w')
         json.dump(new_config_json, new_config_file, indent=4)
+
+
+def get_param_val(param_range, keys):
+    if len(param_range) == 1:
+        return param_range[0]
+    if len(param_range) > 2 or isinstance(param_range[0], str):
+        return np.random.choice(param_range)
+    if isinstance(param_range[0], int):
+        return np.random.randint(param_range[0], param_range[1] + 1)
+    if isinstance(param_range[0], float):
+        # in the case that we're tuning the learning rate
+        if keys[-1] == 'lr':
+            return 10**(np.random.uniform(param_range[0], param_range[1]))
+        return np.random.uniform(param_range[0], param_range[1])
 
 
 if __name__ == '__main__':

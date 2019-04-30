@@ -39,21 +39,21 @@
                 "linear"
             ],
             "dropout": [
-                0.6317858020596908,
+                0.5332323262849085,
                 0.0
             ],
             "hidden_dims": [
-                108,
+                234,
                 2
             ],
-            "input_dim": 400,
+            "input_dim": 800,
             "num_layers": 2
         },
         "attend_feedforward": {
             "activations": "relu",
-            "dropout": 0.3849760494672074,
+            "dropout": 0.5799765888224728,
             "hidden_dims": [
-                295,
+                193,
                 200
             ],
             "input_dim": 200,
@@ -61,9 +61,9 @@
         },
         "compare_feedforward": {
             "activations": "relu",
-            "dropout": 0.4378181900388268,
+            "dropout": 0.29522276284816107,
             "hidden_dims": [
-                248,
+                183,
                 200
             ],
             "input_dim": 400,
@@ -90,6 +90,16 @@
         ],
         "parser_cuda_device": 0,
         "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
+        "project_syntax": {
+            "activations": "relu",
+            "dropout": 0.5357013931063153,
+            "hidden_dims": [
+                314,
+                200
+            ],
+            "input_dim": 800,
+            "num_layers": 2
+        },
         "similarity_function": {
             "type": "dot_product"
         },
@@ -105,7 +115,7 @@
                 }
             }
         },
-        "type": "syntactic-entailment-v2"
+        "type": "syntactic-entailment-v5"
     },
     "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
     "trainer": {
@@ -114,9 +124,9 @@
         "num_epochs": 140,
         "optimizer": {
             "type": "adam",
-            "lr": 0.0031377882864539394
+            "lr": 0.0005341021146793689
         },
-        "patience": 20,
+        "patience": 35,
         "validation_metric": "+accuracy"
     },
     "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",

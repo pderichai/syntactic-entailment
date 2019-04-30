@@ -38,9 +38,12 @@
                 "relu",
                 "linear"
             ],
-            "dropout": 0.36745350977165336,
+            "dropout": [
+                0.4960565174443383,
+                0.0
+            ],
             "hidden_dims": [
-                200,
+                267,
                 2
             ],
             "input_dim": 400,
@@ -48,15 +51,21 @@
         },
         "attend_feedforward": {
             "activations": "relu",
-            "dropout": 0.1269471777235725,
-            "hidden_dims": 200,
+            "dropout": 0.21698569327965578,
+            "hidden_dims": [
+                192,
+                200
+            ],
             "input_dim": 200,
             "num_layers": 2
         },
         "compare_feedforward": {
             "activations": "relu",
-            "dropout": 0.2225012155954878,
-            "hidden_dims": 200,
+            "dropout": 0.31769438728091426,
+            "hidden_dims": [
+                267,
+                200
+            ],
             "input_dim": 400,
             "num_layers": 2
         },
