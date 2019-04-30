@@ -36,9 +36,10 @@ def main(args):
             elif isinstance(param_range[0], float):
                 config_json_iter[keys[-1]] = np.random.uniform(param_range[0],
                                                                param_range[1])
-        new_config_file = open(os.path.join(tune_config_dir,
-                                            config_filename + '-' + str(i + 1)),
-                               'w')
+        new_config_file = open(
+            os.path.join(tune_config_dir,
+                         config_filename.split('.')[0] + '-' + model_version + '-' + str(i + 1)),
+            'w')
         json.dump(new_config_json, new_config_file, indent=4)
 
 
