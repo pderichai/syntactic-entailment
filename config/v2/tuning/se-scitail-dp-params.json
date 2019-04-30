@@ -2,5 +2,5 @@
     "trainer:optimizer:lr": [-5.0, 1.0],
     "model:attend_feedforward:dropout": [0.0, 0.8],
     "model:compare_feedforward:dropout": [0.0, 0.8],
-    "model:aggregate_feedforward:dropout": [0.0, 0.8]
+    "model:aggregate_feedforward:dropout": [[0.0, 0.8], [0.0]]
 }
