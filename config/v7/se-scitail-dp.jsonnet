@@ -15,7 +15,7 @@
   "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
     "model": {
-        "type": "syntactic-entailment-v6",
+        "type": "syntactic-entailment-v7",
         "dropout": 0.5,
         "text_field_embedder": {
             "token_embedders": {
@@ -52,7 +52,7 @@
             "bidirectional": true
         },
         "output_feedforward": {
-            "input_dim": 2400,
+            "input_dim": 3200,
             "num_layers": 1,
             "hidden_dims": 300,
             "activations": "relu",
@@ -63,6 +63,13 @@
             "num_layers": 1,
             "hidden_dims": 3,
             "activations": "linear"
+        },
+        "project_syntax": {
+            "input_dim": 800,
+            "num_layers": 2,
+            "hidden_dims": [600, 400],
+            "activations": "relu",
+            "dropout": 0.2
         },
         "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
         "parser_cuda_device": 0,

@@ -15,7 +15,7 @@ from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.models.archival import load_archive
 
 
-@Model.register("syntactic-entailment-v6")
+@Model.register("syntactic-entailment-v7")
 class SyntacticEntailment(Model):
     """
     This ``Model`` implements the ESIM sequence model described in `"Enhanced LSTM for Natural Language Inference"
@@ -56,6 +56,7 @@ class SyntacticEntailment(Model):
                  inference_encoder: Seq2SeqEncoder,
                  output_feedforward: FeedForward,
                  output_logit: FeedForward,
+                 project_syntax: FeedForward,
                  parser_model_path: str,
                  parser_cuda_device: int,
                  freeze_parser: bool,
@@ -93,6 +94,8 @@ class SyntacticEntailment(Model):
 
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
+
+        self._project_syntax = project_syntax
 
         self._parser = load_archive(parser_model_path,
                                     cuda_device=parser_cuda_device).model
@@ -155,14 +158,8 @@ class SyntacticEntailment(Model):
         encoded_premise = self._encoder(embedded_premise, premise_mask)
         encoded_hypothesis = self._encoder(embedded_hypothesis, hypothesis_mask)
 
-        # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
-
-        encoded_p_and_syntax = torch.cat((encoded_premise, p_encoded_parse), 2)
-        encoded_h_and_syntax = torch.cat((encoded_hypothesis, h_encoded_parse), 2)
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._matrix_attention(encoded_p_and_syntax, encoded_h_and_syntax)
+        similarity_matrix = self._matrix_attention(encoded_premise, encoded_hypothesis)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
@@ -216,9 +213,16 @@ class SyntacticEntailment(Model):
                 hypothesis_mask, 1, keepdim=True
         )
 
+        # running the parser
+        p_encoded_parse = self._parser(premise, premise_tags)['encoder_final_state']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoder_final_state']
+        projected_p_encoded_parse = self._project_syntax(p_encoded_parse)
+        projected_h_encoded_parse = self._project_syntax(h_encoded_parse)
+
         # Now concat
         # (batch_size, model_dim * 2 * 4)
-        v_all = torch.cat([v_a_avg, v_a_max, v_b_avg, v_b_max], dim=1)
+        v_all = torch.cat([v_a_avg, v_a_max, v_b_avg, v_b_max,
+                           projected_p_encoded_parse, projected_h_encoded_parse], dim=1)
 
         # the final MLP -- apply dropout to input, and MLP applies to output & hidden
         if self.dropout:
