@@ -63,7 +63,7 @@
             "activations": "relu",
             "dropout": 0.5970592878957932,
             "hidden_dims": [
-                165,
+                303,
                 200
             ],
             "input_dim": 400,
@@ -114,7 +114,7 @@
         "num_epochs": 140,
         "optimizer": {
             "type": "adam",
-            "lr": 5.627915368992291e-05
+            "lr": 5.627915368992291e-06
         },
         "patience": 20,
         "validation_metric": "+accuracy"
