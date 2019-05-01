@@ -124,7 +124,7 @@
         "num_epochs": 140,
         "optimizer": {
             "type": "adam",
-            "lr": 0.00037337741969540553
+            "lr": 3.733774196954059e-05
         },
         "patience": 35,
         "validation_metric": "+accuracy"
