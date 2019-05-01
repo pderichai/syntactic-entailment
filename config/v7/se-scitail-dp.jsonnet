@@ -72,6 +72,7 @@
             "dropout": 0.2
         },
         "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
+        "parser_cuda_device": 0,
         "freeze_parser": true,
         "initializer": [
             [".*linear_layers.*weight", {"type": "xavier_uniform"}],

@@ -58,6 +58,7 @@ class SyntacticEntailment(Model):
                  output_logit: FeedForward,
                  project_syntax: FeedForward,
                  parser_model_path: str,
+                 parser_cuda_device: int,
                  freeze_parser: bool,
                  dropout: float = 0.5,
                  initializer: InitializerApplicator = InitializerApplicator(),
@@ -97,7 +98,7 @@ class SyntacticEntailment(Model):
         self._project_syntax = project_syntax
 
         self._parser = load_archive(parser_model_path,
-                                    cuda_device=0).model
+                                    cuda_device=parser_cuda_device).model
         self._parser._head_sentinel.requires_grad = False
         for child in self._parser.children():
             for param in child.parameters():
