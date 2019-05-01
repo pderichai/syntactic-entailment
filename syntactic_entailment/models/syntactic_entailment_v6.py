@@ -93,9 +93,6 @@ class SyntacticEntailment(Model):
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
-        self._device = torch.device("cuda:0" if torch.cuda.is_available()
-                                    else "cpu")
-
         self._parser = load_archive(parser_model_path,
                                     cuda_device=0).model
         self._parser._head_sentinel.requires_grad = False

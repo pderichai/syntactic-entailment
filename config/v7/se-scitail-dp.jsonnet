@@ -52,7 +52,7 @@
             "bidirectional": true
         },
         "output_feedforward": {
-            "input_dim": 4000,
+            "input_dim": 3200,
             "num_layers": 1,
             "hidden_dims": 300,
             "activations": "relu",
@@ -63,6 +63,13 @@
             "num_layers": 1,
             "hidden_dims": 3,
             "activations": "linear"
+        },
+        "project_syntax": {
+            "input_dim": 800,
+            "num_layers": 2,
+            "hidden_dims": [600, 400],
+            "activations": "relu",
+            "dropout": 0.2
         },
         "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
         "freeze_parser": true,

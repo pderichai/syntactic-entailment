@@ -56,6 +56,7 @@ class SyntacticEntailment(Model):
                  inference_encoder: Seq2SeqEncoder,
                  output_feedforward: FeedForward,
                  output_logit: FeedForward,
+                 project_syntax: FeedForward,
                  parser_model_path: str,
                  freeze_parser: bool,
                  dropout: float = 0.5,
@@ -93,8 +94,7 @@ class SyntacticEntailment(Model):
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
-        self._device = torch.device("cuda:0" if torch.cuda.is_available()
-                                    else "cpu")
+        self._project_syntax = project_syntax
 
         self._parser = load_archive(parser_model_path,
                                     cuda_device=0).model
@@ -215,10 +215,13 @@ class SyntacticEntailment(Model):
         # running the parser
         p_encoded_parse = self._parser(premise, premise_tags)['encoder_final_state']
         h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoder_final_state']
+        projected_p_encoded_parse = self._project_syntax(p_encoded_parse)
+        projected_h_encoded_parse = self._project_syntax(h_encoded_parse)
 
         # Now concat
         # (batch_size, model_dim * 2 * 4)
-        v_all = torch.cat([v_a_avg, v_a_max, v_b_avg, v_b_max, p_encoded_parse, h_encoded_parse], dim=1)
+        v_all = torch.cat([v_a_avg, v_a_max, v_b_avg, v_b_max,
+                           projected_p_encoded_parse, projected_h_encoded_parse], dim=1)
 
         # the final MLP -- apply dropout to input, and MLP applies to output & hidden
         if self.dropout:
