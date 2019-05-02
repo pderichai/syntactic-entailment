@@ -36,17 +36,17 @@
       "allow_unmatched_keys": true
     },
     "attend_feedforward": {
-      "input_dim": 200,
+      "input_dim": 800,
       "num_layers": 2,
-      "hidden_dims": 200,
+      "hidden_dims": [400, 200],
       "activations": "relu",
       "dropout": 0.2
     },
     "similarity_function": {"type": "dot_product"},
     "compare_feedforward": {
-      "input_dim": 400,
+      "input_dim": 1600,
       "num_layers": 2,
-      "hidden_dims": 200,
+      "hidden_dims": [400, 200],
       "activations": "relu",
       "dropout": 0.2
     },
