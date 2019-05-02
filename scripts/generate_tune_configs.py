@@ -15,7 +15,7 @@ CONFIG_DIR = 'config'
 def main(args):
     config_filename = os.path.basename(args.config_path)
     model_version = os.path.basename(os.path.dirname(args.config_path))
-    tune_config_dir = os.path.join(CONFIG_DIR, model_version, 'tuning')
+    tune_config_dir = os.path.join(CONFIG_DIR, model_version, os.path.basename(os.path.dirname(args.params_file)))
     json_str = _jsonnet.evaluate_file(args.config_path)
     config_json = json.loads(json_str)
 
