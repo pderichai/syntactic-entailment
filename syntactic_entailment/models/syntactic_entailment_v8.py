@@ -88,10 +88,6 @@ class SyntacticEntailment(Model):
 
         self._num_labels = vocab.get_vocab_size(namespace="labels")
 
-        check_dimensions_match(text_field_embedder.get_output_dim(),
-                               attend_feedforward.get_input_dim(),
-                               "text field embedding dim",
-                               "attend feedforward input dim")
         check_dimensions_match(aggregate_feedforward.get_output_dim(),
                                self._num_labels,
                                "final output dimension",
@@ -162,15 +158,15 @@ class SyntacticEntailment(Model):
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
         # Shape: (batch_size, premise_length, embedding_dim)
-        attended_hypothesis = weighted_sum(embedded_hypothesis, p2h_attention)
+        attended_hypothesis = weighted_sum(h_encoded_parse, p2h_attention)
 
         # Shape: (batch_size, hypothesis_length, premise_length)
         h2p_attention = masked_softmax(similarity_matrix.transpose(1, 2).contiguous(), premise_mask)
         # Shape: (batch_size, hypothesis_length, embedding_dim)
-        attended_premise = weighted_sum(embedded_premise, h2p_attention)
+        attended_premise = weighted_sum(p_encoded_parse, h2p_attention)
 
-        premise_compare_input = torch.cat([embedded_premise, attended_hypothesis], dim=-1)
-        hypothesis_compare_input = torch.cat([embedded_hypothesis, attended_premise], dim=-1)
+        premise_compare_input = torch.cat([p_encoded_parse, attended_hypothesis], dim=-1)
+        hypothesis_compare_input = torch.cat([h_encoded_parse, attended_premise], dim=-1)
 
         compared_premise = self._compare_feedforward(premise_compare_input)
         compared_premise = compared_premise * premise_mask.unsqueeze(-1)
