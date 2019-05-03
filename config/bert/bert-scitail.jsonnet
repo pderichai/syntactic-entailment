@@ -3,23 +3,23 @@
     "type": "bert-snli",
     // "bert-base-uncased" or "bert-large-uncased"
     "pretrained_bert_model_file": "bert-base-uncased",
-    "token_indexers": {
-      "se-tokens": {
-        "namespace": "se-tokens",
-        "type": "single_id",
-        "lowercase_tokens": true
-      },
-      "tokens": {
-        "type": "single_id"
-      }
-    },
-    "tokenizer": {
-      //"end_tokens": ["@@NULL@@"],
-      "word_splitter": {
-        "type": "spacy",
-        "pos_tags": true
-      }
-    }
+    //"token_indexers": {
+    //  "se-tokens": {
+    //    "namespace": "se-tokens",
+    //    "type": "single_id",
+    //    "lowercase_tokens": true
+    //  },
+    //  "tokens": {
+    //    "type": "single_id"
+    //  }
+    //},
+    //"tokenizer": {
+    //  //"end_tokens": ["@@NULL@@"],
+    //  "word_splitter": {
+    //    "type": "spacy",
+    //    "pos_tags": true
+    //  }
+    //}
   },
   // Some small data files in the right format just to have AllenNLP produce a model archive after "training".
   // Training will not change the weights.
@@ -27,7 +27,8 @@
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
     "type": "bert-sc",
-    "bert_model_type": "bert_base",
+    //"bert_model_type": "bert_base",
+    "bert_model_type": "bert-base-uncased",
     // Path to a tarball containing bert_config.json and pytorch_model.bin that are outputs from HuggingFace code
     // for BERT base
     "pretrained_archive_path": "https://s3-us-west-2.amazonaws.com/pradeepd-bert-qa-models/bert-base/bert_base_archive.tar.gz",

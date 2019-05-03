@@ -144,13 +144,13 @@ class SyntacticEntailmentSnliReader(DatasetReader):
     def __init__(self,
                  pretrained_bert_model_file: str,
                  max_sequence_length: int = 128,
-                 tokenizer: Tokenizer = None,
-                 token_indexers: Dict[str, TokenIndexer] = None,
+                 #tokenizer: Tokenizer = None,
+                 #token_indexers: Dict[str, TokenIndexer] = None,
                  lazy: bool = False) -> None:
         super().__init__(lazy)
         self._bert_tokenizer = BertTokenizer.from_pretrained(pretrained_bert_model_file)
-        self._tokenizer = tokenizer
-        self._token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
+        #self._tokenizer = tokenizer
+        #self._token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
         self._max_sequence_length = max_sequence_length
 
     @overrides
@@ -181,10 +181,10 @@ class SyntacticEntailmentSnliReader(DatasetReader):
                          label: str = None) -> Instance:
         # pylint: disable=arguments-differ
         fields: Dict[str, Field] = {}
-        premise_tokens = self._tokenizer.tokenize(premise)
-        hypothesis_tokens = self._tokenizer.tokenize(hypothesis)
-        fields['premise'] = TextField(premise_tokens, self._token_indexers)
-        fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
+        #premise_tokens = self._tokenizer.tokenize(premise)
+        #hypothesis_tokens = self._tokenizer.tokenize(hypothesis)
+        #fields['premise'] = TextField(premise_tokens, self._token_indexers)
+        #fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
 
         # BERT processing
         input_example = InputExample(premise, hypothesis)
@@ -199,9 +199,9 @@ class SyntacticEntailmentSnliReader(DatasetReader):
         if label:
             fields['label'] = LabelField(label)
 
-        metadata = {"premise_tokens": [x.text for x in premise_tokens],
-                    "hypothesis_tokens": [x.text for x in hypothesis_tokens],
-                    "premise_tags": [x.tag_ for x in premise_tokens],
-                    "hypothesis_tags": [x.tag_ for x in hypothesis_tokens]}
-        fields["metadata"] = MetadataField(metadata)
+        #metadata = {"premise_tokens": [x.text for x in premise_tokens],
+        #            "hypothesis_tokens": [x.text for x in hypothesis_tokens],
+        #            "premise_tags": [x.tag_ for x in premise_tokens],
+        #            "hypothesis_tags": [x.tag_ for x in hypothesis_tokens]}
+        #fields["metadata"] = MetadataField(metadata)
         return Instance(fields)

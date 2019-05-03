@@ -72,9 +72,9 @@ class BertForSequenceClassification(Model):
         #                    max_position_embeddings=config_to_use["max_position_embeddings"],
         #                    type_vocab_size=config_to_use["type_vocab_size"],
         #                    initializer_range=config_to_use["initializer_range"])
-        self.bert_sc_model = HuggingFaceBertSC.from_pretrained(bert_model_type)
+        self.bert_sc_model = HuggingFaceBertSC.from_pretrained(bert_model_type, num_labels=2)
         self._loaded_sc_weights = False
-        self._pretrained_archive_path = pretrained_archive_path
+        #self._pretrained_archive_path = pretrained_archive_path
         self._null_score_difference_threshold = null_score_difference_threshold
         self._n_best_size = n_best_size
         self._max_answer_length = max_answer_length
@@ -87,16 +87,17 @@ class BertForSequenceClassification(Model):
                 input_ids: torch.Tensor,
                 token_type_ids: torch.Tensor,
                 attention_mask: torch.Tensor,
-                premise: Dict[str, torch.LongTensor],
-                premise_tags,
-                hypothesis: Dict[str, torch.LongTensor],
-                hypothesis_tags,
+                #premise: Dict[str, torch.LongTensor],
+                #premise_tags,
+                #hypothesis: Dict[str, torch.LongTensor],
+                #hypothesis_tags,
                 label: torch.IntTensor = None,
                 metadata: List[Dict[str, Any]] = None) -> Dict[str, torch.Tensor]:
         # pylint: disable=arguments-differ
-        if not self._loaded_sc_weights and self.training:
-            self.bert_sc_model = HuggingFaceBertSC.from_pretrained(self._pretrained_archive_path)
-            self._loaded_sc_weights = True
+        #if not self._loaded_sc_weights and self.training:
+        #    self.bert_sc_model = HuggingFaceBertSC.from_pretrained(self._pretrained_archive_path, num_labels=2)
+        #    self._loaded_sc_weights = True
+        assert self.bert_sc_model is not None
         logits = self.bert_sc_model(torch.stack(input_ids),
                                     torch.stack(token_type_ids),
                                     torch.stack(attention_mask))
