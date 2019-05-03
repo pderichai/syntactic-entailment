@@ -23,7 +23,7 @@
   },
   // Some small data files in the right format just to have AllenNLP produce a model archive after "training".
   // Training will not change the weights.
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt.small",
+  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
     "type": "bert-sc",
@@ -45,7 +45,7 @@
   },
   "trainer": {
     "num_epochs": 1,
-    "cuda_device": -1,
+    "cuda_device": 0,
     "optimizer": {
       "type": "adam",
       "betas": [0.9, 0.9]
