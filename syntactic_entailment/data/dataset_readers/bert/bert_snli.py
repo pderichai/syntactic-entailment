@@ -149,8 +149,6 @@ class SyntacticEntailmentSnliReader(DatasetReader):
                  lazy: bool = False) -> None:
         super().__init__(lazy)
         self._bert_tokenizer = BertTokenizer.from_pretrained(pretrained_bert_model_file)
-        #self._tokenizer = tokenizer
-        #self._token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
         self._max_sequence_length = max_sequence_length
 
     @overrides
@@ -181,27 +179,22 @@ class SyntacticEntailmentSnliReader(DatasetReader):
                          label: str = None) -> Instance:
         # pylint: disable=arguments-differ
         fields: Dict[str, Field] = {}
-        #premise_tokens = self._tokenizer.tokenize(premise)
-        #hypothesis_tokens = self._tokenizer.tokenize(hypothesis)
-        #fields['premise'] = TextField(premise_tokens, self._token_indexers)
-        #fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
 
         # BERT processing
         input_example = InputExample(premise, hypothesis)
-        input_features = convert_example_to_features(input_example, self._max_sequence_length, self._bert_tokenizer)
-        input_ids_tensor = torch.tensor(input_features.input_ids, dtype=torch.long)
-        input_mask_tensor = torch.tensor(input_features.input_mask, dtype=torch.long)
-        segment_ids_tensor = torch.tensor(input_features.segment_ids, dtype=torch.long)
+        input_features = convert_example_to_features(input_example,
+                                                     self._max_sequence_length,
+                                                     self._bert_tokenizer)
+        input_ids_tensor = torch.tensor(input_features.input_ids,
+                                        dtype=torch.long)
+        input_mask_tensor = torch.tensor(input_features.input_mask,
+                                         dtype=torch.long)
+        segment_ids_tensor = torch.tensor(input_features.segment_ids,
+                                          dtype=torch.long)
         fields['input_ids'] = MetadataField(input_ids_tensor)
         fields['token_type_ids'] = MetadataField(segment_ids_tensor)
         fields['attention_mask'] = MetadataField(input_mask_tensor)
 
         if label:
             fields['label'] = LabelField(label)
-
-        #metadata = {"premise_tokens": [x.text for x in premise_tokens],
-        #            "hypothesis_tokens": [x.text for x in hypothesis_tokens],
-        #            "premise_tags": [x.tag_ for x in premise_tokens],
-        #            "hypothesis_tags": [x.tag_ for x in hypothesis_tokens]}
-        #fields["metadata"] = MetadataField(metadata)
         return Instance(fields)
