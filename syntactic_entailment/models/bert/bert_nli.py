@@ -45,7 +45,7 @@ BERT_BASE_CONFIG = {"attention_probs_dropout_prob": 0.1,
                    }
 
 
-@Model.register('bert-sc')
+@Model.register('bert-nli')
 class BertForSequenceClassification(Model):
     def __init__(self,
                  vocab: Vocabulary,

@@ -26,7 +26,7 @@
   "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
-    "type": "bert-sc",
+    "type": "bert-nli",
     //"bert_model_type": "bert_base",
     "bert_model_type": "bert-base-uncased",
     // Path to a tarball containing bert_config.json and pytorch_model.bin that are outputs from HuggingFace code
