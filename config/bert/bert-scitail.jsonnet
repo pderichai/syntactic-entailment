@@ -44,11 +44,14 @@
     "batch_size": 40
   },
   "trainer": {
-    "num_epochs": 1,
+    "num_epochs": 3,
     "cuda_device": 0,
+    "validation_metric": "+accuracy",
+    //"grad_clipping": 5.0,
     "optimizer": {
       "type": "adam",
-      "betas": [0.9, 0.9]
+      //"betas": [0.9, 0.9],
+      "lr": 0.00005
     }
   }
 }

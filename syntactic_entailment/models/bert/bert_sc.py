@@ -102,9 +102,14 @@ class BertForSequenceClassification(Model):
                                     torch.stack(token_type_ids),
                                     torch.stack(attention_mask))
         output_dict = {"logits": logits}
-        if self.training:
+        if label is not None:
             loss = self._loss(logits, label.long().view(-1))
             self._accuracy(logits, label)
             output_dict["loss"] = loss
 
         return output_dict
+
+    def get_metrics(self, reset: bool = False) -> Dict[str, float]:
+        return {
+            'accuracy': self._accuracy.get_metric(reset),
+        }
