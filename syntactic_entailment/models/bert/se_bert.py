@@ -1,13 +1,16 @@
 from typing import Dict, List, Any
 import logging
+from overrides import overrides
 
 import torch
-from overrides import overrides
-from pytorch_pretrained_bert import BertForSequenceClassification as HuggingFaceBertSC
-
 from allennlp.models.model import Model
+from allennlp.modules import TextFieldEmbedder
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.training.metrics import CategoricalAccuracy
+from allennlp.models.archival import load_archive
+
+
+from syntactic_entailment.modules.se_bert_sequence_classification import SyntacticEntailmentBertForSequenceClassification as SEBertForSC
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -17,15 +20,28 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 class SyntacticEntailmentBert(Model):
     def __init__(self,
                  vocab: Vocabulary,
+                 parser_model_path: str,
+                 parser_cuda_device: int,
+                 freeze_parser: bool,
                  pretrained_bert_model_file: str,
                  num_labels: int) -> None:
         super().__init__(vocab)
-        self.bert_sc_model = HuggingFaceBertSC.from_pretrained(
+        self.bert_sc_model = SEBertForSC.from_pretrained(
             pretrained_bert_model_file, num_labels=num_labels)
         self._loaded_sc_weights = False
 
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
+
+        self._parser = load_archive(parser_model_path,
+                                    cuda_device=parser_cuda_device).model
+        self._parser._head_sentinel.requires_grad = False
+        for child in self._parser.children():
+            for param in child.parameters():
+                param.requires_grad = False
+        if not freeze_parser:
+            for param in self._parser.encoder.parameters():
+                param.requires_grad = True
 
     @overrides
     def forward(self,  # type: ignore
@@ -39,6 +55,10 @@ class SyntacticEntailmentBert(Model):
                 label: torch.IntTensor = None,
                 metadata: List[Dict[str, Any]] = None) -> Dict[str, torch.Tensor]:
         # pylint: disable=arguments-differ
+        # running the parser
+        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
+        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+
         logits = self.bert_sc_model(torch.stack(input_ids),
                                     torch.stack(token_type_ids),
                                     torch.stack(attention_mask))

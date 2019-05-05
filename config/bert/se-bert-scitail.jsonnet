@@ -3,11 +3,6 @@
     "type": "se-bert-snli",
     "pretrained_bert_model_file": "bert-base-uncased",
     "token_indexers": {
-      "se-tokens": {
-        "namespace": "se-tokens",
-        "type": "single_id",
-        "lowercase_tokens": true
-      },
       "tokens": {
         "type": "single_id"
       }
@@ -23,6 +18,9 @@
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
     "type": "se-bert",
+    "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
+    "parser_cuda_device": 0,
+    "freeze_parser": true,
     "pretrained_bert_model_file": "bert-base-uncased",
     "num_labels": 2
   },
@@ -38,5 +36,10 @@
       "type": "adam",
       "lr": 0.00005
     }
+  },
+  "vocabulary": {
+    "type": "se-vocabulary",
+    "parser_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
+    "pos_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt"
   }
 }
