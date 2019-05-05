@@ -13,7 +13,6 @@
       }
     },
     "tokenizer": {
-      //"end_tokens": ["@@NULL@@"],
       "word_splitter": {
         "type": "spacy",
         "pos_tags": true
@@ -23,8 +22,9 @@
   "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
-    "type": "se-bert-nli",
+    "type": "se-bert",
     "pretrained_bert_model_file": "bert-base-uncased",
+    "num_labels": 2
   },
   "iterator": {
     "type": "basic",

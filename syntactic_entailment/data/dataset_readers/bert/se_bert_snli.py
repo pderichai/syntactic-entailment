@@ -6,7 +6,7 @@ from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
-from allennlp.data.fields import Field, TextField, LabelField, MetadataField
+from allennlp.data.fields import Field, TextField, LabelField, MetadataField, SequenceLabelField
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Tokenizer, WordTokenizer
@@ -144,8 +144,8 @@ class SyntacticEntailmentSnliReader(DatasetReader):
     def __init__(self,
                  pretrained_bert_model_file: str,
                  max_sequence_length: int = 128,
-                 #tokenizer: Tokenizer = None,
-                 #token_indexers: Dict[str, TokenIndexer] = None,
+                 tokenizer: Tokenizer = None,
+                 token_indexers: Dict[str, TokenIndexer] = None,
                  lazy: bool = False) -> None:
         super().__init__(lazy)
         self._bert_tokenizer = BertTokenizer.from_pretrained(pretrained_bert_model_file)
