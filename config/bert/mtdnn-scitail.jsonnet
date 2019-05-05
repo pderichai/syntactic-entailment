@@ -1,7 +1,7 @@
 {
   "dataset_reader": {
     "type": "bert-snli",
-    "pretrained_bert_model_file": "bert-base-uncased",
+    "pretrained_bert_model_file": "pretrained-models/mt-dnn-base",
   },
   "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt.small",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
