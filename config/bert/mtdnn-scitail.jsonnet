@@ -3,7 +3,7 @@
     "type": "bert-snli",
     "pretrained_bert_model_file": "pretrained-models/mt-dnn-base",
   },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt.small",
+  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
     "type": "bert-nli",
@@ -16,10 +16,11 @@
   },
   "trainer": {
     "num_epochs": 3,
-    "cuda_device": -1,
+    "cuda_device": 0,
     "validation_metric": "+accuracy",
+    "grad_clipping": 1.0,
     "optimizer": {
-      "type": "adam",
+      "type": "adamax",
       "lr": 0.00005
     }
   }

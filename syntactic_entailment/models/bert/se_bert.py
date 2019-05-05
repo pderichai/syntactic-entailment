@@ -18,15 +18,11 @@ class SyntacticEntailmentBert(Model):
     def __init__(self,
                  vocab: Vocabulary,
                  pretrained_bert_model_file: str,
-                 num_labels: int,
-                 n_best_size: int = 20,
-                 max_answer_length: int = 30) -> None:
+                 num_labels: int) -> None:
         super().__init__(vocab)
         self.bert_sc_model = HuggingFaceBertSC.from_pretrained(
             pretrained_bert_model_file, num_labels=num_labels)
         self._loaded_sc_weights = False
-        self._n_best_size = n_best_size
-        self._max_answer_length = max_answer_length
 
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
