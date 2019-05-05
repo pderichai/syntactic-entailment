@@ -22,7 +22,6 @@ class BertForSequenceClassification(Model):
         super().__init__(vocab)
         self.bert_sc_model = HuggingFaceBertSC.from_pretrained(
             pretrained_bert_model_file, num_labels=num_labels)
-        self._loaded_sc_weights = False
 
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
