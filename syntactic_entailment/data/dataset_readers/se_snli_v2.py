@@ -72,8 +72,6 @@ class SyntacticEntailmentSnliReader(DatasetReader):
         hypothesis_tokens = self._tokenizer.tokenize(hypothesis)
         hypothesis_tags = [x.tag_ for x in hypothesis_tokens]
 
-        #fields['premise'] = TextField(premise_tokens, {'se-tokens': self._token_indexers['se-tokens']})
-        #fields['hypothesis'] = TextField(hypothesis_tokens, {'se-tokens': self._token_indexers['se-tokens']})
         fields['premise'] = TextField(premise_tokens, self._token_indexers)
         fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
         fields['premise_tags'] = SequenceLabelField(premise_tags,
