@@ -33,8 +33,9 @@
     "num_epochs": 3,
     "cuda_device": 0,
     "validation_metric": "+accuracy",
+    "grad_clipping": 1.0,
     "optimizer": {
-      "type": "adam",
+      "type": "adamax",
       "lr": 0.00005
     }
   },
