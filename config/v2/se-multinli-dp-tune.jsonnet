@@ -63,7 +63,7 @@
     ],
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
     "parser_cuda_device": 0,
-    "freeze_parser": true
+    "freeze_parser": false
   },
   "iterator": {
     "type": "bucket",
