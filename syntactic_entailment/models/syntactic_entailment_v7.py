@@ -9,7 +9,7 @@ from allennlp.modules import FeedForward, InputVariationalDropout
 from allennlp.modules.matrix_attention.legacy_matrix_attention import LegacyMatrixAttention
 from allennlp.modules import Seq2SeqEncoder, SimilarityFunction, TextFieldEmbedder
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
-from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum, replace_masked_values
+from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum, replace_masked_values, get_final_encoder_states
 from allennlp.training.metrics import CategoricalAccuracy
 
 from allennlp.models.archival import load_archive
@@ -56,7 +56,6 @@ class SyntacticEntailment(Model):
                  inference_encoder: Seq2SeqEncoder,
                  output_feedforward: FeedForward,
                  output_logit: FeedForward,
-                 project_syntax: FeedForward,
                  parser_model_path: str,
                  parser_cuda_device: int,
                  freeze_parser: bool,
@@ -94,8 +93,6 @@ class SyntacticEntailment(Model):
 
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
-
-        self._project_syntax = project_syntax
 
         self._parser = load_archive(parser_model_path,
                                     cuda_device=parser_cuda_device).model
@@ -214,15 +211,19 @@ class SyntacticEntailment(Model):
         )
 
         # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoder_final_state']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoder_final_state']
-        projected_p_encoded_parse = self._project_syntax(p_encoded_parse)
-        projected_h_encoded_parse = self._project_syntax(h_encoded_parse)
+        encoded_p_parse, p_parse_mask = self._parser(premise, premise_tags)
+        p_parse_encoder_final_state = get_final_encoder_states(encoded_p_parse, p_parse_mask)
+        encoded_h_parse, h_parse_mask = self._parser(hypothesis, hypothesis_tags)
+        h_parse_encoder_final_state = get_final_encoder_states(encoded_h_parse, h_parse_mask)
 
         # Now concat
         # (batch_size, model_dim * 2 * 4)
-        v_all = torch.cat([v_a_avg, v_a_max, v_b_avg, v_b_max,
-                           projected_p_encoded_parse, projected_h_encoded_parse], dim=1)
+        v_all = torch.cat([v_a_avg,
+                           v_a_max,
+                           v_b_avg,
+                           v_b_max,
+                           p_parse_encoder_final_state,
+                           h_parse_encoder_final_state], dim=1)
 
         # the final MLP -- apply dropout to input, and MLP applies to output & hidden
         if self.dropout:

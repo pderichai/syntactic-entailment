@@ -12,8 +12,8 @@
             }
         }
     },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+    "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+    "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
     "model": {
         "type": "syntactic-entailment-v7",
         "dropout": 0.5,
@@ -53,9 +53,9 @@
             "bidirectional": true
         },
         "output_feedforward": {
-            "input_dim": 3200,
-            "num_layers": 1,
-            "hidden_dims": 300,
+            "input_dim": 4000,
+            "num_layers": 2,
+            "hidden_dims": [2000, 300],
             "activations": "relu",
             "dropout": 0.5
         },
@@ -64,13 +64,6 @@
             "num_layers": 1,
             "hidden_dims": 3,
             "activations": "linear"
-        },
-        "project_syntax": {
-            "input_dim": 800,
-            "num_layers": 2,
-            "hidden_dims": [600, 400],
-            "activations": "relu",
-            "dropout": 0.2
         },
         "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
         "parser_cuda_device": 0,
@@ -97,7 +90,6 @@
             "lr": 0.0004
         },
         "validation_metric": "+accuracy",
-        "num_serialized_models_to_keep": 2,
         "num_epochs": 75,
         "num_serialized_models_to_keep": 0,
         "grad_norm": 10.0,
