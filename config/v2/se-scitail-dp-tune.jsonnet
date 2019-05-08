@@ -12,7 +12,6 @@
       }
     },
     "tokenizer": {
-      //"end_tokens": ["@@NULL@@"],
       "word_splitter": {
         "type": "spacy",
         "pos_tags": true
