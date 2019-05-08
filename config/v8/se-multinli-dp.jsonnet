@@ -18,8 +18,8 @@
       }
     }
   },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt.small",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl.small",
+  "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl.small",
   "model": {
     "type": "syntactic-entailment-v8",
     "text_field_embedder": {
@@ -53,7 +53,7 @@
     "aggregate_feedforward": {
       "input_dim": 400,
       "num_layers": 2,
-      "hidden_dims": [200, 2],
+      "hidden_dims": [200, 3],
       "activations": ["relu", "linear"],
       "dropout": [0.2, 0.0]
     },
@@ -63,7 +63,7 @@
       [".*_parser.*", "prevent"]
     ],
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
-    "parser_cuda_device": 0,
+    "parser_cuda_device": -1,
     "freeze_parser": true
   },
   "iterator": {
@@ -75,7 +75,7 @@
     "num_epochs": 140,
     "num_serialized_models_to_keep": 0,
     "patience": 20,
-    "cuda_device": 0,
+    "cuda_device": -1,
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
