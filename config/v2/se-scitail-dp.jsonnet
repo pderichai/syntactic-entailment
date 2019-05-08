@@ -73,7 +73,7 @@
   },
   "trainer": {
     "num_epochs": 140,
-    "patience": 20,
+    "patience": 10,
     "cuda_device": 0,
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
