@@ -157,17 +157,16 @@ class SyntacticEntailment(Model):
             embedded_hypothesis = self._hypothesis_encoder(embedded_hypothesis, hypothesis_mask)
 
         # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+        encoded_p_parse, _ = self._parser(premise, premise_tags)
+        encoded_h_parse, _ = self._parser(hypothesis, hypothesis_tags)
 
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
 
-        encoded_p_and_syntax = torch.cat((projected_premise, p_encoded_parse), 2)
-        encoded_h_and_syntax = torch.cat((projected_hypothesis, h_encoded_parse), 2)
+        encoded_p_and_syntax = torch.cat((projected_premise, encoded_p_parse), 2)
+        encoded_h_and_syntax = torch.cat((projected_hypothesis, encoded_h_parse), 2)
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._attention(encoded_p_and_syntax,
-                                            encoded_h_and_syntax)
+        similarity_matrix = self._attention(encoded_p_and_syntax, encoded_h_and_syntax)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
