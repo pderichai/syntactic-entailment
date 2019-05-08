@@ -12,22 +12,20 @@
       }
     },
     "tokenizer": {
-      //"end_tokens": ["@@NULL@@"],
       "word_splitter": {
         "type": "spacy",
         "pos_tags": true
       }
     }
   },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
+  "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
   "model": {
     "type": "syntactic-entailment-v2",
     "text_field_embedder": {
       "token_embedders": {
         "se-tokens": {
           "type": "embedding",
-          "vocab_namespace": "se-tokens",
           "projection_dim": 200,
           "pretrained_file": "glove/glove.6B.300d.txt",
           "embedding_dim": 300,
@@ -54,7 +52,7 @@
     "aggregate_feedforward": {
       "input_dim": 400,
       "num_layers": 2,
-      "hidden_dims": [200, 2],
+      "hidden_dims": [200, 3],
       "activations": ["relu", "linear"],
       "dropout": [0.2, 0.0]
     },
@@ -65,15 +63,16 @@
     ],
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
     "parser_cuda_device": 0,
-    "freeze_parser": true
+    "freeze_parser": false
   },
   "iterator": {
     "type": "bucket",
     "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
-    "batch_size": 64
+    "batch_size": 16
   },
   "trainer": {
     "num_epochs": 140,
+    "num_serialized_models_to_keep": 0,
     "patience": 20,
     "cuda_device": 0,
     "grad_clipping": 5.0,

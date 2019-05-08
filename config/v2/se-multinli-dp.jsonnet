@@ -12,7 +12,6 @@
       }
     },
     "tokenizer": {
-      //"end_tokens": ["@@NULL@@"],
       "word_splitter": {
         "type": "spacy",
         "pos_tags": true
@@ -27,6 +26,7 @@
       "token_embedders": {
         "se-tokens": {
           "type": "embedding",
+          "vocab_namespace": "se-tokens",
           "projection_dim": 200,
           "pretrained_file": "glove/glove.6B.300d.txt",
           "embedding_dim": 300,
@@ -69,10 +69,11 @@
   "iterator": {
     "type": "bucket",
     "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
-    "batch_size": 64
+    "batch_size": 32
   },
   "trainer": {
     "num_epochs": 140,
+    "num_serialized_models_to_keep": 0,
     "patience": 20,
     "cuda_device": 0,
     "grad_clipping": 5.0,
