@@ -69,7 +69,7 @@
   "iterator": {
     "type": "bucket",
     "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
-    "batch_size": 64
+    "batch_size": 32
   },
   "trainer": {
     "num_epochs": 140,
