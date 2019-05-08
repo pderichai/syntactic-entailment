@@ -27,6 +27,7 @@
       "token_embedders": {
         "se-tokens": {
           "type": "embedding",
+          "vocab_namespace": "se-tokens",
           "projection_dim": 200,
           "pretrained_file": "glove/glove.6B.300d.txt",
           "embedding_dim": 300,
