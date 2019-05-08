@@ -3,6 +3,7 @@
     "type": "se-snli-v2",
     "token_indexers": {
       "se-tokens": {
+        "namespace": "se-tokens",
         "type": "single_id",
         "lowercase_tokens": true
       },
