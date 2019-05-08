@@ -79,7 +79,8 @@
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "adam"
+      "type": "adam",
+      "lr": 0.0005
     }
   },
   "vocabulary": {
