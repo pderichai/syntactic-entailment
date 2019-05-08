@@ -21,6 +21,7 @@
             "token_embedders": {
                 "se-tokens": {
                     "type": "embedding",
+                    "vocab_namespace": "se-tokens",
                     "pretrained_file": "glove/glove.840B.300d.txt",
                     "embedding_dim": 300,
                     "trainable": true
@@ -98,6 +99,7 @@
         "validation_metric": "+accuracy",
         "num_serialized_models_to_keep": 2,
         "num_epochs": 75,
+        "num_serialized_models_to_keep": 0,
         "grad_norm": 10.0,
         "patience": 5,
         "cuda_device": 0,
