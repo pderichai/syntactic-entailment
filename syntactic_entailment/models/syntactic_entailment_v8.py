@@ -145,8 +145,8 @@ class SyntacticEntailment(Model):
         hypothesis_mask = get_text_field_mask(hypothesis).float()
 
         # running the parser
-        encoded_p_parse, p_parse_mask = self._parser(premise, premise_tags)
-        encoded_h_parse, h_parse_mask = self._parser(hypothesis, hypothesis_tags)
+        encoded_p_parse, _ = self._parser(premise, premise_tags)
+        encoded_h_parse, _ = self._parser(hypothesis, hypothesis_tags)
 
         projected_premise = self._attend_feedforward(encoded_p_parse)
         projected_hypothesis = self._attend_feedforward(encoded_h_parse)

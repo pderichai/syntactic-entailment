@@ -63,7 +63,7 @@
       [".*_parser.*", "prevent"]
     ],
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
-    "parser_cuda_device": 2,
+    "parser_cuda_device": 0,
     "freeze_parser": true
   },
   "iterator": {
@@ -75,7 +75,7 @@
     "num_epochs": 140,
     "num_serialized_models_to_keep": 0,
     "patience": 20,
-    "cuda_device": 2,
+    "cuda_device": 0,
     "grad_clipping": 5.0,
     "validation_metric": "+accuracy",
     "optimizer": {
