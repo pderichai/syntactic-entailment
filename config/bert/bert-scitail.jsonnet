@@ -2,6 +2,12 @@
   "dataset_reader": {
     "type": "bert-snli",
     "pretrained_bert_model_file": "bert-base-uncased",
+    "tokenizer": {
+      "word_splitter": {
+        "type": "spacy",
+        "pos_tags": true
+      }
+    }
   },
   "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
