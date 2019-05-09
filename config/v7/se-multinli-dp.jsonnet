@@ -72,7 +72,7 @@
             "activations": "linear"
         },
         "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
-        "parser_cuda_device": 0,
+        "parser_cuda_device": 2,
         "freeze_parser": true,
         "initializer": [
             [".*linear_layers.*weight", {"type": "xavier_uniform"}],
@@ -100,7 +100,7 @@
         "num_serialized_models_to_keep": 0,
         "grad_norm": 10.0,
         "patience": 5,
-        "cuda_device": 0,
+        "cuda_device": 2,
         "learning_rate_scheduler": {
             "type": "reduce_on_plateau",
             "factor": 0.5,
