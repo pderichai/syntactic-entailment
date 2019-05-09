@@ -8,8 +8,8 @@
             }
         }
     },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
+  "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
     "model": {
         "type": "esim",
         "dropout": 0.5,
@@ -56,7 +56,7 @@
         "output_logit": {
             "input_dim": 300,
             "num_layers": 1,
-            "hidden_dims": 2,
+            "hidden_dims": 3,
             "activations": "linear"
         },
         "initializer": [
