@@ -10,7 +10,13 @@
             "tokens": {
               "type": "single_id"
             }
-        }
+        },
+        "tokenizer": {
+            "word_splitter": {
+                "type": "spacy",
+                "pos_tags": true
+            }
+        },
     },
     "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
     "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",

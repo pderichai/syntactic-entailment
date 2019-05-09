@@ -10,10 +10,16 @@
             "tokens": {
               "type": "single_id"
             }
-        }
+        },
+        "tokenizer": {
+            "word_splitter": {
+                "type": "spacy",
+                "pos_tags": true
+            }
+        },
     },
-    "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl.small",
-    "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl.small",
+    "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
+    "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
     "model": {
         "type": "syntactic-entailment-v7",
         "dropout": 0.5,
@@ -82,7 +88,7 @@
         "type": "bucket",
         "sorting_keys": [["premise", "num_tokens"],
                          ["hypothesis", "num_tokens"]],
-        "batch_size": 64
+        "batch_size": 32
     },
     "trainer": {
         "optimizer": {
