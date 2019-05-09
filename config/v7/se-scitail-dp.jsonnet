@@ -68,7 +68,7 @@
         "output_logit": {
             "input_dim": 300,
             "num_layers": 1,
-            "hidden_dims": 3,
+            "hidden_dims": 2,
             "activations": "linear"
         },
         "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
