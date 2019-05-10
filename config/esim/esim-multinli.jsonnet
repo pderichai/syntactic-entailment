@@ -8,8 +8,8 @@
             }
         }
     },
-  "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
-  "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
+    "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
+    "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
     "model": {
         "type": "esim",
         "dropout": 0.5,
