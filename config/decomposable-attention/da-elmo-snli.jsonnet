@@ -11,7 +11,9 @@
       }
     },
     "tokenizer": {
-      "end_tokens": ["@@NULL@@"]
+      "word_splitter": {
+        "type": "spacy",
+      }
     }
   },
   "train_data_path": "snli_1.0/snli_1.0_train.jsonl",
