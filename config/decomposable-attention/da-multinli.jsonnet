@@ -98,7 +98,7 @@
     "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
     "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
     "trainer": {
-        "cuda_device": 2,
+        "cuda_device": 0,
         "grad_clipping": 5,
         "num_epochs": 140,
         "num_serialized_models_to_keep": 0,
