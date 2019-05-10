@@ -45,7 +45,7 @@
             ],
             "hidden_dims": [
                 172,
-                2
+                3
             ],
             "input_dim": 400,
             "num_layers": 2
