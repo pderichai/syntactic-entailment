@@ -103,7 +103,7 @@
         },
         "output_logit": {
             "activations": "linear",
-            "hidden_dims": 2,
+            "hidden_dims": 3,
             "input_dim": 300,
             "num_layers": 1
         },
