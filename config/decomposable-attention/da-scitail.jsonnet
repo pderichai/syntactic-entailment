@@ -10,7 +10,6 @@
         "tokenizer": {
             "word_splitter": {
                 "type": "spacy",
-                "pos_tags": true
             }
         }
     },
