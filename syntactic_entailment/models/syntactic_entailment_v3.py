@@ -153,11 +153,11 @@ class SyntacticEntailment(Model):
             embedded_hypothesis = self._hypothesis_encoder(embedded_hypothesis, hypothesis_mask)
 
         # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+        encoded_p_parse, _ = self._parser(premise, premise_tags)
+        encoded_h_parse, _ = self._parser(hypothesis, hypothesis_tags)
 
-        embedded_p_and_syntax = torch.cat((embedded_premise, p_encoded_parse), 2)
-        embedded_h_and_syntax = torch.cat((embedded_hypothesis, h_encoded_parse), 2)
+        embedded_p_and_syntax = torch.cat((embedded_premise, encoded_p_parse), 2)
+        embedded_h_and_syntax = torch.cat((embedded_hypothesis, encoded_h_parse), 2)
 
         projected_premise = self._attend_feedforward(embedded_p_and_syntax)
         projected_hypothesis = self._attend_feedforward(embedded_h_and_syntax)
