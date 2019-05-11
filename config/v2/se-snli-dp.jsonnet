@@ -118,7 +118,7 @@
             "type": "adam",
             "lr": 0.0003137788286453939
         },
-        "patience": 10,
+        "patience": 25,
         "validation_metric": "+accuracy"
     },
     "vocabulary": {
