@@ -8,8 +8,8 @@
             }
         }
     },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+    "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+    "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
     "model": {
         "type": "esim",
         "dropout": 0.5,
@@ -80,7 +80,7 @@
             "lr": 0.0004
         },
         "validation_metric": "+accuracy",
-        "num_serialized_models_to_keep": 2,
+        "num_serialized_models_to_keep": 0,
         "num_epochs": 75,
         "grad_norm": 10.0,
         "patience": 5,
