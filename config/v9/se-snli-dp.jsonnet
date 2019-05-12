@@ -14,8 +14,8 @@
       }
     }
   },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path": "snli_1.0/snli_1.0_train.jsonl",
+  "validation_data_path": "snli_1.0/snli_1.0_dev.jsonl",
   "model": {
     "type": "se-bert",
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
@@ -23,7 +23,7 @@
     "parser_cuda_device": 0,
     "freeze_parser": true,
     "pretrained_bert_model_file": "bert-base-uncased",
-    "num_labels": 2
+    "num_labels": 3
   },
   "iterator": {
     "type": "basic",

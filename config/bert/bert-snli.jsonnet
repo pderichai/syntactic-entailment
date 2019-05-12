@@ -3,12 +3,12 @@
     "type": "bert-snli",
     "pretrained_bert_model_file": "bert-base-uncased",
   },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+  "train_data_path": "snli_1.0/snli_1.0_train.jsonl",
+  "validation_data_path": "snli_1.0/snli_1.0_dev.jsonl",
   "model": {
     "type": "bert-nli",
     "pretrained_bert_model_file": "bert-base-uncased",
-    "num_labels": 2,
+    "num_labels": 3,
   },
   "iterator": {
     "type": "basic",
