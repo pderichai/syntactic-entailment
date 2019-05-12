@@ -1,6 +1,6 @@
 {
     "dataset_reader": {
-        "type": "snli",
+        "type": "se-qqp",
         "token_indexers": {
             "tokens": {
                 "type": "single_id",
