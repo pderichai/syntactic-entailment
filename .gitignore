@@ -13,6 +13,7 @@ glove
 snli_1.0
 multinli_1.0
 ptb
+glue_data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
