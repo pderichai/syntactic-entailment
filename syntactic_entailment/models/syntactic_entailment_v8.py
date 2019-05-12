@@ -145,28 +145,27 @@ class SyntacticEntailment(Model):
         hypothesis_mask = get_text_field_mask(hypothesis).float()
 
         # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoded_text']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoded_text']
+        encoded_p_parse, _ = self._parser(premise, premise_tags)
+        encoded_h_parse, _ = self._parser(hypothesis, hypothesis_tags)
 
-        projected_premise = self._attend_feedforward(p_encoded_parse)
-        projected_hypothesis = self._attend_feedforward(h_encoded_parse)
+        projected_premise = self._attend_feedforward(encoded_p_parse)
+        projected_hypothesis = self._attend_feedforward(encoded_h_parse)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._attention(p_encoded_parse,
-                                            h_encoded_parse)
+        similarity_matrix = self._attention(projected_premise, projected_hypothesis)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
         # Shape: (batch_size, premise_length, embedding_dim)
-        attended_hypothesis = weighted_sum(h_encoded_parse, p2h_attention)
+        attended_hypothesis = weighted_sum(encoded_h_parse, p2h_attention)
 
         # Shape: (batch_size, hypothesis_length, premise_length)
         h2p_attention = masked_softmax(similarity_matrix.transpose(1, 2).contiguous(), premise_mask)
         # Shape: (batch_size, hypothesis_length, embedding_dim)
-        attended_premise = weighted_sum(p_encoded_parse, h2p_attention)
+        attended_premise = weighted_sum(encoded_p_parse, h2p_attention)
 
-        premise_compare_input = torch.cat([p_encoded_parse, attended_hypothesis], dim=-1)
-        hypothesis_compare_input = torch.cat([h_encoded_parse, attended_premise], dim=-1)
+        premise_compare_input = torch.cat([encoded_p_parse, attended_hypothesis], dim=-1)
+        hypothesis_compare_input = torch.cat([encoded_h_parse, attended_premise], dim=-1)
 
         compared_premise = self._compare_feedforward(premise_compare_input)
         compared_premise = compared_premise * premise_mask.unsqueeze(-1)

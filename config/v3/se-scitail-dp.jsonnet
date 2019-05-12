@@ -1,89 +1,129 @@
 {
-  "dataset_reader": {
-    "type": "se-snli-v2",
-    "token_indexers": {
-      "se-tokens": {
-        "namespace": "se-tokens",
-        "type": "single_id",
-        "lowercase_tokens": true
-      },
-      "tokens": {
-        "type": "single_id"
-      }
-    },
-    "tokenizer": {
-      //"end_tokens": ["@@NULL@@"],
-      "word_splitter": {
-        "type": "spacy",
-        "pos_tags": true
-      }
-    }
-  },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
-  "model": {
-    "type": "syntactic-entailment-v3",
-    "text_field_embedder": {
-      "token_embedders": {
-        "se-tokens": {
-          "type": "embedding",
-          "projection_dim": 200,
-          "pretrained_file": "glove/glove.6B.300d.txt",
-          "embedding_dim": 300,
-          "trainable": false,
+    "dataset_reader": {
+        "type": "se-snli-v2",
+        "token_indexers": {
+            "se-tokens": {
+                "type": "single_id",
+                "lowercase_tokens": true,
+                "namespace": "se-tokens"
+            },
+            "tokens": {
+                "type": "single_id"
+            }
+        },
+        "tokenizer": {
+            "word_splitter": {
+                "type": "spacy",
+                "pos_tags": true
+            }
         }
-      },
-      "allow_unmatched_keys": true
     },
-    "attend_feedforward": {
-      "input_dim": 1000,
-      "num_layers": 2,
-      "hidden_dims": 200,
-      "activations": "relu",
-      "dropout": 0.2
+    "iterator": {
+        "type": "bucket",
+        "batch_size": 64,
+        "sorting_keys": [
+            [
+                "premise",
+                "num_tokens"
+            ],
+            [
+                "hypothesis",
+                "num_tokens"
+            ]
+        ]
     },
-    "similarity_function": {"type": "dot_product"},
-    "compare_feedforward": {
-      "input_dim": 400,
-      "num_layers": 2,
-      "hidden_dims": 200,
-      "activations": "relu",
-      "dropout": 0.2
+    "model": {
+        "type": "syntactic-entailment-v3",
+        "aggregate_feedforward": {
+            "activations": [
+                "relu",
+                "linear"
+            ],
+            "dropout": [
+                0.535109429080117,
+                0
+            ],
+            "hidden_dims": [
+                172,
+                2
+            ],
+            "input_dim": 400,
+            "num_layers": 2
+        },
+        "attend_feedforward": {
+            "activations": "relu",
+            "dropout": 0.29390420271320783,
+            "hidden_dims": [
+                500,
+                200
+            ],
+            "input_dim": 1000,
+            "num_layers": 2
+        },
+        "compare_feedforward": {
+            "activations": "relu",
+            "dropout": 0.34408357390601785,
+            "hidden_dims": [
+                108,
+                200
+            ],
+            "input_dim": 400,
+            "num_layers": 2
+        },
+        "freeze_parser": true,
+        "initializer": [
+            [
+                ".*linear_layers.*weight",
+                {
+                    "type": "xavier_normal"
+                }
+            ],
+            [
+                ".*token_embedder_se-tokens._projection.*weight",
+                {
+                    "type": "xavier_normal"
+                }
+            ],
+            [
+                ".*_parser.*",
+                "prevent"
+            ]
+        ],
+        "parser_cuda_device": 0,
+        "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
+        "similarity_function": {
+            "type": "dot_product"
+        },
+        "text_field_embedder": {
+            "allow_unmatched_keys": true,
+            "token_embedders": {
+                "se-tokens": {
+                    "type": "embedding",
+                    "embedding_dim": 300,
+                    "pretrained_file": "glove/glove.6B.300d.txt",
+                    "projection_dim": 200,
+                    "trainable": false,
+                    "vocab_namespace": "se-tokens"
+                }
+            }
+        }
     },
-    "aggregate_feedforward": {
-      "input_dim": 400,
-      "num_layers": 2,
-      "hidden_dims": [200, 2],
-      "activations": ["relu", "linear"],
-      "dropout": [0.2, 0.0]
+    "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+    "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+    "trainer": {
+        "cuda_device": 0,
+        "grad_clipping": 5,
+        "num_epochs": 140,
+        "optimizer": {
+            "type": "adam",
+            "lr": 0.0003137788286453939
+        },
+        "patience": 10,
+        "validation_metric": "+accuracy"
     },
-    "initializer": [
-      [".*linear_layers.*weight", {"type": "xavier_normal"}],
-      [".*token_embedder_se-tokens._projection.*weight", {"type": "xavier_normal"}],
-      [".*_parser.*", "prevent"]
-    ],
-    "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
-    "parser_cuda_device": 0,
-    "freeze_parser": true
-  },
-  "iterator": {
-    "type": "bucket",
-    "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
-    "batch_size": 64,
-  },
-  "trainer": {
-    "num_epochs": 140,
-    "patience": 35,
-    "cuda_device": 0,
-    "grad_clipping": 5.0,
-    "validation_metric": "+accuracy",
-    "optimizer": {
-      "type": "adam"
+    "vocabulary": {
+        "type": "se-vocabulary",
+        "parser_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
+        "pos_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt"
     }
-  },
-  "vocabulary": {
-    "type": "se-vocabulary",
-    "parser_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
-    "pos_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt"
-  }
 }

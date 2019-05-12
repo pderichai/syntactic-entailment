@@ -1,0 +1,5 @@
+{
+    "trainer:optimizer:lr": [-4.0, -1.0],
+    "model:dropout": [0.2, 0.7],
+    "model:output_feedforward:dropout": [0.2, 0.7]
+}

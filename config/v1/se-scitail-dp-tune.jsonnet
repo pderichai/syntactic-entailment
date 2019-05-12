@@ -3,6 +3,7 @@
     "type": "se-snli-v2",
     "token_indexers": {
       "se-tokens": {
+        "namespace": "se-tokens",
         "type": "single_id",
         "lowercase_tokens": true
       },
@@ -11,7 +12,6 @@
       }
     },
     "tokenizer": {
-      //"end_tokens": ["@@NULL@@"],
       "word_splitter": {
         "type": "spacy",
         "pos_tags": true
@@ -26,6 +26,7 @@
       "token_embedders": {
         "se-tokens": {
           "type": "embedding",
+          "vocab_namespace": "se-tokens",
           "projection_dim": 200,
           "pretrained_file": "glove/glove.6B.300d.txt",
           "embedding_dim": 300,
@@ -72,6 +73,7 @@
   },
   "trainer": {
     "num_epochs": 140,
+    "num_serialized_models_to_keep": 0,
     "patience": 20,
     "cuda_device": 0,
     "grad_clipping": 5.0,

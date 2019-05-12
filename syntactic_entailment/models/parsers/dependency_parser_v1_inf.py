@@ -165,14 +165,7 @@ class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
         embedded_text_input = self._input_dropout(embedded_text_input)
         encoded_text = self.encoder(embedded_text_input, mask)
 
-        encoder_final_state = get_final_encoder_states(encoded_text, mask)
-
-        output_dict = {
-            "encoder_final_state": encoder_final_state,
-            "encoded_text": encoded_text
-        }
-
-        return output_dict
+        return encoded_text, mask
 
     @overrides
     def decode(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:

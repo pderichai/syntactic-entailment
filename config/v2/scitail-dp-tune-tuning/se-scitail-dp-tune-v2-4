@@ -116,7 +116,7 @@
             "type": "dense_sparse_adam",
             "lr": 0.0003137788286453939
         },
-        "patience": 20,
+        "patience": 10,
         "validation_metric": "+accuracy"
     },
     "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",

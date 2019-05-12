@@ -56,7 +56,7 @@
         "output_logit": {
             "input_dim": 300,
             "num_layers": 1,
-            "hidden_dims": 3,
+            "hidden_dims": 2,
             "activations": "linear"
         },
         "initializer": [
@@ -72,7 +72,7 @@
         "type": "bucket",
         "sorting_keys": [["premise", "num_tokens"],
                          ["hypothesis", "num_tokens"]],
-        "batch_size": 32
+        "batch_size": 64
     },
     "trainer": {
         "optimizer": {

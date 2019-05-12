@@ -1,6 +1,9 @@
 # ycm Python autocomplete
 .ycm_extra_conf.py
 
+# pretrained models that are too large
+mt-dnn-base
+
 # serialization directories
 *out
 

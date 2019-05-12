@@ -101,7 +101,8 @@
                     "pretrained_file": "glove/glove.6B.300d.txt",
                     "projection_dim": 200,
                     "trainable": false,
-                    "type": "embedding"
+                    "type": "embedding",
+                    "vocab_namespace": "se-tokens"
                 }
             }
         },
@@ -116,7 +117,7 @@
             "type": "adam",
             "lr": 0.0009951523392902125
         },
-        "patience": 20,
+        "patience": 10,
         "validation_metric": "+accuracy"
     },
     "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
