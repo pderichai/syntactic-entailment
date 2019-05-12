@@ -8,6 +8,7 @@ from allennlp.modules import TextFieldEmbedder
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.models.archival import load_archive
+from allennlp.nn.util import get_text_field_mask, get_final_encoder_states
 
 
 from syntactic_entailment.modules.se_bert_sequence_classification import SyntacticEntailmentBertForSequenceClassification as SEBertForSC
@@ -59,11 +60,13 @@ class SyntacticEntailmentBert(Model):
                 metadata: List[Dict[str, Any]] = None) -> Dict[str, torch.Tensor]:
         # pylint: disable=arguments-differ
         # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoder_final_state']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoder_final_state']
+        encoded_p_parse, p_parse_mask = self._parser(premise, premise_tags)
+        p_parse_encoder_final_state = get_final_encoder_states(encoded_p_parse, p_parse_mask)
+        encoded_h_parse, h_parse_mask = self._parser(hypothesis, hypothesis_tags)
+        h_parse_encoder_final_state = get_final_encoder_states(encoded_h_parse, h_parse_mask)
 
-        logits = self.bert_sc_model(p_encoded_parse,
-                                    h_encoded_parse,
+        logits = self.bert_sc_model(p_parse_encoder_final_state,
+                                    h_parse_encoder_final_state,
                                     torch.stack(input_ids),
                                     torch.stack(token_type_ids),
                                     torch.stack(attention_mask))

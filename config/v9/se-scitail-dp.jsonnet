@@ -35,7 +35,7 @@
     "validation_metric": "+accuracy",
     "grad_clipping": 1.0,
     "optimizer": {
-      "type": "adamax",
+      "type": "adam",
       "lr": 0.00005
     }
   },
