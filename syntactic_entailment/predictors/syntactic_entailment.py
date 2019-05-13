@@ -2,6 +2,7 @@ from overrides import overrides
 from allennlp.common.util import JsonDict
 from allennlp.data import Instance
 from allennlp.predictors.predictor import Predictor
+from numpy import argmax
 
 
 @Predictor.register('syntactic-entailment')
@@ -27,10 +28,28 @@ class SyntacticEntailmentPredictor(Predictor):
         return self.predict_json({"premise" : premise, "hypothesis": hypothesis})
 
     @overrides
+    def dump_line(self, outputs: JsonDict) -> str:
+        label_idx = argmax(outputs['label_probs'])
+        return outputs['pair_id'] + ',' + self._model.vocab.get_token_from_index(label_idx, namespace='labels') + '\n'
+
+    @overrides
+    def predict_json(self, inputs: JsonDict) -> JsonDict:
+        instance = self._json_to_instance(inputs)
+        output_dict = self.predict_instance(instance)
+        output_dict['pair_id'] = inputs['pairID']
+        return output_dict
+
+    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
         Expects JSON that looks like ``{"premise": "...", "hypothesis": "..."}``.
         """
-        premise_text = json_dict["premise"]
-        hypothesis_text = json_dict["hypothesis"]
+        # snli format
+        #premise_text = json_dict["premise"]
+        #hypothesis_text = json_dict["hypothesis"]
+
+        # mnli format
+        premise_text = json_dict['sentence1']
+        hypothesis_text = json_dict['sentence2']
+
         return self._dataset_reader.text_to_instance(premise_text, hypothesis_text)
