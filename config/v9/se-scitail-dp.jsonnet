@@ -30,7 +30,7 @@
     "batch_size": 32
   },
   "trainer": {
-    "num_epochs": 5,
+    "num_epochs": 3,
     "cuda_device": 0,
     "validation_metric": "+accuracy",
     "grad_clipping": 1.0,
