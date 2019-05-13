@@ -44,10 +44,6 @@ class SyntacticEntailmentPredictor(Predictor):
         """
         Expects JSON that looks like ``{"premise": "...", "hypothesis": "..."}``.
         """
-        # snli format
-        #premise_text = json_dict["premise"]
-        #hypothesis_text = json_dict["hypothesis"]
-
         # mnli format
         premise_text = json_dict['sentence1']
         hypothesis_text = json_dict['sentence2']
