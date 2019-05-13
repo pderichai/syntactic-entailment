@@ -1,6 +1,7 @@
 from typing import Dict, Optional, List, Any
 
 import torch
+from numpy.random import randn
 
 from allennlp.predictors.predictor import Predictor
 from allennlp.common.checks import check_dimensions_match
@@ -162,8 +163,8 @@ class SyntacticEntailment(Model):
         # random noise as parse information
         batch_size, p_seq_len, _ = embedded_premise.shape
         _, h_seq_len, _ = embedded_hypothesis.shape
-        encoded_p_parse = torch.randn(batch_size, p_seq_len, self._parser.encoder.get_output_dim())
-        encoded_h_parse = torch.randn(batch_size, h_seq_len, self._parser.encoder.get_output_dim())
+        encoded_p_parse = embedded_premise.new(randn(batch_size, p_seq_len, self._parser.encoder.get_output_dim()))
+        encoded_h_parse = embedded_hypothesis.new(randn(batch_size, h_seq_len, self._parser.encoder.get_output_dim()))
 
         projected_premise = self._attend_feedforward(embedded_premise)
         projected_hypothesis = self._attend_feedforward(embedded_hypothesis)
