@@ -34,7 +34,7 @@
     "cuda_device": 1,
     "validation_metric": "+accuracy",
     "optimizer": {
-      "type": "bert_adam",
+      "type": "bert_adamax",
       "lr": 0.00005,
       "warmup": 0.1,
       "t_total": 10000,
