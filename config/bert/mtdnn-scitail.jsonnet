@@ -18,6 +18,7 @@
     "num_epochs": 5,
     "cuda_device": 0,
     "validation_metric": "+accuracy",
+    "grad_clipping": 1,
     "optimizer": {
       "type": "bert_adamax",
       "lr": 0.00005,
