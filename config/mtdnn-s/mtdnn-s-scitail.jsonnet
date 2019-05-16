@@ -37,8 +37,8 @@
     "optimizer": {
       "type": "bert_adamax",
       "lr": 0.00005,
-      "warmup": 0.1,
-      "t_total": 10000,
+      "warmup": 0.3,
+      "t_total": 4000,
       "schedule": "warmup_linear"
     }
   },
