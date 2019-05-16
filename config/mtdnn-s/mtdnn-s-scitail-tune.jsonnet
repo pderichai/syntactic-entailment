@@ -38,7 +38,7 @@
       "type": "bert_adamax",
       "lr": 0.00005,
       "warmup": 0.1,
-      "t_total": 15000,
+      "t_total": 4000,
       "schedule": "warmup_linear"
     }
   },

@@ -36,9 +36,9 @@
     "grad_clipping": 1,
     "optimizer": {
       "type": "bert_adamax",
-      "lr": 0.00002,
+      "lr": 0.00005,
       "warmup": 0.1,
-      "t_total": 15000,
+      "t_total": 10000,
       "schedule": "warmup_linear"
     }
   },
