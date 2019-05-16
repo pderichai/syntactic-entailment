@@ -15,12 +15,16 @@
     "batch_size": 32
   },
   "trainer": {
-    "num_epochs": 3,
-    "cuda_device": 1,
+    "num_epochs": 4,
+    "cuda_device": 0,
     "validation_metric": "+accuracy",
+    "grad_clipping": 1,
     "optimizer": {
-      "type": "adam",
-      "lr": 0.00005
+      "type": "bert_adam",
+      "lr": 0.00005,
+      "warmup": 0.1,
+      "t_total": 50000,
+      "schedule": "warmup_linear"
     }
   }
 }
