@@ -109,7 +109,7 @@
         }
     },
     "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
-    "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
+    "validation_data_path": "multinli_1.0/multinli_1.0_dev_mismatched.jsonl",
     "trainer": {
         "cuda_device": 0,
         "grad_clipping": 5,
