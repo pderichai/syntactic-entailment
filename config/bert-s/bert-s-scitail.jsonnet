@@ -38,7 +38,7 @@
       "type": "bert_adam",
       "lr": 0.00005,
       "warmup": 0.1,
-      "t_total": 12000,
+      "t_total": 3000,
       "schedule": "warmup_linear"
     }
   },
