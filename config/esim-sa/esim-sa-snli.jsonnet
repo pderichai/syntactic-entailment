@@ -19,7 +19,7 @@
         "type": "se-snli-v2"
     },
     "iterator": {
-        "batch_size": 64,
+        "batch_size": 32,
         "sorting_keys": [
             [
                 "premise",
