@@ -20,7 +20,7 @@
     "type": "se-bert",
     "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
     "parser_hidden_size": 800,
-    "parser_cuda_device": 2,
+    "parser_cuda_device": 0,
     "freeze_parser": true,
     "pretrained_bert_model_file": "pretrained-models/mt-dnn-base",
     "num_labels": 3
