@@ -108,7 +108,7 @@
             "num_layers": 1
         },
         "parser_cuda_device": 0,
-        "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
+        "parser_model_path": "pretrained-models/biaffine-dependency-parser-ptb.tar.gz",
         "projection_feedforward": {
             "activations": "relu",
             "hidden_dims": 300,
@@ -153,8 +153,8 @@
     },
     "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
     "vocabulary": {
-        "parser_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
-        "pos_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt",
+        "parser_vocab": "pretrained-models/biaffine-dependency-parser-ptb-vocab/tokens.txt",
+        "pos_vocab": "pretrained-models/biaffine-dependency-parser-ptb-vocab/pos.txt",
         "type": "se-vocabulary"
     }
 }
