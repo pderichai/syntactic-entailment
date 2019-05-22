@@ -30,7 +30,7 @@ docker-pycreds==0.4.0
 docutils==0.14
 ecdsa==0.13.2
 editdistance==0.5.3
-en-core-web-sm==2.0.0
+en-core-web-sm==2.1.0
 flaky==3.5.3
 Flask==1.0.3
 Flask-Cors==3.0.7
@@ -87,7 +87,7 @@ pyrsistent==0.15.2
 pytest==4.5.0
 python-dateutil==2.8.0
 python-jose==3.0.1
-pytorch-pretrained-bert==0.6.2
+pytorch-pretrained-bert==0.6.1
 pytz==2019.1
 PyYAML==5.1
 regex==2019.4.14
