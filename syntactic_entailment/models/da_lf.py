@@ -12,26 +12,13 @@ from allennlp.modules.matrix_attention.legacy_matrix_attention import LegacyMatr
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum, get_final_encoder_states
 from allennlp.training.metrics import CategoricalAccuracy
-
 from allennlp.models.archival import load_archive
 
 
-@Model.register("da-lf")
+@Model.register('da-lf')
 class SyntacticEntailment(Model):
     """
-    This ``Model`` implements the Decomposable Attention model described in `"A Decomposable
-    Attention Model for Natural Language Inference"
-    <https://www.semanticscholar.org/paper/A-Decomposable-Attention-Model-for-Natural-Languag-Parikh-T%C3%A4ckstr%C3%B6m/07a9478e87a8304fc3267fa16e83e9f3bbd98b27>`_
-    by Parikh et al., 2016, with some optional enhancements before the decomposable attention
-    actually happens.  Parikh's original model allowed for computing an "intra-sentence" attention
-    before doing the decomposable entailment step.  We generalize this to any
-    :class:`Seq2SeqEncoder` that can be applied to the premise and/or the hypothesis before
-    computing entailment.
-
-    The basic outline of this model is to get an embedded representation of each word in the
-    premise and hypothesis, align words between the two, compare the aligned phrases, and make a
-    final entailment decision based on this aggregated comparison.  Each step in this process uses
-    a feedforward network to modify the representation.
+    This ``Model`` implements the Decomposable Attention model with Late Fusion.
 
     Parameters
     ----------
@@ -51,13 +38,12 @@ class SyntacticEntailment(Model):
     aggregate_feedforward : ``FeedForward``
         This final feedforward network is applied to the concatenated, summed result of the
         ``compare_feedforward`` network, and its output is used as the entailment class logits.
-    premise_encoder : ``Seq2SeqEncoder``, optional (default=``None``)
-        After embedding the premise, we can optionally apply an encoder.  If this is ``None``, we
-        will do nothing.
-    hypothesis_encoder : ``Seq2SeqEncoder``, optional (default=``None``)
-        After embedding the hypothesis, we can optionally apply an encoder.  If this is ``None``,
-        we will use the ``premise_encoder`` for the encoding (doing nothing if ``premise_encoder``
-        is also ``None``).
+    parser_model_path : str
+        This specifies the filepath of the pretrained parser.
+    parser_cuda_device : int
+        The cuda device that the pretrained parser should run on.
+    freeze_parser : bool
+        Whether to allow the parser to be fine-tuned.
     initializer : ``InitializerApplicator``, optional (default=``InitializerApplicator()``)
         Used to initialize the model parameters.
     regularizer : ``RegularizerApplicator``, optional (default=``None``)
@@ -125,10 +111,12 @@ class SyntacticEntailment(Model):
         ----------
         premise : Dict[str, torch.LongTensor]
             From a ``TextField``
+        premise_tags : TODO
         hypothesis : Dict[str, torch.LongTensor]
-            From a ``TextField``
+            From a ``TextField``.
+        hypothesis_tags: TODO
         label : torch.IntTensor, optional, (default = None)
-            From a ``LabelField``
+            From a ``LabelField``.
         metadata : ``List[Dict[str, Any]]``, optional, (default = None)
             Metadata containing the original tokenization of the premise and
             hypothesis with 'premise_tokens' and 'hypothesis_tokens' keys respectively.
@@ -198,19 +186,17 @@ class SyntacticEntailment(Model):
         label_logits = self._aggregate_feedforward(aggregate_input)
         label_probs = torch.nn.functional.softmax(label_logits, dim=-1)
 
-        output_dict = {"label_logits": label_logits,
-                       "label_probs": label_probs,
-                       "h2p_attention": h2p_attention,
-                       "p2h_attention": p2h_attention}
+        output_dict = {'logits': label_logits,
+                       'label_probs': label_probs}
 
         if label is not None:
             loss = self._loss(label_logits, label.long().view(-1))
             self._accuracy(label_logits, label)
-            output_dict["loss"] = loss
+            output_dict['loss'] = loss
 
         if metadata is not None:
-            output_dict["premise_tokens"] = [x["premise_tokens"] for x in metadata]
-            output_dict["hypothesis_tokens"] = [x["hypothesis_tokens"] for x in metadata]
+            output_dict['premise_tokens'] = [x['premise_tokens'] for x in metadata]
+            output_dict['hypothesis_tokens'] = [x['hypothesis_tokens'] for x in metadata]
 
         return output_dict
 

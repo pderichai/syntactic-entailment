@@ -12,7 +12,7 @@
     "validation_data_path": "/ptb/wsj.dev.notrace.trees",
     "test_data_path": "/ptb/wsj.test.notrace.trees",
     "model": {
-        "type": "syntactic_entailment_constituency_parser",
+        "type": "syntactic-entailment-constituency-parser",
         "text_field_embedder": {
             "elmo": {
                 "type": "elmo_token_embedder",

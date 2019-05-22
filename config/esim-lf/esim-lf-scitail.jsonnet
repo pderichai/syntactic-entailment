@@ -16,7 +16,7 @@
                 "type": "spacy"
             }
         },
-        "type": "se-snli-v2"
+        "type": "se-snli"
     },
     "iterator": {
         "batch_size": 64,

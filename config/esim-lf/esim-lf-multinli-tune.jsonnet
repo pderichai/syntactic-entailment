@@ -1,6 +1,6 @@
 {
     "dataset_reader": {
-        "type": "se-snli-v2",
+        "type": "se-snli",
         "token_indexers": {
             "se-tokens": {
                 "namespace": "se-tokens",

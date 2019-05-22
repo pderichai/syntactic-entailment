@@ -6,7 +6,7 @@ from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
-from allennlp.data.fields import Field, TextField, LabelField, MetadataField
+from allennlp.data.fields import Field, TextField, LabelField, MetadataField, SequenceLabelField
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Tokenizer, WordTokenizer
@@ -14,7 +14,7 @@ from allennlp.data.tokenizers import Tokenizer, WordTokenizer
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
-@DatasetReader.register("se_snli")
+@DatasetReader.register("se-snli")
 class SyntacticEntailmentSnliReader(DatasetReader):
     """
     Reads a file from the Stanford Natural Language Inference (SNLI) dataset.  This data is
@@ -68,15 +68,24 @@ class SyntacticEntailmentSnliReader(DatasetReader):
         # pylint: disable=arguments-differ
         fields: Dict[str, Field] = {}
         premise_tokens = self._tokenizer.tokenize(premise)
+        premise_tags = [x.tag_ for x in premise_tokens]
         hypothesis_tokens = self._tokenizer.tokenize(hypothesis)
+        hypothesis_tags = [x.tag_ for x in hypothesis_tokens]
+
         fields['premise'] = TextField(premise_tokens, self._token_indexers)
         fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
+        fields['premise_tags'] = SequenceLabelField(premise_tags,
+                                                    fields['premise'],
+                                                    label_namespace='pos')
+        fields['hypothesis_tags'] = SequenceLabelField(hypothesis_tags,
+                                                       fields['hypothesis'],
+                                                       label_namespace='pos')
         if label:
             fields['label'] = LabelField(label)
 
-        metadata = {"premise_tokens": [x.text for x in premise_tokens],
-                    "hypothesis_tokens": [x.text for x in hypothesis_tokens],
-                    "premise_tags": [x.tag_ for x in premise_tokens],
-                    "hypothesis_tags": [x.tag_ for x in hypothesis_tokens]}
-        fields["metadata"] = MetadataField(metadata)
+        metadata = {'premise_tokens': [x.text for x in premise_tokens],
+                    'hypothesis_tokens': [x.text for x in hypothesis_tokens],
+                    'premise_tags': [x.tag_ for x in premise_tokens],
+                    'hypothesis_tags': [x.tag_ for x in hypothesis_tokens]}
+        fields['metadata'] = MetadataField(metadata)
         return Instance(fields)

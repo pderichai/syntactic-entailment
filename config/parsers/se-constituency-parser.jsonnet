@@ -9,7 +9,7 @@
     "validation_data_path": "ptb/22.auto.clean",
     "test_data_path": "ptb/23.auto.clean",
     "model": {
-      "type": "syntactic-entailment-constituency-parser-v2",
+      "type": "syntactic-entailment-constituency-parser",
       "text_field_embedder": {
         "token_embedders": {
           "tokens": {
