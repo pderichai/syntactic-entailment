@@ -33,7 +33,7 @@
         ]
     },
     "model": {
-        "type": "syntactic-entailment-v2",
+        "type": "da-sa",
         "aggregate_feedforward": {
             "activations": [
                 "relu",

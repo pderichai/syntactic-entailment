@@ -33,28 +33,28 @@
         ]
     },
     "model": {
-        "type": "da-sa",
+        "type": "da-lf",
         "aggregate_feedforward": {
             "activations": [
                 "relu",
                 "linear"
             ],
             "dropout": [
-                0.535109429080117,
+                0.3,
                 0
             ],
             "hidden_dims": [
-                172,
+                150,
                 3
             ],
-            "input_dim": 400,
+            "input_dim": 2000,
             "num_layers": 2
         },
         "attend_feedforward": {
             "activations": "relu",
-            "dropout": 0.29390420271320783,
+            "dropout": 0.3,
             "hidden_dims": [
-                295,
+                250,
                 200
             ],
             "input_dim": 200,
@@ -62,9 +62,9 @@
         },
         "compare_feedforward": {
             "activations": "relu",
-            "dropout": 0.34408357390601785,
+            "dropout": 0.3,
             "hidden_dims": [
-                108,
+                400,
                 200
             ],
             "input_dim": 400,
@@ -109,16 +109,17 @@
         }
     },
     "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
-    "validation_data_path": "multinli_1.0/multinli_1.0_dev_mismatched.jsonl",
+    "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
     "trainer": {
         "cuda_device": 0,
         "grad_clipping": 5,
         "num_epochs": 140,
+        "num_serialized_models_to_keep": 0,
         "optimizer": {
             "type": "adam",
-            "lr": 0.0003137788286453939
+            "lr": 0.0003
         },
-        "patience": 25,
+        "patience": 10,
         "validation_metric": "+accuracy"
     },
     "vocabulary": {

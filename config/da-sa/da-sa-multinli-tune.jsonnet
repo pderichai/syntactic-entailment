@@ -21,7 +21,7 @@
   "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
   "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
   "model": {
-    "type": "syntactic-entailment-v2",
+    "type": "da-sa",
     "text_field_embedder": {
       "token_embedders": {
         "se-tokens": {

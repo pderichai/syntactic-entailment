@@ -33,7 +33,7 @@
         ]
     },
     "model": {
-        "type": "da-sa",
+        "type": "da-sa-noise-ab",
         "aggregate_feedforward": {
             "activations": [
                 "relu",

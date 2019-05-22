@@ -33,7 +33,7 @@
         ]
     },
     "model": {
-        "type": "da-sa",
+        "type": "da-sa-noise-abl",
         "aggregate_feedforward": {
             "activations": [
                 "relu",
@@ -45,7 +45,7 @@
             ],
             "hidden_dims": [
                 172,
-                3
+                2
             ],
             "input_dim": 400,
             "num_layers": 2
@@ -108,8 +108,8 @@
             }
         }
     },
-    "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
-    "validation_data_path": "multinli_1.0/multinli_1.0_dev_mismatched.jsonl",
+    "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+    "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
     "trainer": {
         "cuda_device": 0,
         "grad_clipping": 5,

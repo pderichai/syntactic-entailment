@@ -33,7 +33,7 @@
         ]
     },
     "model": {
-        "type": "da-sa",
+        "type": "da-sa-noise-abl",
         "aggregate_feedforward": {
             "activations": [
                 "relu",
@@ -108,8 +108,8 @@
             }
         }
     },
-    "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
-    "validation_data_path": "multinli_1.0/multinli_1.0_dev_mismatched.jsonl",
+    "train_data_path": "snli_1.0/snli_1.0_train.jsonl",
+    "validation_data_path": "snli_1.0/snli_1.0_dev.jsonl",
     "trainer": {
         "cuda_device": 0,
         "grad_clipping": 5,
