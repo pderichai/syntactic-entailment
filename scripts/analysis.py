@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 
+"""
+Generates analysis TSVs to analyze corrected/incorrected examples.
+"""
+
 import csv
 import argparse
 
 
 def main():
     parser = argparse.ArgumentParser(description='Generate analysis tsv.')
-    parser.add_argument('csv1')
-    parser.add_argument('csv2')
-    parser.add_argument('out1')
-    parser.add_argument('out2')
+    parser.add_argument('csv1', description='Output analysis prediction csv of vanilla model.')
+    parser.add_argument('csv2', description='Output analysis prediction csv of variant model.')
+    parser.add_argument('out1', description='Where to save corrected examples.')
+    parser.add_argument('out2', description='Where to save incorrected exmaples.')
     args = parser.parse_args()
 
     with open(args.csv1, 'r') as csv1, open(args.csv2, 'r') as csv2, open(args.out1, 'w') as out1, open(args.out2, 'w') as out2:
