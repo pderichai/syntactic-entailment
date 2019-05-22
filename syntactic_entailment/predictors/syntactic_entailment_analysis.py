@@ -29,10 +29,13 @@ class SyntacticEntailmentAnalysisPredictor(Predictor):
 
     @overrides
     def dump_line(self, outputs: JsonDict) -> str:
-        #label_idx = argmax(outputs['label_probs'])
-        label_idx = argmax(outputs['logits'])
-        #return outputs['pair_id'] + ',' + self._model.vocab.get_token_from_index(label_idx, namespace='labels') + ',' + outputs['gold_label'] + ',' + outputs['premise'], + ',' + outputs['hypothesis'] + '\n'
-        return self._model.vocab.get_token_from_index(label_idx, namespace='labels') + '\t' + outputs['gold_label'] + '\t' + outputs['premise'] + '\t' + outputs['hypothesis'] + '\n'
+        # Some models only have 'logits' key.
+        # label_idx = argmax(outputs['logits'])
+        label_idx = argmax(outputs['label_probs'])
+        return (self._model.vocab.get_token_from_index(label_idx, namespace='labels') + '\t'
+                + outputs['gold_label'] + '\t'
+                + outputs['premise'] + '\t'
+                + outputs['hypothesis'] + '\n')
 
     @overrides
     def predict_json(self, inputs: JsonDict) -> JsonDict:

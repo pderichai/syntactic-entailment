@@ -29,6 +29,8 @@ class SyntacticEntailmentPredictor(Predictor):
 
     @overrides
     def dump_line(self, outputs: JsonDict) -> str:
+        # Some models only have 'logits' key.
+        # label_idx = argmax(outputs['logits'])
         label_idx = argmax(outputs['label_probs'])
         return outputs['pair_id'] + ',' + self._model.vocab.get_token_from_index(label_idx, namespace='labels') + '\n'
 
