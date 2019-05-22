@@ -130,7 +130,7 @@
                 }
             }
         },
-        "type": "syntactic-entailment-v11"
+        "type": "esim-sa"
     },
     "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
     "trainer": {

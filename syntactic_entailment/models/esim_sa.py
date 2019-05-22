@@ -15,7 +15,7 @@ from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.models.archival import load_archive
 
 
-@Model.register("syntactic-entailment-v7")
+@Model.register("esim-sa")
 class SyntacticEntailment(Model):
     """
     This ``Model`` implements the ESIM sequence model described in `"Enhanced LSTM for Natural Language Inference"
@@ -155,8 +155,15 @@ class SyntacticEntailment(Model):
         encoded_premise = self._encoder(embedded_premise, premise_mask)
         encoded_hypothesis = self._encoder(embedded_hypothesis, hypothesis_mask)
 
+        # running the parser
+        encoded_p_parse, _ = self._parser(premise, premise_tags)
+        encoded_h_parse, _ = self._parser(hypothesis, hypothesis_tags)
+
+        encoded_p_and_syntax = torch.cat((encoded_premise, encoded_p_parse), 2)
+        encoded_h_and_syntax = torch.cat((encoded_hypothesis, encoded_h_parse), 2)
+
         # Shape: (batch_size, premise_length, hypothesis_length)
-        similarity_matrix = self._matrix_attention(encoded_premise, encoded_hypothesis)
+        similarity_matrix = self._matrix_attention(encoded_p_and_syntax, encoded_h_and_syntax)
 
         # Shape: (batch_size, premise_length, hypothesis_length)
         p2h_attention = masked_softmax(similarity_matrix, hypothesis_mask)
@@ -210,20 +217,12 @@ class SyntacticEntailment(Model):
                 hypothesis_mask, 1, keepdim=True
         )
 
-        # running the parser
-        encoded_p_parse, p_parse_mask = self._parser(premise, premise_tags)
-        p_parse_encoder_final_state = get_final_encoder_states(encoded_p_parse, p_parse_mask)
-        encoded_h_parse, h_parse_mask = self._parser(hypothesis, hypothesis_tags)
-        h_parse_encoder_final_state = get_final_encoder_states(encoded_h_parse, h_parse_mask)
-
         # Now concat
         # (batch_size, model_dim * 2 * 4)
         v_all = torch.cat([v_a_avg,
                            v_a_max,
                            v_b_avg,
-                           v_b_max,
-                           p_parse_encoder_final_state,
-                           h_parse_encoder_final_state], dim=1)
+                           v_b_max], dim=1)
 
         # the final MLP -- apply dropout to input, and MLP applies to output & hidden
         if self.dropout:

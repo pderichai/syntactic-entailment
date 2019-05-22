@@ -130,7 +130,7 @@
                 }
             }
         },
-        "type": "syntactic-entailment-v7"
+        "type": "esim-lf"
     },
     "train_data_path": "multinli_1.0/multinli_1.0_train.jsonl",
     "trainer": {
