@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 POS_TO_IGNORE = {'``', "''", ':', ',', '.', 'PU', 'PUNCT', 'SYM'}
 
-@Model.register("syntactic-entailment-dependency-parser-v1-inf")
+@Model.register("syntactic-entailment-dependency-parser-inf")
 class SyntacticEntailmentDependencyParser(BiaffineDependencyParser):
     """
     This dependency parser follows the model of
