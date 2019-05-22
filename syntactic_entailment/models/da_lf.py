@@ -100,9 +100,9 @@ class SyntacticEntailment(Model):
 
     def forward(self,  # type: ignore
                 premise: Dict[str, torch.LongTensor],
-                premise_tags,
+                premise_tags : torch.LongTensor,
                 hypothesis: Dict[str, torch.LongTensor],
-                hypothesis_tags,
+                hypothesis_tags : torch.LongTensor,
                 label: torch.IntTensor = None,
                 metadata: List[Dict[str, Any]] = None) -> Dict[str, torch.Tensor]:
         # pylint: disable=arguments-differ
@@ -111,10 +111,12 @@ class SyntacticEntailment(Model):
         ----------
         premise : Dict[str, torch.LongTensor]
             From a ``TextField``
-        premise_tags : TODO
+        premise_tags : torch.LongTensor
+            The POS tags of the premise.
         hypothesis : Dict[str, torch.LongTensor]
             From a ``TextField``.
-        hypothesis_tags: TODO
+        hypothesis_tags: torch.LongTensor
+            The POS tags of the hypothesis.
         label : torch.IntTensor, optional, (default = None)
             From a ``LabelField``.
         metadata : ``List[Dict[str, Any]]``, optional, (default = None)
@@ -133,7 +135,6 @@ class SyntacticEntailment(Model):
         loss : torch.FloatTensor, optional
             A scalar loss to be optimised.
         """
-
         embedded_premise = self._text_field_embedder(premise)
         embedded_hypothesis = self._text_field_embedder(hypothesis)
         premise_mask = get_text_field_mask(premise).float()
