@@ -8,8 +8,8 @@
             }
         }
     },
-  "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
-  "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
+    "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+    "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
     "model": {
         "type": "esim",
         "dropout": 0.5,
@@ -56,7 +56,7 @@
         "output_logit": {
             "input_dim": 300,
             "num_layers": 1,
-            "hidden_dims": 3,
+            "hidden_dims": 2,
             "activations": "linear"
         },
         "initializer": [
@@ -72,7 +72,7 @@
         "type": "bucket",
         "sorting_keys": [["premise", "num_tokens"],
                          ["hypothesis", "num_tokens"]],
-        "batch_size": 32
+        "batch_size": 64
     },
     "trainer": {
         "optimizer": {
@@ -80,7 +80,7 @@
             "lr": 0.0004
         },
         "validation_metric": "+accuracy",
-        "num_serialized_models_to_keep": 2,
+        "num_serialized_models_to_keep": 0,
         "num_epochs": 75,
         "grad_norm": 10.0,
         "patience": 5,

@@ -1,0 +1,112 @@
+{
+    "dataset_reader": {
+        "token_indexers": {
+            "tokens": {
+                "lowercase_tokens": true,
+                "type": "single_id"
+            }
+        },
+        "tokenizer": {
+            "word_splitter": {
+                "pos_tags": true,
+                "type": "spacy"
+            }
+        },
+        "type": "snli"
+    },
+    "iterator": {
+        "batch_size": 64,
+        "sorting_keys": [
+            [
+                "premise",
+                "num_tokens"
+            ],
+            [
+                "hypothesis",
+                "num_tokens"
+            ]
+        ],
+        "type": "bucket"
+    },
+    "model": {
+        "aggregate_feedforward": {
+            "activations": [
+                "relu",
+                "linear"
+            ],
+            "dropout": [
+                0.4498685529912684,
+                0.0
+            ],
+            "hidden_dims": [
+                155,
+                2
+            ],
+            "input_dim": 400,
+            "num_layers": 2
+        },
+        "attend_feedforward": {
+            "activations": "relu",
+            "dropout": 0.4212691529078526,
+            "hidden_dims": [
+                261,
+                200
+            ],
+            "input_dim": 200,
+            "num_layers": 2
+        },
+        "compare_feedforward": {
+            "activations": "relu",
+            "dropout": 0.37297283660919067,
+            "hidden_dims": [
+                397,
+                200
+            ],
+            "input_dim": 400,
+            "num_layers": 2
+        },
+        "initializer": [
+            [
+                ".*linear_layers.*weight",
+                {
+                    "type": "xavier_normal"
+                }
+            ],
+            [
+                ".*token_embedder_tokens\\._projection.*weight",
+                {
+                    "type": "xavier_normal"
+                }
+            ]
+        ],
+        "similarity_function": {
+            "type": "dot_product"
+        },
+        "text_field_embedder": {
+            "token_embedders": {
+                "tokens": {
+                    "embedding_dim": 300,
+                    "pretrained_file": "glove/glove.6B.300d.txt",
+                    "projection_dim": 200,
+                    "trainable": false,
+                    "type": "embedding"
+                }
+            }
+        },
+        "type": "decomposable_attention"
+    },
+    "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
+    "trainer": {
+        "cuda_device": 0,
+        "grad_clipping": 5,
+        "num_epochs": 140,
+        "num_serialized_models_to_keep": 0,
+        "optimizer": {
+            "lr": 0.0003569843026758792,
+            "type": "adam"
+        },
+        "patience": 20,
+        "validation_metric": "+accuracy"
+    },
+    "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt"
+}

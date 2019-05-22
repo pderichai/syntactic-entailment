@@ -10,7 +10,7 @@ from allennlp.modules import FeedForward
 from allennlp.modules import Seq2SeqEncoder, SimilarityFunction, TimeDistributed, TextFieldEmbedder
 from allennlp.modules.matrix_attention.legacy_matrix_attention import LegacyMatrixAttention
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
-from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
+from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum, get_final_encoder_states
 from allennlp.training.metrics import CategoricalAccuracy
 
 from allennlp.models.archival import load_archive
@@ -186,11 +186,13 @@ class SyntacticEntailment(Model):
         compared_hypothesis = compared_hypothesis.sum(dim=1)
 
         # running the parser
-        p_encoded_parse = self._parser(premise, premise_tags)['encoder_final_state']
-        h_encoded_parse = self._parser(hypothesis, hypothesis_tags)['encoder_final_state']
+        encoded_p_parse, p_parse_mask = self._parser(premise, premise_tags)
+        p_parse_encoder_final_state = get_final_encoder_states(encoded_p_parse, p_parse_mask)
+        encoded_h_parse, h_parse_mask = self._parser(hypothesis, hypothesis_tags)
+        h_parse_encoder_final_state = get_final_encoder_states(encoded_h_parse, h_parse_mask)
 
-        compared_premise = torch.cat([compared_premise, p_encoded_parse], dim=-1)
-        compared_hypothesis = torch.cat([compared_hypothesis, h_encoded_parse], dim=-1)
+        compared_premise = torch.cat([compared_premise, p_parse_encoder_final_state], dim=-1)
+        compared_hypothesis = torch.cat([compared_hypothesis, h_parse_encoder_final_state], dim=-1)
 
         aggregate_input = torch.cat([compared_premise, compared_hypothesis], dim=-1)
         label_logits = self._aggregate_feedforward(aggregate_input)

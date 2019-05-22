@@ -1,6 +1,9 @@
 # ycm Python autocomplete
 .ycm_extra_conf.py
 
+# pretrained models that are too large
+mt-dnn-base
+
 # serialization directories
 *out
 
@@ -10,6 +13,8 @@ glove
 snli_1.0
 multinli_1.0
 ptb
+glue_data
+hans
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -57,6 +57,7 @@ class SyntacticEntailment(Model):
                  output_feedforward: FeedForward,
                  output_logit: FeedForward,
                  parser_model_path: str,
+                 parser_cuda_device: int,
                  freeze_parser: bool,
                  dropout: float = 0.5,
                  initializer: InitializerApplicator = InitializerApplicator(),
@@ -93,11 +94,8 @@ class SyntacticEntailment(Model):
         self._accuracy = CategoricalAccuracy()
         self._loss = torch.nn.CrossEntropyLoss()
 
-        self._device = torch.device("cuda:0" if torch.cuda.is_available()
-                                    else "cpu")
-
         self._parser = load_archive(parser_model_path,
-                                    cuda_device=0).model
+                                    cuda_device=parser_cuda_device).model
         self._parser._head_sentinel.requires_grad = False
         for child in self._parser.children():
             for param in child.parameters():
