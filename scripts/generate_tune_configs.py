@@ -50,7 +50,7 @@ def main():
 
         new_config_file = open(
             os.path.join(tune_config_dir,
-                         config_filename.split('.')[0] + '-' + model_version + '-' + str(i + 1)),
+                         config_filename.split('.')[0] +  '-' + str(i + 1) + '.json'),
             'w')
         json.dump(new_config_json, new_config_file, indent=4)
 
