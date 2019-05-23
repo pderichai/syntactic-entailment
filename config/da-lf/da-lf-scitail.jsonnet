@@ -89,7 +89,7 @@
                 "prevent"
             ]
         ],
-        "parser_cuda_device": -1,
+        "parser_cuda_device": 0,
         "parser_model_path": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/biaffine-dependency-parser-ptb-2018.08.23.tar.gz",
         "similarity_function": {
             "type": "dot_product"
@@ -111,7 +111,7 @@
     "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
     "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
     "trainer": {
-        "cuda_device": -1,
+        "cuda_device": 0,
         "grad_clipping": 5,
         "num_epochs": 140,
         "num_serialized_models_to_keep": 0,
