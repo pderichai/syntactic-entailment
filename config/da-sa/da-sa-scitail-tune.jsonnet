@@ -82,7 +82,7 @@
   },
   "vocabulary": {
     "type": "se-vocabulary",
-    "parser_vocab": "pretrained-models/biaffine-dependency-parser-ptb-vocab/tokens.txt",
-    "pos_vocab": "pretrained-models/biaffine-dependency-parser-ptb-vocab/pos.txt"
+    "parser_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/tokens.txt",
+    "pos_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/pos.txt"
   }
 }

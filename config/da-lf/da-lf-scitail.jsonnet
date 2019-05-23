@@ -89,8 +89,8 @@
                 "prevent"
             ]
         ],
-        "parser_cuda_device": 0,
-        "parser_model_path": "pretrained-models/biaffine-dependency-parser-ptb.tar.gz",
+        "parser_cuda_device": -1,
+        "parser_model_path": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/biaffine-dependency-parser-ptb-2018.08.23.tar.gz",
         "similarity_function": {
             "type": "dot_product"
         },
@@ -111,7 +111,7 @@
     "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
     "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
     "trainer": {
-        "cuda_device": 0,
+        "cuda_device": -1,
         "grad_clipping": 5,
         "num_epochs": 140,
         "num_serialized_models_to_keep": 0,
@@ -124,7 +124,7 @@
     },
     "vocabulary": {
         "type": "se-vocabulary",
-        "parser_vocab": "pretrained-models/biaffine-dependency-parser-ptb-vocab/tokens.txt",
-        "pos_vocab": "pretrained-models/biaffine-dependency-parser-ptb-vocab/pos.txt"
+        "parser_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/tokens.txt",
+        "pos_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/pos.txt"
     }
 }

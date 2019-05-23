@@ -18,7 +18,7 @@
   "validation_data_path": "multinli_1.0/multinli_1.0_dev_matched.jsonl",
   "model": {
     "type": "bert-lf",
-    "parser_model_path": "pretrained-models/biaffine-dependency-parser-ptb.tar.gz",
+    "parser_model_path": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/biaffine-dependency-parser-ptb-2018.08.23.tar.gz",
     "parser_hidden_size": 800,
     "parser_cuda_device": 0,
     "freeze_parser": true,
@@ -44,7 +44,7 @@
   },
   "vocabulary": {
     "type": "se-vocabulary",
-    "parser_vocab": "pretrained-models/biaffine-dependency-parser-ptb-vocab/tokens.txt",
-    "pos_vocab": "pretrained-models/biaffine-dependency-parser-ptb-vocab/pos.txt"
+    "parser_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/tokens.txt",
+    "pos_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/pos.txt"
   }
 }
