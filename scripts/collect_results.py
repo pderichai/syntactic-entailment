@@ -4,15 +4,16 @@ import glob
 import json
 import csv
 import os
-import argparser
+import argparse
 
 
 def main():
     parser = argparse.ArgumentParser(description='Generate results csv from directory.')
-    parser.add_argument('dir', description='Directory where all results are stored.')
+    parser.add_argument('dir', help='Directory where all results are stored.')
+    parser.add_argument('out_file', help='What file to save results to.')
     args = parser.parse_args()
 
-    with open('results.csv', 'w') as data:
+    with open(args.out_file, 'w') as data:
         fieldnames = ['model', 'best_epoch', 'training_epochs',
                       'training_accuracy', 'validation_accuracy',
                       'best_validation_accuracy']
