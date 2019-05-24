@@ -115,7 +115,7 @@
         "num_epochs": 140,
         "num_serialized_models_to_keep": 0,
         "optimizer": {
-            "lr": 0.06474923178731944,
+            "lr": 0.0080466907351606,
             "type": "adam"
         },
         "patience": 10,
