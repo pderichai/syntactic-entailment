@@ -1,6 +1,6 @@
 {
     "dataset_reader": {
-        "type": "se-snli-v2",
+        "type": "se-snli",
         "token_indexers": {
             "se-tokens": {
                 "type": "single_id",
@@ -33,7 +33,7 @@
         ]
     },
     "model": {
-        "type": "syntactic-entailment-v2",
+        "type": "da-sa",
         "aggregate_feedforward": {
             "activations": [
                 "relu",
@@ -90,7 +90,7 @@
             ]
         ],
         "parser_cuda_device": 0,
-        "parser_model_path": "pretrained-models/se-dependency-parser-v1.tar.gz",
+        "parser_model_path": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/biaffine-dependency-parser-ptb-2018.08.23.tar.gz",
         "similarity_function": {
             "type": "dot_product"
         },
@@ -123,7 +123,7 @@
     },
     "vocabulary": {
         "type": "se-vocabulary",
-        "parser_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
-        "pos_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt"
+        "parser_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/tokens.txt",
+        "pos_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/pos.txt"
     }
 }

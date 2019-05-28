@@ -1,6 +1,6 @@
 {
   "dataset_reader": {
-    "type": "se-snli-v2",
+    "type": "se-snli",
     "token_indexers": {
       "se-tokens": {
         "namespace": "se-tokens",
@@ -21,7 +21,7 @@
   "train_data_path": "SciTailV1.1/snli_format/scitail_1.0_train.txt",
   "validation_data_path": "SciTailV1.1/snli_format/scitail_1.0_dev.txt",
   "model": {
-    "type": "syntactic-entailment-v2",
+    "type": "da-sa",
     "text_field_embedder": {
       "token_embedders": {
         "se-tokens": {
@@ -82,7 +82,7 @@
   },
   "vocabulary": {
     "type": "se-vocabulary",
-    "parser_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/tokens.txt",
-    "pos_vocab": "pretrained-models/se-dependency-parser-v1-vocabulary/pos.txt"
+    "parser_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/tokens.txt",
+    "pos_vocab": "pretrained-models/biaffine-dependency-parser-ptb-2018.08.23/vocabulary/pos.txt"
   }
 }

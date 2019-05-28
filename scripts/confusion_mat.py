@@ -13,7 +13,9 @@ import matplotlib.pyplot as plt
 from sklearn import svm, datasets
 from sklearn.metrics import confusion_matrix
 
+# For SNLI, MultiNLI
 #tags = ['entailment', 'contradiction', 'neutral']
+# For SciTail
 tags = ['entailment', 'neutral']
 
 

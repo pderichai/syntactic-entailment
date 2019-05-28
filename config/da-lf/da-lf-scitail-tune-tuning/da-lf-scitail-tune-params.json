@@ -1,0 +1,10 @@
+{
+    "params_random_seed": 3462,
+    "trainer:optimizer:lr": [-4.0, -2.0],
+    "model:attend_feedforward:hidden_dims": [[100, 400], [200]],
+    "model:compare_feedforward:hidden_dims": [[100, 400], [200]],
+    "model:aggregate_feedforward:hidden_dims": [[100, 400], [2]],
+    "model:attend_feedforward:dropout": [0.2, 0.6],
+    "model:compare_feedforward:dropout": [0.2, 0.6],
+    "model:aggregate_feedforward:dropout": [[0.2, 0.6], [0.0]]
+}

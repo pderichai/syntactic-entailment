@@ -12,18 +12,29 @@ TUNE_OUT = 'tune-out'
 CONFIG_DIR = 'config'
 
 
-def main(args):
-    config_filename = os.path.basename(args.config_path)
-    model_version = os.path.basename(os.path.dirname(args.config_path))
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('config_file')
+    parser.add_argument('params_file')
+    parser.add_argument('num_configs', type=int)
+    args = parser.parse_args()
+
+    config_filename = os.path.basename(args.config_file)
+    model_version = os.path.basename(os.path.dirname(args.config_file))
     tune_config_dir = os.path.join(CONFIG_DIR, model_version, os.path.basename(os.path.dirname(args.params_file)))
-    json_str = _jsonnet.evaluate_file(args.config_path)
+    json_str = _jsonnet.evaluate_file(args.config_file)
     config_json = json.loads(json_str)
 
     with open(args.params_file, 'r') as f:
         params_json = json.load(f)
+
+    np.random.seed(params_json['params_random_seed'])
+
     for i in range(args.num_configs):
         new_config_json = copy.deepcopy(config_json)
         for key_str, param_range in params_json.items():
+            if key_str == 'params_random_seed':
+                continue
             config_json_iter = new_config_json
             keys = key_str.split(':')
             for key in keys[:-1]:
@@ -39,7 +50,7 @@ def main(args):
 
         new_config_file = open(
             os.path.join(tune_config_dir,
-                         config_filename.split('.')[0] + '-' + model_version + '-' + str(i + 1)),
+                         config_filename.split('.')[0] +  '-' + str(i + 1)),
             'w')
         json.dump(new_config_json, new_config_file, indent=4)
 
@@ -59,10 +70,4 @@ def get_param_val(param_range, keys):
 
 
 if __name__ == '__main__':
-    np.random.seed(1337)
-    parser = argparse.ArgumentParser()
-    parser.add_argument('config_path')
-    parser.add_argument('params_file')
-    parser.add_argument('num_configs', type=int)
-    args = parser.parse_args()
-    main(args)
+    main()
